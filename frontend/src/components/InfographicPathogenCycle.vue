@@ -24,83 +24,83 @@
       <svg class="leaf-anatomy-svg" viewBox="0 0 760 260" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Plant Tissue Anatomy and Pathogen Infection Cycle Diagram">
         <!-- Botanical Leaf Tissue Layers -->
         <!-- Upper Cuticle / Epidermis -->
-        <rect x="20" y="70" width="720" height="24" rx="2" fill="#d1fae5" stroke="#059669" stroke-width="1.5" />
+        <rect x="20" y="70" width="720" height="24" rx="2" class="svg-cuticle" />
         <text x="32" y="86" class="layer-label-text">Waxy Cuticle & Upper Epidermis (Adaxial Surface)</text>
 
         <!-- Palisade Mesophyll Layer (Chloroplast Cells) -->
         <g v-for="i in 18" :key="'palisade-' + i">
-          <rect :x="32 + (i - 1) * 39" y="102" width="34" height="60" rx="4" fill="#ecfdf5" stroke="#10b981" stroke-width="1" />
-          <circle :cx="40 + (i - 1) * 39" cy="116" r="3" fill="#059669" opacity="0.6" />
-          <circle :cx="58 + (i - 1) * 39" cy="130" r="3" fill="#059669" opacity="0.6" />
-          <circle :cx="48 + (i - 1) * 39" cy="148" r="3" fill="#059669" opacity="0.6" />
+          <rect :x="32 + (i - 1) * 39" y="102" width="34" height="60" rx="4" class="svg-mesophyll-cell" />
+          <circle :cx="40 + (i - 1) * 39" cy="116" r="3" class="svg-chloroplast" />
+          <circle :cx="58 + (i - 1) * 39" cy="130" r="3" class="svg-chloroplast" />
+          <circle :cx="48 + (i - 1) * 39" cy="148" r="3" class="svg-chloroplast" />
         </g>
         <text x="32" y="136" class="layer-sub-text">Palisade Mesophyll (Chloroplast Engine)</text>
 
         <!-- Spongy Mesophyll & Air Spaces -->
-        <rect x="20" y="170" width="720" height="40" fill="#f0fdf4" stroke="#a7f3d0" stroke-width="1" />
-        <circle cx="120" cy="190" r="12" fill="#ffffff" stroke="#6ee7b7" stroke-width="1" />
-        <circle cx="260" cy="190" r="14" fill="#ffffff" stroke="#6ee7b7" stroke-width="1" />
-        <circle cx="440" cy="190" r="11" fill="#ffffff" stroke="#6ee7b7" stroke-width="1" />
-        <circle cx="600" cy="190" r="13" fill="#ffffff" stroke="#6ee7b7" stroke-width="1" />
+        <rect x="20" y="170" width="720" height="40" class="svg-spongy" />
+        <circle cx="120" cy="190" r="12" class="svg-air-space" />
+        <circle cx="260" cy="190" r="14" class="svg-air-space" />
+        <circle cx="440" cy="190" r="11" class="svg-air-space" />
+        <circle cx="600" cy="190" r="13" class="svg-air-space" />
         <text x="32" y="195" class="layer-sub-text">Spongy Parenchyma & Vascular Bundle</text>
 
         <!-- Lower Epidermis & Stomata (Abaxial Surface) -->
-        <rect x="20" y="218" width="720" height="22" rx="2" fill="#d1fae5" stroke="#059669" stroke-width="1.5" />
+        <rect x="20" y="218" width="720" height="22" rx="2" class="svg-cuticle" />
         <text x="32" y="233" class="layer-label-text">Lower Epidermis & Stomata (Primary Infection Gateway)</text>
 
         <!-- Phase 1: Zoospore Droplet on Cuticle -->
         <g class="infection-vector" :class="{ 'vector-highlight': activeStageIndex === 0 }">
-          <ellipse cx="140" cy="58" rx="28" ry="14" fill="rgba(56, 189, 248, 0.25)" stroke="#0284c7" stroke-width="1.5" />
-          <circle cx="132" cy="56" r="4.5" fill="#c2410c" />
-          <circle cx="148" cy="58" r="4.5" fill="#c2410c" />
+          <ellipse cx="140" cy="58" rx="28" ry="14" class="svg-water-drop" />
+          <circle cx="132" cy="56" r="4.5" class="svg-spore-node" />
+          <circle cx="148" cy="58" r="4.5" class="svg-spore-node" />
           <!-- Zoospore flagella -->
-          <path d="M 132 52 Q 130 42 125 40" fill="none" stroke="#ea580c" stroke-width="1.5" />
-          <path d="M 148 54 Q 154 44 158 42" fill="none" stroke="#ea580c" stroke-width="1.5" />
+          <path d="M 132 52 Q 130 42 125 40" class="svg-flagella" />
+          <path d="M 148 54 Q 154 44 158 42" class="svg-flagella" />
           <text x="140" y="28" text-anchor="middle" class="vector-title">Phase 1: Free Water Zoospores</text>
-          <text x="140" y="40" text-anchor="middle" class="vector-sub">RH 86% triggers germination</text>
+          <text x="140" y="42" text-anchor="middle" class="vector-sub">RH 86% triggers germination</text>
         </g>
 
         <!-- Phase 2: Appressorium & Cuticular Penetration -->
         <g class="infection-vector" :class="{ 'vector-highlight': activeStageIndex === 1 }">
-          <circle cx="320" cy="62" r="7" fill="#b91c1c" />
+          <circle cx="320" cy="62" r="7" class="svg-appressorium" />
           <!-- Penetration peg piercing cuticle -->
-          <path d="M 320 69 L 320 102" fill="none" stroke="#b91c1c" stroke-width="2.5" />
-          <polygon points="316,98 320,106 324,98" fill="#b91c1c" />
+          <path d="M 320 69 L 320 102" class="svg-penetration-peg" />
+          <polygon points="316,98 320,106 324,98" class="svg-appressorium" />
           <text x="320" y="28" text-anchor="middle" class="vector-title">Phase 2: Enzymatic Peg</text>
-          <text x="320" y="40" text-anchor="middle" class="vector-sub">Cutinase dissolves epidermis</text>
+          <text x="320" y="42" text-anchor="middle" class="vector-sub">Cutinase dissolves epidermis</text>
         </g>
 
         <!-- Phase 3: Intercellular Mycelial Colonization -->
         <g class="infection-vector" :class="{ 'vector-highlight': activeStageIndex === 2 }">
           <!-- Branching hyphae between mesophyll cells -->
-          <path d="M 480 94 Q 495 120 485 145 T 510 175" fill="none" stroke="#b91c1c" stroke-width="2.5" />
-          <path d="M 490 125 Q 515 130 520 148" fill="none" stroke="#b91c1c" stroke-width="2" />
+          <path d="M 480 94 Q 495 120 485 145 T 510 175" class="svg-penetration-peg" />
+          <path d="M 490 125 Q 515 130 520 148" class="svg-hypha-branch" />
           <!-- Haustoria (nutrient siphons) -->
-          <circle cx="475" cy="130" r="3.5" fill="#7f1d1d" />
-          <circle cx="510" cy="142" r="3.5" fill="#7f1d1d" />
+          <circle cx="475" cy="130" r="3.5" class="svg-haustoria" />
+          <circle cx="510" cy="142" r="3.5" class="svg-haustoria" />
           <text x="500" y="28" text-anchor="middle" class="vector-title">Phase 3: Hyphal Siphoning</text>
-          <text x="500" y="40" text-anchor="middle" class="vector-sub">Chloroplast lysis & brown rot</text>
+          <text x="500" y="42" text-anchor="middle" class="vector-sub">Chloroplast lysis & brown rot</text>
         </g>
 
         <!-- Phase 4: Sporangiophore Eruption (Underside Sporulation) -->
         <g class="infection-vector" :class="{ 'vector-highlight': activeStageIndex === 3 }">
           <!-- Emergence through stoma -->
-          <path d="M 660 216 L 660 248 Q 675 258 685 244" fill="none" stroke="#b91c1c" stroke-width="2.5" />
-          <circle cx="660" cy="254" r="5" fill="#b91c1c" />
-          <circle cx="685" cy="244" r="4.5" fill="#b91c1c" />
-          <circle cx="674" cy="258" r="4" fill="#b91c1c" />
+          <path d="M 660 216 L 660 248 Q 675 258 685 244" class="svg-penetration-peg" />
+          <circle cx="660" cy="254" r="5" class="svg-appressorium" />
+          <circle cx="685" cy="244" r="4.5" class="svg-appressorium" />
+          <circle cx="674" cy="258" r="4" class="svg-appressorium" />
           <text x="660" y="28" text-anchor="middle" class="vector-title">Phase 4: Active Sporulation</text>
-          <text x="660" y="40" text-anchor="middle" class="vector-sub">White mildew downy ring</text>
+          <text x="660" y="42" text-anchor="middle" class="vector-sub">White mildew downy ring</text>
         </g>
 
         <!-- Biocontrol Interception Overlay (Trichoderma Mycoparasitism) -->
         <g class="biocontrol-shield">
-          <rect x="290" y="4" width="220" height="20" rx="3" fill="#1e3a8a" />
+          <rect x="290" y="4" width="220" height="20" rx="3" class="svg-shield-rect" />
           <text x="400" y="18" text-anchor="middle" class="shield-label-text">
             KRISHISETU BIO-SHIELD: TRICHODERMA ANTAGONISM
           </text>
           <!-- Coiling antagonistic hyphae wrapping pathogen -->
-          <path d="M 330 62 Q 338 54 345 66 T 352 56" fill="none" stroke="#2563eb" stroke-width="2" stroke-dasharray="3, 2" />
+          <path d="M 330 62 Q 338 54 345 66 T 352 56" class="svg-coiling-hypha" />
         </g>
       </svg>
     </div>
@@ -159,87 +159,86 @@ const currentStage = computed(() => stages[activeStageIndex.value])
 
 <style scoped>
 .pathogen-cycle-infographic {
-  padding: 20px 24px;
-  background: var(--bg-surface);
-  border: 1px solid var(--color-border);
+  padding: var(--space-4) var(--space-5);
+  background: var(--paper-raised);
+  border: 1px solid var(--hairline);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-card);
-  margin-top: 16px;
+  margin-top: var(--space-4);
 }
 
 .cycle-head-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  border-bottom: 1px solid var(--color-border);
-  padding-bottom: 12px;
-  margin-bottom: 16px;
+  gap: var(--space-3);
+  border-bottom: 1px solid var(--hairline);
+  padding-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
   flex-wrap: wrap;
 }
 
 .sub-label {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 0.8125rem;
   font-weight: 700;
   text-transform: uppercase;
-  color: var(--slate-500);
+  color: var(--ink-3);
   letter-spacing: 0.05em;
   display: block;
 }
 
 .cycle-title {
-  font-size: 14px;
+  font-size: var(--step-0);
   font-weight: 700;
-  color: var(--slate-900);
-  margin: 2px 0 0 0;
+  color: var(--ink);
+  margin: var(--space-1) 0 0 0;
 }
 
 .stage-stepper-pills {
   display: inline-flex;
-  background: var(--slate-100);
+  background: var(--paper-sunken);
   padding: 3px;
   border-radius: var(--radius-md);
-  border: 1px solid var(--slate-200);
+  border: 1px solid var(--hairline);
   gap: 3px;
   flex-wrap: wrap;
 }
 
 .step-pill {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 0.8125rem;
   font-weight: 500;
-  padding: 5px 12px;
+  padding: 6px 14px;
+  min-height: 48px;
   border-radius: var(--radius-sm);
   background: transparent;
   border: none;
-  color: var(--slate-600);
+  color: var(--ink-2);
   cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+  transition: background-color 120ms, color 120ms;
 }
 
 .step-pill:hover {
-  color: var(--slate-900);
+  color: var(--ink);
 }
 
 .step-pill:focus-visible {
-  outline: 2px solid var(--forest-600);
-  outline-offset: 1px;
+  outline: 3px solid var(--canopy);
+  outline-offset: 2px;
 }
 
 .step-pill.step-active {
-  background: #ffffff;
-  color: var(--slate-900);
-  font-weight: 600;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  background: var(--sarson);
+  color: var(--canopy);
+  font-weight: 700;
 }
 
 /* SVG Leaf Anatomy */
 .anatomy-svg-wrapper {
-  background: #fafaf9;
-  border: 1px solid var(--color-border);
+  background: var(--paper-sunken);
+  border: 1px solid var(--hairline);
   border-radius: var(--radius-md);
-  padding: 16px 12px;
+  padding: var(--space-4) var(--space-3);
   overflow-x: auto;
 }
 
@@ -250,43 +249,119 @@ const currentStage = computed(() => stages[activeStageIndex.value])
   display: block;
 }
 
+.svg-cuticle {
+  fill: var(--green-wash);
+  stroke: var(--leaf);
+  stroke-width: 1.5;
+}
+
+.svg-mesophyll-cell {
+  fill: var(--paper-raised);
+  stroke: var(--green-line);
+  stroke-width: 1;
+}
+
+.svg-chloroplast {
+  fill: var(--leaf);
+  opacity: 0.6;
+}
+
+.svg-spongy {
+  fill: var(--green-wash);
+  stroke: var(--green-line);
+  stroke-width: 1;
+}
+
+.svg-air-space {
+  fill: var(--paper-raised);
+  stroke: var(--green-line);
+  stroke-width: 1;
+}
+
+.svg-water-drop {
+  fill: var(--green-wash);
+  stroke: var(--leaf-bright);
+  stroke-width: 1.5;
+}
+
+.svg-spore-node {
+  fill: var(--alert);
+}
+
+.svg-flagella {
+  fill: none;
+  stroke: var(--alert);
+  stroke-width: 1.5;
+}
+
+.svg-appressorium {
+  fill: var(--brick);
+}
+
+.svg-penetration-peg {
+  fill: none;
+  stroke: var(--brick);
+  stroke-width: 2.5;
+}
+
+.svg-hypha-branch {
+  fill: none;
+  stroke: var(--brick);
+  stroke-width: 2;
+}
+
+.svg-haustoria {
+  fill: var(--brick);
+}
+
+.svg-shield-rect {
+  fill: var(--canopy);
+}
+
+.svg-coiling-hypha {
+  fill: none;
+  stroke: var(--sarson);
+  stroke-width: 2;
+  stroke-dasharray: 3, 2;
+}
+
 .layer-label-text {
   font-family: var(--font-mono);
-  font-size: 9.5px;
+  font-size: 12px;
   font-weight: 700;
-  fill: #065f46;
+  fill: var(--canopy);
 }
 
 .layer-sub-text {
   font-family: var(--font-mono);
-  font-size: 9px;
-  fill: #047857;
-  opacity: 0.85;
+  font-size: 12px;
+  fill: var(--leaf);
+  opacity: 0.9;
 }
 
 .vector-title {
   font-family: var(--font-mono);
-  font-size: 9.5px;
+  font-size: 12px;
   font-weight: 700;
-  fill: #991b1b;
+  fill: var(--brick);
 }
 
 .vector-sub {
   font-family: var(--font-mono);
-  font-size: 8.5px;
-  fill: #78350f;
+  font-size: 12px;
+  fill: var(--soil);
 }
 
 .shield-label-text {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
-  fill: #ffffff;
+  fill: var(--paper-raised);
 }
 
 .infection-vector {
   opacity: 0.45;
-  transition: opacity 0.2s ease;
+  transition: opacity 120ms;
 }
 
 .infection-vector.vector-highlight {
@@ -295,51 +370,51 @@ const currentStage = computed(() => stages[activeStageIndex.value])
 
 /* Active Stage Card */
 .active-stage-card {
-  margin-top: 14px;
-  padding: 12px 16px;
-  background: var(--slate-50);
-  border: 1px solid var(--slate-200);
+  margin-top: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--paper-sunken);
+  border: 1px solid var(--hairline);
   border-radius: var(--radius-sm);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-2);
 }
 
 .stage-info-meta {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .pathogen-taxa {
-  font-size: 11px;
-  color: var(--slate-600);
+  font-size: 0.8125rem;
+  color: var(--ink-2);
 }
 
 .active-stage-heading {
-  font-size: 13px;
+  font-size: var(--step-0);
   font-weight: 700;
-  color: var(--slate-900);
+  color: var(--ink);
   margin: 0;
 }
 
 .active-stage-desc {
-  font-size: 12px;
-  color: var(--slate-700);
+  font-size: 0.875rem;
+  color: var(--ink-2);
   line-height: 1.5;
   margin: 0;
 }
 
 .stage-biocontrol-box {
-  margin-top: 4px;
-  padding: 8px 12px;
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
+  margin-top: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  background: var(--green-wash);
+  border: 1px solid var(--green-line);
   border-radius: var(--radius-sm);
-  font-size: 11.5px;
-  color: #14532d;
+  font-size: 0.8125rem;
+  color: var(--canopy);
   display: flex;
-  gap: 6px;
+  gap: var(--space-2);
   flex-wrap: wrap;
 }
 
@@ -348,6 +423,6 @@ const currentStage = computed(() => stages[activeStageIndex.value])
 }
 
 .biocontrol-text {
-  color: #166534;
+  color: var(--canopy);
 }
 </style>

@@ -42,27 +42,27 @@
           <!-- Axis Labels and Values -->
           <text :x="labelPositions[0].x" :y="labelPositions[0].y" text-anchor="middle" class="axis-label-text">
             <tspan :x="labelPositions[0].x" dy="-4">Rel. Humidity</tspan>
-            <tspan :x="labelPositions[0].x" dy="13" class="axis-val-alert">86% (Critical)</tspan>
+            <tspan :x="labelPositions[0].x" dy="14" class="axis-val-alert">86% (Critical)</tspan>
           </text>
 
           <text :x="labelPositions[1].x" :y="labelPositions[1].y" text-anchor="start" class="axis-label-text">
             <tspan :x="labelPositions[1].x" dy="-2">Leaf Wetness</tspan>
-            <tspan :x="labelPositions[1].x" dy="13" class="axis-val-alert">9.4 hrs (>6h risk)</tspan>
+            <tspan :x="labelPositions[1].x" dy="14" class="axis-val-alert">9.4 hrs (&gt;6h risk)</tspan>
           </text>
 
           <text :x="labelPositions[2].x" :y="labelPositions[2].y" text-anchor="middle" class="axis-label-text">
             <tspan :x="labelPositions[2].x" dy="-2">Rain Splash</tspan>
-            <tspan :x="labelPositions[2].x" dy="13" class="axis-val-warn">34 mm / 24h</tspan>
+            <tspan :x="labelPositions[2].x" dy="14" class="axis-val-warn">34 mm / 24h</tspan>
           </text>
 
           <text :x="labelPositions[3].x" :y="labelPositions[3].y" text-anchor="end" class="axis-label-text">
             <tspan :x="labelPositions[3].x" dy="-2">Canopy Density</tspan>
-            <tspan :x="labelPositions[3].x" dy="13" class="axis-val-info">0.68 NDVI</tspan>
+            <tspan :x="labelPositions[3].x" dy="14" class="axis-val-info">0.68 NDVI</tspan>
           </text>
 
           <text :x="labelPositions[4].x" :y="labelPositions[4].y" text-anchor="end" class="axis-label-text">
             <tspan :x="labelPositions[4].x" dy="-2">Incubation Temp</tspan>
-            <tspan :x="labelPositions[4].x" dy="13" class="axis-val-alert">22.4°C (Favorable)</tspan>
+            <tspan :x="labelPositions[4].x" dy="14" class="axis-val-alert">22.4°C (Favorable)</tspan>
           </text>
         </svg>
 
@@ -175,11 +175,6 @@ const angles = [
 ]
 
 // Current normalized pathogen vector weights (0.0 to 1.0)
-// Axis 0: RH 86% -> 0.86
-// Axis 1: Leaf Wetness 9.4h / 12h -> 0.78
-// Axis 2: Rain Splash 34mm / 50mm -> 0.68
-// Axis 3: Canopy NDVI 0.68 / 1.0 -> 0.68
-// Axis 4: Temp 22.4°C in 15-28°C scale -> 0.82
 const axisValues = [0.86, 0.78, 0.68, 0.68, 0.82]
 
 function getPoint(angle, r) {
@@ -220,49 +215,48 @@ const labelPositions = [
 
 <style scoped>
 .infographic-radar-container {
-  padding: 20px 24px;
-  background: var(--bg-surface);
-  border: 1px solid var(--color-border);
+  padding: var(--space-4) var(--space-5);
+  background: var(--paper-raised);
+  border: 1px solid var(--hairline);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-card);
-  margin-top: 16px;
+  margin-top: var(--space-4);
 }
 
 .infographic-head-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  border-bottom: 1px solid var(--color-border);
-  padding-bottom: 12px;
-  margin-bottom: 16px;
+  gap: var(--space-3);
+  border-bottom: 1px solid var(--hairline);
+  padding-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
   flex-wrap: wrap;
 }
 
 .sub-label {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 0.8125rem;
   font-weight: 700;
   text-transform: uppercase;
-  color: var(--slate-500);
+  color: var(--ink-3);
   letter-spacing: 0.05em;
   display: block;
 }
 
 .infographic-title {
-  font-size: 14px;
+  font-size: var(--step-0);
   font-weight: 700;
-  color: var(--slate-900);
-  margin: 2px 0 0 0;
+  color: var(--ink);
+  margin: var(--space-1) 0 0 0;
 }
 
 .risk-composite-badge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 5px 12px;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  gap: var(--space-2);
+  padding: 6px 14px;
+  background: var(--brick-wash);
+  border: 1px solid var(--brick-line);
   border-radius: var(--radius-sm);
 }
 
@@ -270,23 +264,23 @@ const labelPositions = [
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #dc2626;
+  background: var(--alert);
 }
 
 .risk-score-text {
-  font-size: 11.5px;
+  font-size: 0.8125rem;
   font-family: var(--font-mono);
-  color: #991b1b;
+  color: var(--brick);
 }
 
 .risk-score-text strong {
-  font-size: 12.5px;
+  font-size: 0.875rem;
 }
 
 .radar-split-layout {
   display: grid;
   grid-template-columns: 340px 1fr;
-  gap: 24px;
+  gap: var(--space-5);
   align-items: start;
 }
 
@@ -295,10 +289,10 @@ const labelPositions = [
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: var(--slate-50);
-  border: 1px solid var(--slate-200);
+  background: var(--paper-sunken);
+  border: 1px solid var(--hairline);
   border-radius: var(--radius-sm);
-  padding: 12px 8px;
+  padding: var(--space-3) var(--space-2);
 }
 
 .radar-svg {
@@ -310,75 +304,78 @@ const labelPositions = [
 
 .radar-grid-ring {
   fill: none;
-  stroke: var(--slate-200);
+  stroke: var(--hairline);
   stroke-width: 1;
 }
 
 .radar-grid-boundary {
   fill: none;
-  stroke: var(--slate-300);
+  stroke: var(--hairline-strong);
   stroke-width: 1.5;
 }
 
 .radar-danger-threshold {
   fill: none;
-  stroke: rgba(220, 38, 38, 0.4);
+  stroke: var(--alert);
   stroke-width: 1.5;
   stroke-dasharray: 4, 3;
 }
 
 .radar-axis-line {
-  stroke: var(--slate-300);
+  stroke: var(--hairline-strong);
   stroke-width: 1;
   stroke-dasharray: 2, 2;
 }
 
 .radar-data-polygon {
-  fill: rgba(185, 28, 28, 0.22);
-  stroke: #b91c1c;
+  fill: var(--brick-wash);
+  stroke: var(--brick);
   stroke-width: 2;
 }
 
 .radar-data-point {
-  fill: #b91c1c;
-  stroke: #ffffff;
+  fill: var(--brick);
+  stroke: var(--paper-raised);
   stroke-width: 1.5;
 }
 
 .axis-label-text {
   font-family: var(--font-mono);
-  font-size: 9px;
-  fill: var(--slate-700);
+  font-size: 12px;
+  fill: var(--ink-2);
 }
 
 .axis-val-alert {
   font-weight: 700;
-  fill: #b91c1c;
+  fill: var(--alert-text);
+  font-size: 12px;
 }
 
 .axis-val-warn {
   font-weight: 700;
-  fill: #b45309;
+  fill: var(--ochre);
+  font-size: 12px;
 }
 
 .axis-val-info {
   font-weight: 700;
-  fill: #0369a1;
+  fill: var(--canopy);
+  font-size: 12px;
 }
 
 .radar-legend-row {
   display: flex;
-  gap: 14px;
-  font-size: 10.5px;
+  gap: var(--space-3);
+  font-size: 0.8125rem;
   font-family: var(--font-mono);
-  color: var(--slate-600);
-  margin-top: 8px;
+  color: var(--ink-2);
+  margin-top: var(--space-2);
 }
 
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: var(--space-1);
 }
 
 .legend-box {
@@ -388,59 +385,59 @@ const labelPositions = [
 }
 
 .legend-danger-box {
-  border: 1px dashed #dc2626;
+  border: 1px dashed var(--alert);
   background: transparent;
 }
 
 .legend-data-box {
-  background: rgba(185, 28, 28, 0.4);
-  border: 1px solid #b91c1c;
+  background: var(--brick-wash);
+  border: 1px solid var(--brick);
 }
 
 /* Drift Window Column */
 .drift-window-column {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--space-3);
 }
 
 .drift-header h5 {
-  font-size: 13px;
+  font-size: var(--step-0);
   font-weight: 700;
-  color: var(--slate-900);
-  margin: 2px 0 4px 0;
+  color: var(--ink);
+  margin: var(--space-1) 0 var(--space-1) 0;
 }
 
 .drift-sub {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 0.8125rem;
   font-weight: 700;
-  color: var(--slate-500);
+  color: var(--ink-3);
   text-transform: uppercase;
 }
 
 .drift-note {
-  font-size: 11.5px;
-  color: var(--slate-600);
+  font-size: 0.8125rem;
+  color: var(--ink-2);
   line-height: 1.45;
   margin: 0;
 }
 
 /* Timeline Horizontal Track */
 .timeline-bar-wrapper {
-  background: var(--slate-50);
-  border: 1px solid var(--slate-200);
+  background: var(--paper-sunken);
+  border: 1px solid var(--hairline);
   border-radius: var(--radius-sm);
-  padding: 12px 14px 18px 14px;
+  padding: var(--space-3) var(--space-3) var(--space-4) var(--space-3);
 }
 
 .timeline-hours-labels {
   display: flex;
   justify-content: space-between;
   font-family: var(--font-mono);
-  font-size: 9.5px;
-  color: var(--slate-500);
-  margin-bottom: 6px;
+  font-size: 12px;
+  color: var(--ink-3);
+  margin-bottom: var(--space-1);
 }
 
 .timeline-segments-track {
@@ -449,7 +446,7 @@ const labelPositions = [
   display: flex;
   border-radius: 6px;
   overflow: visible;
-  border: 1px solid var(--slate-300);
+  border: 1px solid var(--hairline-strong);
 }
 
 .time-segment {
@@ -458,26 +455,26 @@ const labelPositions = [
   align-items: center;
   justify-content: center;
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.04em;
-  color: #ffffff;
+  color: var(--paper-raised);
 }
 
 .segment-night {
-  background: #475569;
+  background: var(--ink-3);
 }
 
 .segment-optimal {
-  background: #15803d;
+  background: var(--leaf);
 }
 
 .segment-prohibited {
-  background: #c2410c;
+  background: var(--brick);
 }
 
 .segment-secondary {
-  background: #0284c7;
+  background: var(--leaf-bright);
 }
 
 .seg-w-25 { width: 25%; }
@@ -497,16 +494,16 @@ const labelPositions = [
 
 .marker-flag {
   position: absolute;
-  top: -14px;
+  top: -16px;
   left: 50%;
   transform: translateX(-50%);
-  background: #0f172a;
-  color: #ffffff;
+  background: var(--canopy);
+  color: var(--paper-raised);
   font-family: var(--font-mono);
-  font-size: 8.5px;
+  font-size: 12px;
   font-weight: 700;
-  padding: 1px 4px;
-  border-radius: 2px;
+  padding: 1px 5px;
+  border-radius: var(--radius-xs);
   white-space: nowrap;
 }
 
@@ -516,42 +513,45 @@ const labelPositions = [
   bottom: 0;
   left: 0;
   width: 2px;
-  background: #0f172a;
+  background: var(--canopy);
 }
 
 /* Drift Metrics Grid */
 .drift-metrics-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 10px;
+  gap: var(--space-2);
 }
 
 .drift-metric-card {
-  padding: 8px 10px;
-  background: var(--slate-50);
-  border: 1px solid var(--slate-200);
+  padding: var(--space-2) var(--space-3);
+  background: var(--paper-sunken);
+  border: 1px solid var(--hairline);
   border-radius: var(--radius-sm);
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--space-1);
 }
 
 .dm-label {
-  font-size: 10px;
-  color: var(--slate-500);
+  font-size: 0.8125rem;
+  color: var(--ink-3);
   font-weight: 600;
 }
 
 .dm-val {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 0.875rem;
   font-weight: 700;
 }
 
 .dm-status {
-  font-size: 9.5px;
-  color: var(--slate-600);
+  font-size: 0.8125rem;
+  color: var(--ink-2);
 }
+
+.text-forest { color: var(--leaf); }
+.text-alert { color: var(--alert-text); }
 
 @media (max-width: 900px) {
   .radar-split-layout {

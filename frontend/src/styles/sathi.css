@@ -1,0 +1,819 @@
+/* KrishiSetu - Kisan Sathi Shared Stylesheet */
+
+.kisan-sathi-container {
+  padding: var(--space-5) var(--space-5);
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* Offline Resiliency Banner */
+.offline-banner {
+  background: var(--ochre-wash);
+  border: 1.5px solid var(--ochre-line);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.banner-marker {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--ochre);
+}
+
+.banner-body {
+  flex: 1;
+  font-size: var(--step-0);
+  color: var(--canopy);
+}
+
+/* Farmer Identity Ribbon (Slim Line) */
+.profile-ribbon-slim {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  background: var(--paper-raised);
+  border-bottom: 2px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.profile-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.profile-badge-frame {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  background: var(--green-wash);
+  border: 1px solid var(--green-line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--canopy);
+  flex-shrink: 0;
+}
+
+.farmer-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.farmer-title-row h1 {
+  font-size: var(--step-1);
+  font-weight: 800;
+  color: var(--ink);
+  margin: 0;
+}
+
+.farmer-meta-line {
+  font-size: 0.8125rem;
+  color: var(--ink-2);
+  margin: 2px 0 0 0;
+}
+
+.profile-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.lang-selector-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.selector-label {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.lang-dropdown {
+  background: var(--paper);
+  border: 1.5px solid var(--hairline-strong);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  font-size: 0.8125rem;
+  color: var(--ink);
+  min-height: 40px;
+  cursor: pointer;
+}
+
+/* 2-Column Diagnostic Lab Grid */
+.diagnostic-lab-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.section-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--hairline);
+  background: var(--paper-sunken);
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.section-header-row h2 {
+  font-size: var(--step-1);
+  font-weight: 800;
+  color: var(--ink);
+  margin: 0;
+}
+
+.section-sub {
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+  margin: 2px 0 0 0;
+}
+
+/* Specimen Benchmark Tabs */
+.specimen-selector-bar {
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 1px solid var(--hairline);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  background: var(--paper);
+}
+
+.selector-subheading {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.segmented-specimen-group {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.specimen-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 8px 14px;
+  min-height: 44px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--hairline);
+  background: var(--paper-raised);
+  color: var(--ink-2);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 120ms, background-color 120ms;
+}
+
+.specimen-tab-btn:hover {
+  border-color: var(--hairline-strong);
+}
+
+.specimen-tab-btn.active {
+  background: var(--green-wash);
+  border-color: var(--canopy);
+  color: var(--canopy);
+  font-weight: 700;
+}
+
+.crop-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.indicator-rice { background: var(--leaf); }
+.indicator-wheat { background: var(--sarson); }
+.indicator-cotton { background: var(--green-line); }
+.indicator-guardrail { background: var(--alert); }
+
+/* Specimen Inspection Viewfinder */
+.specimen-stage-frame {
+  padding: var(--space-4) var(--space-5);
+}
+
+.specimen-viewfinder {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  background: var(--inkwell);
+  border: 2px solid var(--inkwell-line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hidden-input-element {
+  display: none;
+}
+
+.reticle-corner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-color: var(--sarson);
+  border-style: solid;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.reticle-tl { top: 12px; left: 12px; border-width: 2.5px 0 0 2.5px; }
+.reticle-tr { top: 12px; right: 12px; border-width: 2.5px 2.5px 0 0; }
+.reticle-bl { bottom: 12px; left: 12px; border-width: 0 0 2.5px 2.5px; }
+.reticle-br { bottom: 12px; right: 12px; border-width: 0 2.5px 2.5px 0; }
+
+.specimen-rendered-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.viewfinder-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--space-2) var(--space-3);
+  background: rgba(10, 47, 34, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.viewfinder-tag {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--paper-raised);
+  font-size: 0.8125rem;
+  font-family: var(--font-mono);
+}
+
+.tag-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--leaf-bright);
+}
+
+.btn-change-photo {
+  background: var(--sarson);
+  color: var(--canopy);
+  border: 1px solid var(--canopy);
+  border-radius: var(--radius-pill);
+  padding: 6px 14px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* Voice Console */
+.voice-intake-card {
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--hairline);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.voice-intake-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.voice-intake-title {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.btn-voice-record {
+  min-height: 56px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--paper-raised);
+  border: 2px solid var(--canopy);
+  color: var(--canopy);
+  font-size: var(--step-0);
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  transition: background-color 120ms, transform 120ms;
+}
+
+.btn-voice-record:hover {
+  background: var(--green-wash);
+}
+
+.btn-voice-record.is-active-recording {
+  background: var(--brick-wash);
+  border-color: var(--alert);
+  color: var(--brick);
+}
+
+.voice-action-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.transcript-box {
+  background: var(--paper-sunken);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+}
+
+.transcript-lead {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--ink-2);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.transcript-quote {
+  font-size: 0.875rem;
+  color: var(--ink);
+  margin: 0;
+}
+
+.voice-hint {
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+  margin: 0;
+}
+
+.diagnose-actions {
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--hairline);
+}
+
+.btn-execute-diagnosis {
+  min-height: 56px;
+  width: 100%;
+}
+
+.specimen-tech-bar {
+  padding: var(--space-2) var(--space-5);
+  border-top: 1px solid var(--hairline);
+  background: var(--paper-sunken);
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Diagnostic Evaluation Findings */
+.lab-findings-body {
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.diag-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.diag-label {
+  font-size: 0.8125rem;
+  font-family: var(--font-mono);
+  color: var(--ink-3);
+  text-transform: uppercase;
+}
+
+.diag-condition-title {
+  font-size: var(--step-2);
+  font-weight: 800;
+  color: var(--ink);
+  margin: 2px 0 0 0;
+}
+
+.diag-scientific-name {
+  font-size: 0.875rem;
+  color: var(--ink-2);
+}
+
+.diag-match-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.match-percentage {
+  font-family: var(--font-mono);
+  font-size: var(--step-2);
+  font-weight: 800;
+  color: var(--leaf);
+}
+
+.symptoms-panel,
+.immediate-action-callout {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--hairline);
+}
+
+.symptoms-panel {
+  background: var(--paper-sunken);
+}
+
+.immediate-action-callout {
+  background: var(--green-wash);
+  border-left: 4px solid var(--canopy);
+}
+
+.symptoms-panel h4,
+.immediate-action-callout h4 {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.symptoms-list {
+  margin: 0;
+  padding-left: var(--space-4);
+  font-size: 0.8125rem;
+  color: var(--ink-2);
+  line-height: 1.5;
+}
+
+.action-narrative {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--canopy);
+  line-height: 1.5;
+}
+
+.guardrail-alert-box {
+  padding: var(--space-5);
+  background: var(--brick-wash);
+  border: 1.5px solid var(--brick-line);
+  border-radius: var(--radius-sm);
+  display: flex;
+  gap: var(--space-3);
+}
+
+.guardrail-title {
+  font-size: var(--step-1);
+  font-weight: 800;
+  color: var(--brick);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.guardrail-sub {
+  font-size: 0.8125rem;
+  color: var(--brick);
+  font-family: var(--font-mono);
+}
+
+/* Operations Matrix / Your field today */
+.telemetry-operations-matrix {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.matrix-head {
+  padding: var(--space-4) var(--space-5);
+  background: var(--paper-sunken);
+  border-bottom: 1px solid var(--hairline);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.matrix-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.matrix-title h2 {
+  font-size: var(--step-1);
+  font-weight: 800;
+  color: var(--ink);
+  margin: 0;
+}
+
+.matrix-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+}
+
+.matrix-column {
+  padding: var(--space-4) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  border-right: 1px solid var(--hairline);
+}
+
+.matrix-column:last-child {
+  border-right: none;
+}
+
+.column-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.station-provenance {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+  text-transform: uppercase;
+}
+
+.column-header h3 {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0;
+}
+
+.source-tag {
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+}
+
+/* Telemetry Gauges */
+.telemetry-gauge-card {
+  padding: var(--space-3);
+  background: var(--paper-sunken);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+}
+
+.gauge-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-1);
+}
+
+.gauge-label {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.gauge-value {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.gauge-value.alert {
+  color: var(--alert-text);
+}
+
+.gauge-value.safe {
+  color: var(--leaf);
+}
+
+.gauge-track-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gauge-bar-track {
+  position: relative;
+  height: 8px;
+  background: var(--hairline);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.gauge-fill-bar {
+  height: 100%;
+  border-radius: 4px;
+}
+
+.gauge-fill-alert {
+  background: var(--alert);
+}
+
+.gauge-fill-safe {
+  background: var(--leaf);
+}
+
+.gauge-threshold-marker {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--ink);
+}
+
+.marker-rh-82 {
+  left: 82%;
+}
+
+.gauge-ticks-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+}
+
+.metrics-tabular {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.metric-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8125rem;
+  color: var(--ink-2);
+}
+
+.metric-val {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.stream-risk-note {
+  font-size: 0.8125rem;
+  color: var(--ink-2);
+  line-height: 1.45;
+  background: var(--paper-raised);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-xs);
+  padding: var(--space-2);
+}
+
+.stream-risk-note p {
+  margin: 2px 0 0 0;
+}
+
+/* Treatment Plan Dossier */
+.dossier-masthead {
+  padding: var(--space-4) var(--space-5);
+  background: var(--paper-sunken);
+  border-bottom: 1px solid var(--hairline);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.dossier-masthead h2 {
+  font-size: var(--step-1);
+  font-weight: 800;
+  color: var(--ink);
+  margin: 0;
+}
+
+.advisory-body {
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.summary-advisory-card {
+  padding: var(--space-4);
+  background: var(--paper-raised);
+  border: 1.5px solid var(--hairline-strong);
+  border-radius: var(--radius-sm);
+}
+
+.summary-advisory-lead {
+  font-size: var(--step-0);
+  line-height: 1.6;
+  color: var(--ink);
+  margin: 0;
+}
+
+.actions-tri-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-4);
+}
+
+.action-card {
+  padding: var(--space-4);
+  background: var(--paper-raised);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.action-card h5 {
+  font-size: var(--step-0);
+  font-weight: 800;
+  color: var(--ink);
+  margin: 0;
+}
+
+.action-desc {
+  font-size: 0.8125rem;
+  color: var(--ink-2);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.action-outcome {
+  font-size: 0.8125rem;
+  color: var(--leaf);
+  font-weight: 600;
+}
+
+.explainability-block {
+  margin-top: var(--space-4);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.explainability-header {
+  padding: var(--space-3) var(--space-4);
+  background: var(--paper-sunken);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.explainability-header h4 {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0;
+}
+
+.explainability-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+
+.explainability-table th,
+.explainability-table td {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--hairline);
+  text-align: left;
+}
+
+.explainability-table th {
+  background: var(--paper);
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+}
+
+@media (max-width: 960px) {
+  .diagnostic-lab-grid {
+    grid-template-columns: 1fr;
+  }
+  .matrix-grid {
+    grid-template-columns: 1fr;
+  }
+}
