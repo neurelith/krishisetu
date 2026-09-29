@@ -1,0 +1,26 @@
+[
+  {
+    "segment":"Low (<3%)",
+    "count":1686,
+    "avg_predicted":0.0156,
+    "actual_ctr":0.0053
+  },
+  {
+    "segment":"Medium (3-6%)",
+    "count":995,
+    "avg_predicted":0.0431,
+    "actual_ctr":0.0131
+  },
+  {
+    "segment":"High (6-10%)",
+    "count":657,
+    "avg_predicted":0.077,
+    "actual_ctr":0.0107
+  },
+  {
+    "segment":"Very High (>10%)",
+    "count":1141,
+    "avg_predicted":0.2491,
+    "actual_ctr":0.1727
+  }
+]
