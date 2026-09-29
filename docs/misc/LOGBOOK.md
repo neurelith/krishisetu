@@ -18,6 +18,7 @@
 6. [Milestone 6: Clean Git Restructuring & GitHub Publication](#milestone-6-clean-git-restructuring--github-publication)
 7. [Milestone 7: OmniRoute-Style Visual Graphics Suite](#milestone-7-omniroute-style-visual-graphics-suite)
 8. [Milestone 8: Dynamic Telemetry & Hackathon Team Strategy](#milestone-8-dynamic-telemetry--hackathon-team-strategy)
+9. [Milestone 9: Ergonomic Polish — Sizing, Ratio Spacing & Apple HIG Symmetry](#milestone-9-ergonomic-polish--sizing-ratio-spacing--apple-hig-symmetry)
 
 ---
 
@@ -223,6 +224,35 @@
 * **Design System Discipline:** Eliminating arbitrary hex codes, blurry dropshadows, and non-token transitions creates an interface that looks like an authentic, highly-engineered Digital Public Good rather than a generic hackathon prototype.
 * **Maintainability & Modularity:** Decomposing 1000+ line monoliths into single-responsibility subcomponents under 500 lines dramatically improves long-term developer ergonomics, readability, and performance.
 * **Farmer & Officer Utility:** High-resolution 1080 × 1350 share cards allow extension workers to broadcast actionable bilingual pest alerts directly over WhatsApp and local channels without requiring farmers to log into the portal.
+
+---
+
+## Milestone 9: Ergonomic Polish — Sizing, Ratio Spacing & Apple HIG Symmetry
+
+### What Was Done
+1. **Story Page Editorial Architecture (`Story.vue`)**:
+   - Replaced the single-column unbalanced hero with a balanced 2-column editorial grid (`hero-grid`) featuring a real-time Telemetry Stream Beacon & Specimen Node on the right column.
+   - Fixed the `48h` metric layout by grouping numeric and unit tags (`48<span class="metric-unit">h</span>`), eliminating awkward monospace spacing gaps.
+   - Enforced Apple HIG touch target guidelines ($\ge 52\text{px}$) on primary narrative calls-to-action with Phosphor `PhPlant` icons.
+   - Built a 3-card preview grid for Chapters 01, 02, and 03 to anchor visual rhythm.
+2. **Kisan Sathi Card Symmetry (`DiagnosisResultSection.vue` & `sathi.css`)**:
+   - Replaced the 1-line empty diagnosis placeholder with a structured `empty-diagnosis-standby` laboratory console (`Laboratory Output`, `PhPlant`, 3-step structured guidance), perfectly balancing the ~500px height of the left leaf capture card.
+   - Applied `height: 100%` on `.matrix-column` and `margin-top: auto` on `.stream-risk-note` across "Your field today", ensuring all 3 columns share identical heights and baseline-aligned bottom notes.
+3. **Outbreak Watch GIS Cartography & Typography (`Admin.vue` & `admin.css`)**:
+   - Fixed GIS map duplicate labeling: adjusted West Bengal outbreak node resolution (`origin_state === 'West Bengal'`) to bind to the Malda Hub, preventing Purnia from rendering simultaneously in Bihar and Bengal.
+   - Standardized metric figures with `font-variant-numeric: tabular-nums` and tighter `-0.03em` tracking for institutional scannability.
+   - Added responsive single-column card stacking for viewports under 768px.
+4. **Registry Converter Studio Symmetry (`DevTool.vue` & `devtool.css`)**:
+   - Added high-contrast `.control-divider` between state pills and action buttons.
+   - Introduced an institutional `.output-standby-guide` architecture blueprint tree in the right panel prior to normalization, preventing single-sided empty workspace asymmetry.
+5. **Universal Mobile Polish (`App.vue`)**:
+   - Streamlined mobile header: converted brand into a single-line layout (`brand-caption` hidden on small screens) with horizontally swipeable nav pills and a compact network state indicator.
+   - Cleaned footer dot separators with `.footer-sep` preventing orphaned punctuation wraps.
+
+### Why It Was Done
+* **Visual Equilibrium:** Empty states on 2-column or 3-column operational dashboards previously suffered from vertical collapse, leaving 400px+ of unanchored negative space that made the application appear unfinished.
+* **Apple HIG & Swiss Typography:** Tabular numeric rendering (`tabular-nums`) prevents metric jitter during live data feeds, while $\ge 44\text{px}$ touch targets ensure seamless field usability on mobile devices under harsh outdoor conditions.
+* **Cartographic Accuracy:** In a high-stakes cross-border surveillance tool, duplicate hub labels erode institutional trust. Pinpointing alerts to their exact geopolitical coordinates is critical for government agency adoption.
 
 ---
 

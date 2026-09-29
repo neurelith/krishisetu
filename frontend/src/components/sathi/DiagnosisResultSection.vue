@@ -68,14 +68,49 @@
       <InfographicPathogenCycle />
     </div>
 
-    <div v-else class="empty-diagnosis-state" style="padding: 32px; text-align: center;">
-      <p class="meta">Select a clinical specimen or upload a leaf photo to view diagnostic analysis.</p>
+    <div v-else class="empty-diagnosis-standby">
+      <div class="standby-icon-frame">
+        <PhPlant :size="36" weight="bold" class="standby-icon" />
+      </div>
+      <div class="standby-content">
+        <span class="standby-chip">DIAGNOSTIC STANDBY</span>
+        <h3 class="standby-title">Awaiting Clinical Specimen Intake</h3>
+        <p class="standby-desc">
+          Select a benchmark specimen on the left or upload a field photograph to trigger multimodal computer vision verification.
+        </p>
+        <div class="standby-steps-matrix">
+          <div class="standby-step">
+            <span class="step-num">1</span>
+            <div>
+              <strong>Sample Intake:</strong>
+              <span>Capture leaf lesion in sunlight or choose benchmark specimen.</span>
+            </div>
+          </div>
+          <div class="standby-step">
+            <span class="step-num">2</span>
+            <div>
+              <strong>Audio Observation:</strong>
+              <span>Speak symptoms in local dialect (Bengali/Hindi) for symptom triage.</span>
+            </div>
+          </div>
+          <div class="standby-step">
+            <span class="step-num">3</span>
+            <div>
+              <strong>ICAR Action Plan:</strong>
+              <span>Receive immediate bio-control protocol and 1080x1350 WhatsApp share card.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="standby-footer">
+        <span class="badge-institutional badge-forest">DPG Validation Engine · ICAR-CRRI Standard</span>
+      </div>
     </div>
   </section>
 </template>
 
 <script setup>
-import { PhWarningCircle, PhShareNetwork } from '@phosphor-icons/vue'
+import { PhWarningCircle, PhShareNetwork, PhPlant } from '@phosphor-icons/vue'
 import InfographicPathogenCycle from '../InfographicPathogenCycle.vue'
 
 defineProps({

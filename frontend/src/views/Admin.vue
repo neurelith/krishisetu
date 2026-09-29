@@ -338,11 +338,11 @@ const activeShareAlert = ref({
 })
 
 const activeOutbreakHub = computed(() => {
-  const severeAlert = alerts.value.find(a => a.severity_level === 'Severe') || alerts.value[0]
-  if (severeAlert && severeAlert.origin_district) {
-    return `${severeAlert.origin_district} Hub (Active Outbreak)`
+  const wbAlert = alerts.value.find(a => a.origin_state === 'West Bengal' && (a.severity_level === 'Severe' || a.severity_level === 'High')) || alerts.value.find(a => a.origin_state === 'West Bengal') || alerts.value[0]
+  if (wbAlert && wbAlert.origin_district) {
+    return `${wbAlert.origin_district} Hub (Active Outbreak)`
   }
-  return 'Regional Hub (Active Outbreak)'
+  return 'Malda Extension Hub'
 })
 
 const simForm = reactive({

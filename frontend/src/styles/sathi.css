@@ -548,6 +548,7 @@
   flex-direction: column;
   gap: var(--space-3);
   border-right: 1px solid var(--hairline);
+  height: 100%;
 }
 
 .matrix-column:last-child {
@@ -688,6 +689,7 @@
   border: 1px solid var(--hairline);
   border-radius: var(--radius-xs);
   padding: var(--space-2);
+  margin-top: auto;
 }
 
 .stream-risk-note p {
@@ -809,11 +811,115 @@
   font-family: var(--font-mono);
 }
 
+/* Empty Diagnostic Standby State */
+.empty-diagnosis-standby {
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  background: var(--paper-raised);
+  min-height: 480px;
+  justify-content: space-between;
+}
+
+.standby-icon-frame {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-sm);
+  background: var(--green-wash);
+  border: 1.5px solid var(--green-line);
+  color: var(--canopy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.standby-chip {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--leaf);
+  letter-spacing: 0.05em;
+  display: block;
+}
+
+.standby-title {
+  font-size: var(--step-1);
+  font-weight: 800;
+  color: var(--ink);
+  margin: var(--space-1) 0;
+}
+
+.standby-desc {
+  font-size: 0.875rem;
+  color: var(--ink-2);
+  line-height: 1.5;
+  margin: 0 0 var(--space-4) 0;
+}
+
+.standby-steps-matrix {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  background: var(--paper-sunken);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+}
+
+.standby-step {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+.step-num {
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-pill);
+  background: var(--canopy);
+  color: var(--paper-raised);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.standby-step strong {
+  color: var(--ink);
+  margin-right: 4px;
+}
+
+.standby-step span {
+  color: var(--ink-2);
+}
+
+.standby-footer {
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--hairline);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 @media (max-width: 960px) {
   .diagnostic-lab-grid {
     grid-template-columns: 1fr;
   }
   .matrix-grid {
     grid-template-columns: 1fr;
+  }
+  .matrix-column {
+    border-right: none;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .matrix-column:last-child {
+    border-bottom: none;
   }
 }

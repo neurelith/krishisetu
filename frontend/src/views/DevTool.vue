@@ -67,6 +67,8 @@
         </button>
       </div>
 
+      <div class="control-divider" aria-hidden="true"></div>
+
       <div class="action-buttons">
         <button type="button" @click="loadSample" class="btn-gov-outline" :disabled="isLoading" style="min-height: 48px;">
           <PhArrowsClockwise :size="18" weight="bold" />
@@ -193,8 +195,30 @@
         </div>
 
         <!-- Normalized JSON Inspector -->
-        <div class="output-wrapper" :class="{ 'anim-highlight': isHighlighting }">
+        <div v-if="normalizedResponse" class="output-wrapper" :class="{ 'anim-highlight': isHighlighting }">
           <pre class="code-preview"><code>{{ formattedNormalizedJson }}</code></pre>
+        </div>
+
+        <!-- Standby Blueprint when not yet normalized -->
+        <div v-else class="output-standby-guide">
+          <div class="standby-schema-preview">
+            <span class="preview-tag">CANONICAL TARGET ARCHITECTURE</span>
+            <h4>in.gov.dpg.farmcontext.v1</h4>
+            <p class="preview-sub">
+              Transforms heterogeneous, regional state registry dialects into an immutable, verifiable Digital Public Good payload format.
+            </p>
+            <div class="schema-tree">
+              <div class="tree-node"><span>├── farmer:</span> <small>{ name, preferred_language, id }</small></div>
+              <div class="tree-node"><span>├── location:</span> <small>{ state, district, lat, lon }</small></div>
+              <div class="tree-node"><span>├── crop:</span> <small>{ name, variety, season, stage }</small></div>
+              <div class="tree-node"><span>├── soil_health:</span> <small>{ ph, n_kg_ha, p_kg_ha, k_kg_ha }</small></div>
+              <div class="tree-node"><span>├── weather:</span> <small>{ temp_c, humidity_pct, rainfall }</small></div>
+              <div class="tree-node"><span>└── satellite:</span> <small>{ ndvi, sentinel2_granule }</small></div>
+            </div>
+            <div class="standby-callout">
+              <span>Ready for translation · Click "Normalize into Common DPG Contract" above.</span>
+            </div>
+          </div>
         </div>
 
         <!-- Audit Transformation Notes -->

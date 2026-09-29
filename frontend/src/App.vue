@@ -45,7 +45,8 @@
           aria-label="Toggle network simulation to test IndexedDB offline resilience"
         >
           <span class="status-marker" :class="{ 'marker-offline': !isOnline }"></span>
-          <span class="status-label">{{ isOnline ? 'Network: Online' : 'Network: Offline (IndexedDB Active)' }}</span>
+          <span class="status-label status-label-desktop">{{ isOnline ? 'Network: Online' : 'Network: Offline (IndexedDB Active)' }}</span>
+          <span class="status-label status-label-mobile">{{ isOnline ? 'Online' : 'Offline' }}</span>
           <span class="status-mode-tag">{{ isOfflineSimulation ? 'SIMULATION' : 'REAL' }}</span>
         </button>
       </div>
@@ -65,9 +66,9 @@
         </div>
         <div class="footer-links">
           <button type="button" @click="activeModal = 'tos'" class="footer-link-btn">Terms of Service (DPG License)</button>
-          <span>·</span>
+          <span class="footer-sep" aria-hidden="true">·</span>
           <button type="button" @click="activeModal = 'privacy'" class="footer-link-btn">Farmer Privacy Policy (DPDP Act 2023)</button>
-          <span>·</span>
+          <span class="footer-sep" aria-hidden="true">·</span>
           <button type="button" @click="activeModal = 'standards'" class="footer-link-btn">DPG Schema Spec</button>
         </div>
       </div>
@@ -464,6 +465,15 @@ function toggleOfflineSimulation() {
   background: var(--paper);
 }
 
+.status-label-mobile {
+  display: none;
+}
+
+.footer-sep {
+  color: var(--ink-3);
+  font-weight: 700;
+}
+
 @media (max-width: 900px) {
   .krishi-nav {
     min-height: auto;
@@ -475,6 +485,39 @@ function toggleOfflineSimulation() {
     order: 3;
     width: 100%;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 3px;
+  }
+  .nav-item {
+    white-space: nowrap;
+    min-height: 44px;
+    padding: 6px 14px;
+  }
+}
+
+@media (max-width: 640px) {
+  .brand-caption {
+    display: none;
+  }
+  .status-label-desktop {
+    display: none;
+  }
+  .status-label-mobile {
+    display: inline;
+  }
+  .offline-toggle-btn {
+    padding: 6px 12px;
+    font-size: 0.8125rem;
+  }
+  .status-mode-tag {
+    display: none;
+  }
+  .footer-sep {
+    display: none;
+  }
+  .footer-links {
+    gap: var(--space-2);
   }
 }
 </style>
