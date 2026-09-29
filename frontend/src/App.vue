@@ -4,12 +4,9 @@
     <header class="krishi-nav">
       <div class="nav-left">
         <router-link to="/" class="brand-link">
-          <!-- Institutional SVG Logo -->
+          <!-- Institutional Brand Logo Frame -->
           <div class="brand-logo-frame">
-            <svg class="brand-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" role="img" aria-label="KrishiSetu ICAR Emblem">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18M12 3c-4.5 0-7 3.5-7 8 0 4 3 7 7 10M12 3c4.5 0 7 3.5 7 8 0 4-3 7-7 10" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9c2-1.5 4-1.5 6 0M6 13c2-1.5 4-1.5 6 0" />
-            </svg>
+            <PhPlant :size="24" weight="bold" class="brand-icon" />
           </div>
           <div class="brand-text">
             <div class="brand-title-row">
@@ -23,26 +20,18 @@
 
       <nav class="nav-links">
         <router-link to="/" class="nav-item">
-          <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
-          </svg>
-          <span>Kisan Sathi (Farmer Advisory)</span>
+          <PhPlant :size="18" weight="bold" class="nav-icon" />
+          <span>Check a leaf</span>
         </router-link>
 
         <router-link to="/interop" class="nav-item">
-          <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
-          </svg>
-          <span>Kisan Setu (Cross-State Registry)</span>
+          <PhArrowsLeftRight :size="18" weight="bold" class="nav-icon" />
+          <span>Registry converter</span>
         </router-link>
 
         <router-link to="/command" class="nav-item">
-          <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <circle cx="12" cy="12" r="9" />
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3a9 9 0 0 1 9 9m-9 9a9 9 0 0 1-9-9" />
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 12l4-4" />
-          </svg>
-          <span>Kisan Rakshak (Corridor Telemetry)</span>
+          <PhBroadcast :size="18" weight="bold" class="nav-icon" />
+          <span>Outbreak watch</span>
         </router-link>
       </nav>
 
@@ -93,9 +82,7 @@
             <h3>{{ modalTitle }}</h3>
           </div>
           <button type="button" @click="activeModal = null" class="btn-modal-close" aria-label="Close dialog">
-            <svg class="close-svg-icon" viewBox="0 0 24 24" stroke="currentColor" fill="none" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <PhX :size="20" weight="bold" />
           </button>
         </div>
 
@@ -162,6 +149,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { PhPlant, PhArrowsLeftRight, PhBroadcast, PhX } from '@phosphor-icons/vue'
 import { useOfflineStorage } from './composables/useOfflineStorage'
 
 const { isOnline, isOfflineSimulation, setOfflineSimulation } = useOfflineStorage()
@@ -187,18 +175,18 @@ function toggleOfflineSimulation() {
   display: flex;
   flex-direction: column;
   background-color: var(--bg-canvas);
-  font-family: var(--font-swiss);
+  font-family: var(--font-sans);
 }
 
 /* Institutional Navigation Header */
 .krishi-nav {
-  height: 64px;
-  background: #0f172a;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  min-height: 64px;
+  background: var(--inkwell);
+  border-bottom: 1px solid var(--inkwell-line);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 28px;
+  padding: 0 var(--space-6);
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -207,33 +195,31 @@ function toggleOfflineSimulation() {
 .nav-left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .brand-link {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
   text-decoration: none;
 }
 
 .brand-logo-frame {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: var(--radius-sm);
-  background: var(--forest-900);
-  border: 1px solid var(--forest-700);
+  background: var(--sarson);
+  color: var(--canopy);
+  border: 1.5px solid var(--canopy);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #86efac;
   flex-shrink: 0;
 }
 
-.brand-svg {
-  width: 22px;
-  height: 22px;
-  stroke-width: 1.8;
+.brand-icon {
+  color: var(--canopy);
 }
 
 .brand-text {
@@ -244,72 +230,71 @@ function toggleOfflineSimulation() {
 .brand-title-row {
   display: flex;
   align-items: baseline;
-  gap: 6px;
+  gap: var(--space-2);
 }
 
 .brand-title {
-  color: #ffffff;
-  font-size: 16px;
-  font-weight: 700;
+  color: var(--paper-raised);
+  font-size: var(--step-1);
+  font-weight: 800;
   letter-spacing: -0.02em;
 }
 
 .brand-subtitle {
-  color: #86efac;
-  font-size: 11px;
-  font-weight: 600;
+  color: var(--sarson);
+  font-size: var(--step-0);
+  font-weight: 700;
 }
 
 .brand-caption {
-  color: #94a3b8;
-  font-size: 10.5px;
+  color: var(--green-line);
+  font-size: var(--step-0);
   letter-spacing: 0.01em;
 }
 
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 4px;
-  background: #1e293b;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 9999px;
-  padding: 4px;
+  gap: var(--space-2);
+  background: var(--inkwell-2);
+  border: 1px solid var(--inkwell-line);
+  border-radius: var(--radius-pill);
+  padding: var(--space-1);
 }
 
 .nav-item {
-  color: #94a3b8;
+  color: var(--inkwell-text);
   text-decoration: none;
-  font-size: 12.5px;
-  font-weight: 500;
-  padding: 6px 14px;
-  border-radius: 9999px;
+  font-size: var(--step-0);
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
   display: flex;
   align-items: center;
-  gap: 8px;
-  transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
+  gap: var(--space-2);
+  transition: background-color 120ms, color 120ms, transform 120ms;
   border: 1px solid transparent;
 }
 
 .nav-item:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.06);
+  color: var(--paper-raised);
+  background: var(--inkwell-line);
 }
 
 .nav-item:active {
-  transform: scale(0.97);
+  transform: translateY(1px);
 }
 
 .nav-item:focus-visible {
-  outline: 2px solid var(--forest-600);
-  outline-offset: 1px;
+  outline: 3px solid var(--sarson);
+  outline-offset: 2px;
 }
 
 .nav-item.router-link-exact-active {
-  color: #ffffff;
-  background: #0f172a;
-  border-color: rgba(255, 255, 255, 0.18);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-  font-weight: 600;
+  color: var(--canopy);
+  background: var(--sarson);
+  border-color: var(--canopy);
+  font-weight: 700;
 }
 
 .nav-right {
@@ -320,56 +305,56 @@ function toggleOfflineSimulation() {
 .offline-toggle-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: #1e293b;
-  color: #e2e8f0;
-  border: 1px solid #334155;
-  border-radius: 9999px;
-  padding: 6px 14px;
-  font-size: 11.5px;
+  gap: var(--space-2);
+  background: var(--inkwell-2);
+  color: var(--inkwell-text);
+  border: 1.5px solid var(--inkwell-line);
+  border-radius: var(--radius-pill);
+  padding: 8px 16px;
+  font-size: var(--step-0);
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.15s ease, transform 0.15s ease;
+  transition: background-color 120ms, border-color 120ms, transform 120ms;
 }
 
 .offline-toggle-btn:hover {
-  background: #273549;
+  background: var(--inkwell-line);
 }
 
 .offline-toggle-btn:active {
-  transform: scale(0.97);
+  transform: translateY(1px);
 }
 
 .offline-toggle-btn:focus-visible {
-  outline: 2px solid var(--forest-600);
-  outline-offset: 1px;
+  outline: 3px solid var(--sarson);
+  outline-offset: 2px;
 }
 
 .status-marker {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #22c55e;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: var(--leaf-bright);
 }
 
 .status-marker.marker-offline {
-  background: #f97316;
+  background: var(--alert);
 }
 
 .status-mode-tag {
   font-family: var(--font-mono);
-  font-size: 9.5px;
-  background: #0f172a;
-  border: 1px solid #334155;
-  color: #94a3b8;
-  padding: 1px 5px;
+  font-size: var(--step-0);
+  background: var(--canopy);
+  border: 1px solid var(--inkwell-line);
+  color: var(--sarson);
+  padding: 2px 6px;
   border-radius: var(--radius-xs);
 }
 
 .offline-toggle-btn.is-offline {
-  background: #3a1a08;
-  border-color: #78350f;
-  color: #fed7aa;
+  background: var(--brick);
+  border-color: var(--brick-line);
+  color: var(--paper-raised);
 }
 
 .main-viewport {
@@ -385,17 +370,17 @@ function toggleOfflineSimulation() {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(15, 23, 42, 0.6);
+  background: rgba(10, 47, 34, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2000;
-  padding: 20px;
+  padding: var(--space-5);
 }
 
 .modal-card {
-  background: #ffffff;
-  border: 1px solid var(--color-border);
+  background: var(--paper-raised);
+  border: 1px solid var(--hairline-strong);
   border-radius: var(--radius-md);
   width: 100%;
   max-width: 680px;
@@ -406,55 +391,50 @@ function toggleOfflineSimulation() {
 }
 
 .modal-header {
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--hairline);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--bg-canvas);
+  background: var(--paper);
 }
 
 .modal-title-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-3);
 }
 
 .btn-modal-close {
   background: none;
   border: none;
-  padding: 4px;
+  padding: var(--space-1);
   cursor: pointer;
-  color: var(--slate-500);
+  color: var(--ink-2);
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-sm);
-  transition: color 0.15s ease, background-color 0.15s ease;
+  transition: color 120ms, background-color 120ms;
 }
 
 .btn-modal-close:hover {
-  color: var(--slate-800);
-  background: var(--slate-100);
-}
-
-.close-svg-icon {
-  width: 16px;
-  height: 16px;
+  color: var(--ink);
+  background: var(--paper-sunken);
 }
 
 .modal-body {
-  padding: 20px;
+  padding: var(--space-5);
   overflow-y: auto;
-  font-size: 13px;
+  font-size: var(--step-0);
   line-height: 1.6;
 }
 
 .legal-text-block h4 {
-  font-size: 13.5px;
+  font-size: var(--step-1);
   font-weight: 700;
-  color: var(--slate-900);
-  margin: 14px 0 6px 0;
+  color: var(--ink);
+  margin: var(--space-4) 0 var(--space-2) 0;
 }
 
 .legal-text-block h4:first-child {
@@ -462,33 +442,34 @@ function toggleOfflineSimulation() {
 }
 
 .legal-text-block p {
-  margin-bottom: 12px;
-  color: var(--slate-700);
+  margin-bottom: var(--space-3);
+  color: var(--ink-2);
 }
 
 .schema-code-box {
-  background: #0f172a;
-  color: #93c5fd;
-  padding: 12px;
+  background: var(--inkwell);
+  color: var(--green-wash);
+  padding: var(--space-3);
   border-radius: var(--radius-sm);
-  font-size: 11.5px;
+  border: 1px solid var(--inkwell-line);
+  font-size: var(--step-0);
   overflow-x: auto;
 }
 
 .modal-footer {
-  padding: 12px 20px;
-  border-top: 1px solid var(--color-border);
+  padding: var(--space-3) var(--space-5);
+  border-top: 1px solid var(--hairline);
   display: flex;
   justify-content: flex-end;
-  background: var(--bg-canvas);
+  background: var(--paper);
 }
 
 @media (max-width: 900px) {
   .krishi-nav {
-    height: auto;
-    padding: 10px 16px;
+    min-height: auto;
+    padding: var(--space-3) var(--space-4);
     flex-wrap: wrap;
-    gap: 10px;
+    gap: var(--space-3);
   }
   .nav-links {
     order: 3;
