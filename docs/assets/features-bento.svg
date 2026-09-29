@@ -1,0 +1,200 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" width="1200" height="520">
+  <defs>
+    <linearGradient id="bentoBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#080C14" />
+      <stop offset="50%" stop-color="#0F172A" />
+      <stop offset="100%" stop-color="#051B14" />
+    </linearGradient>
+
+    <linearGradient id="cardFill" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B" stop-opacity="0.75" />
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.9" />
+    </linearGradient>
+
+    <linearGradient id="meterGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#059669" />
+      <stop offset="80%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#34D399" />
+    </linearGradient>
+
+    <pattern id="bentoGrid" width="25" height="25" patternUnits="userSpaceOnUse">
+      <path d="M 25 0 L 0 0 0 25" fill="none" stroke="#334155" stroke-width="0.6" stroke-opacity="0.35" />
+    </pattern>
+
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#000000" flood-opacity="0.5" />
+    </filter>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="1200" height="520" fill="url(#bentoBg)" rx="12" />
+  <rect width="1200" height="520" fill="url(#bentoGrid)" rx="12" />
+  <rect x="1" y="1" width="1198" height="518" rx="12" fill="none" stroke="#1E293B" stroke-width="1.5" />
+
+  <!-- Title & Subtitle -->
+  <g transform="translate(40, 42)">
+    <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" fill="#10B981" letter-spacing="1.5">CORE CAPABILITY MATRIX</text>
+    <text x="0" y="24" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="22" font-weight="800" fill="#F8FAFC">Grounded Agronomic Engineering at Scale</text>
+  </g>
+
+  <!-- BENTO 1: MULTIMODAL LEAF VISION (Top Left) -->
+  <g transform="translate(40, 85)" filter="url(#cardShadow)">
+    <rect width="545" height="195" rx="14" fill="url(#cardFill)" stroke="#334155" stroke-width="1" />
+    <rect x="2" y="2" width="541" height="3" rx="1.5" fill="#10B981" fill-opacity="0.8" />
+    
+    <!-- Badge -->
+    <rect x="20" y="20" width="32" height="32" rx="8" fill="#065F46" fill-opacity="0.5" stroke="#10B981" stroke-width="1" />
+    <text x="36" y="42" text-anchor="middle" font-size="16">🔬</text>
+    <text x="62" y="34" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="15" font-weight="700" fill="#F1F5F9">Multimodal Leaf Pathology</text>
+    <text x="62" y="50" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11.5" fill="#94A3B8">Google Gemini 2.5 Flash Vision Diagnostic Pipeline</text>
+
+    <!-- Metrics Box -->
+    <g transform="translate(20, 72)">
+      <rect width="505" height="102" rx="10" fill="#0B1329" stroke="#1E293B" stroke-width="1" />
+      
+      <text x="18" y="26" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" fill="#94A3B8">Detected Pathogen:</text>
+      <text x="140" y="26" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700" fill="#F8FAFC">Brown Plant Hopper <tspan fill="#64748B" font-size="11">(Nilaparvata lugens)</tspan></text>
+      
+      <text x="18" y="54" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" fill="#94A3B8">AI Diagnostic Confidence:</text>
+      <!-- Meter -->
+      <rect x="175" y="44" width="220" height="12" rx="6" fill="#1E293B" />
+      <rect x="175" y="44" width="207" height="12" rx="6" fill="url(#meterGrad)" />
+      <text x="410" y="55" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12.5" font-weight="800" fill="#10B981">94.2%</text>
+
+      <text x="18" y="84" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11.5" fill="#94A3B8">Clinical Symptoms:</text>
+      <text x="135" y="84" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11.5" fill="#E2E8F0">Sooty mold on basal stem · Hopperburn lesions · Tillering drop</text>
+    </g>
+  </g>
+
+  <!-- BENTO 2: SENTINEL-2 SPECTRAL TELEMETRY (Top Right) -->
+  <g transform="translate(615, 85)" filter="url(#cardShadow)">
+    <rect width="545" height="195" rx="14" fill="url(#cardFill)" stroke="#334155" stroke-width="1" />
+    <rect x="2" y="2" width="541" height="3" rx="1.5" fill="#3B82F6" fill-opacity="0.8" />
+    
+    <!-- Badge -->
+    <rect x="20" y="20" width="32" height="32" rx="8" fill="#1E3A8A" fill-opacity="0.5" stroke="#3B82F6" stroke-width="1" />
+    <text x="36" y="42" text-anchor="middle" font-size="16">🛰️</text>
+    <text x="62" y="34" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="15" font-weight="700" fill="#F1F5F9">Sentinel-2 Spectral Provenance</text>
+    <text x="62" y="50" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11.5" fill="#94A3B8">ESA MSI Level-2A Surface Reflectance &amp; Canopy Health</text>
+
+    <!-- Metrics Box -->
+    <g transform="translate(20, 72)">
+      <rect width="505" height="102" rx="10" fill="#0B1329" stroke="#1E293B" stroke-width="1" />
+      
+      <!-- Telemetry Column 1 -->
+      <g transform="translate(18, 22)">
+        <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#64748B">SENTINEL-2 NDVI</text>
+        <text x="0" y="26" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="24" font-weight="900" fill="#38BDF8">0.64</text>
+        <text x="0" y="44" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10.5" fill="#10B981">Optimal Vigor</text>
+      </g>
+
+      <!-- Telemetry Column 2 -->
+      <g transform="translate(145, 22)">
+        <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#64748B">BAND 8 (NIR)</text>
+        <text x="0" y="26" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="24" font-weight="900" fill="#F8FAFC">0.78</text>
+        <text x="0" y="44" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10.5" fill="#94A3B8">Surface Reflectance</text>
+      </g>
+
+      <!-- Telemetry Column 3 -->
+      <g transform="translate(265, 22)">
+        <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#64748B">BAND 4 (RED)</text>
+        <text x="0" y="26" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="24" font-weight="900" fill="#F8FAFC">0.17</text>
+        <text x="0" y="44" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10.5" fill="#94A3B8">Chlorophyll Absorbed</text>
+      </g>
+
+      <!-- Granule Tag -->
+      <g transform="translate(385, 22)">
+        <rect width="105" height="52" rx="6" fill="#1E293B" stroke="#334155" stroke-width="1" />
+        <text x="52" y="22" text-anchor="middle" font-family="Courier, monospace" font-size="9" fill="#94A3B8">GRANULE ID</text>
+        <text x="52" y="38" text-anchor="middle" font-family="Courier, monospace" font-size="9.5" font-weight="700" fill="#38BDF8">T45QXE_R061</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- BENTO 3: CROSS-BORDER CORRIDOR DEFENSE (Bottom Left) -->
+  <g transform="translate(40, 300)" filter="url(#cardShadow)">
+    <rect width="545" height="195" rx="14" fill="url(#cardFill)" stroke="#334155" stroke-width="1" />
+    <rect x="2" y="2" width="541" height="3" rx="1.5" fill="#F43F5E" fill-opacity="0.8" />
+    
+    <!-- Badge -->
+    <rect x="20" y="20" width="32" height="32" rx="8" fill="#881337" fill-opacity="0.5" stroke="#F43F5E" stroke-width="1" />
+    <text x="36" y="42" text-anchor="middle" font-size="16">🛡️</text>
+    <text x="62" y="34" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="15" font-weight="700" fill="#F1F5F9">Cross-Border Outbreak Defense</text>
+    <text x="62" y="50" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11.5" fill="#94A3B8">Federated Trans-District Pest Propagation Engine</text>
+
+    <!-- Metrics Box -->
+    <g transform="translate(20, 72)">
+      <rect width="505" height="102" rx="10" fill="#0B1329" stroke="#1E293B" stroke-width="1" />
+
+      <!-- Corridor Vector -->
+      <g transform="translate(18, 16)">
+        <text x="0" y="14" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#64748B">ACTIVE CORRIDOR:</text>
+        <text x="110" y="14" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" fill="#F43F5E">Malda (West Bengal) → Katihar (Bihar)</text>
+      </g>
+      
+      <g transform="translate(18, 42)">
+        <text x="0" y="14" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#64748B">THREATENED DISTRICTS:</text>
+        <rect x="145" y="0" width="90" height="22" rx="4" fill="#334155" />
+        <text x="190" y="15" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600" fill="#F1F5F9">Katihar (BR)</text>
+        
+        <rect x="245" y="0" width="110" height="22" rx="4" fill="#334155" />
+        <text x="300" y="15" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600" fill="#F1F5F9">Kishanganj (BR)</text>
+      </g>
+
+      <g transform="translate(18, 74)">
+        <circle cx="6" cy="6" r="3.5" fill="#10B981" />
+        <text x="18" y="10" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11.5" fill="#94A3B8">Early Warning Advantage: <tspan fill="#10B981" font-weight="700">48h advance transmission forecast</tspan></text>
+      </g>
+    </g>
+  </g>
+
+  <!-- BENTO 4: LOW-LITERACY & SENSORY INCLUSION (Bottom Right) -->
+  <g transform="translate(615, 300)" filter="url(#cardShadow)">
+    <rect width="545" height="195" rx="14" fill="url(#cardFill)" stroke="#334155" stroke-width="1" />
+    <rect x="2" y="2" width="541" height="3" rx="1.5" fill="#F59E0B" fill-opacity="0.8" />
+    
+    <!-- Badge -->
+    <rect x="20" y="20" width="32" height="32" rx="8" fill="#78350F" fill-opacity="0.5" stroke="#F59E0B" stroke-width="1" />
+    <text x="36" y="42" text-anchor="middle" font-size="16">🔊</text>
+    <text x="62" y="34" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="15" font-weight="700" fill="#F1F5F9">Sensory &amp; Low-Literacy Inclusion</text>
+    <text x="62" y="50" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11.5" fill="#94A3B8">Vernacular Audio Speech Synthesis &amp; Offline Resilience</text>
+
+    <!-- Metrics Box -->
+    <g transform="translate(20, 72)">
+      <rect width="505" height="102" rx="10" fill="#0B1329" stroke="#1E293B" stroke-width="1" />
+      
+      <!-- Audio Waveform Simulated -->
+      <g transform="translate(20, 20)">
+        <rect x="0" y="0" width="36" height="36" rx="18" fill="#F59E0B" />
+        <polygon points="14,10 26,18 14,26" fill="#0F172A" />
+
+        <!-- Waveform lines -->
+        <g transform="translate(48, 8)" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round">
+          <line x1="10" y1="10" x2="10" y2="16" />
+          <line x1="20" y1="5" x2="20" y2="21" />
+          <line x1="30" y1="2" x2="30" y2="24" />
+          <line x1="40" y1="8" x2="40" y2="18" />
+          <line x1="50" y1="3" x2="50" y2="23" />
+          <line x1="60" y1="11" x2="60" y2="15" />
+          <line x1="70" y1="6" x2="70" y2="20" />
+          <line x1="80" y1="1" x2="80" y2="25" />
+          <line x1="90" y1="9" x2="90" y2="17" />
+          <line x1="100" y1="4" x2="100" y2="22" />
+        </g>
+
+        <!-- Supported Vernacular Badges -->
+        <g transform="translate(170, 6)">
+          <rect x="0" y="0" width="90" height="24" rx="6" fill="#1E293B" stroke="#334155" stroke-width="1" />
+          <text x="45" y="16" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="700" fill="#FDE68A">हिंदी (Hindi)</text>
+          
+          <rect x="100" y="0" width="90" height="24" rx="6" fill="#1E293B" stroke="#334155" stroke-width="1" />
+          <text x="145" y="16" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="700" fill="#FDE68A">বাংলা (Bengali)</text>
+        </g>
+      </g>
+
+      <g transform="translate(20, 72)">
+        <text x="0" y="10" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11.5" fill="#94A3B8">Offline PWA Cache: <tspan fill="#F59E0B" font-weight="600">Zero-lag playback on edge devices in zero-connectivity fields</tspan></text>
+      </g>
+    </g>
+  </g>
+</svg>

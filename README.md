@@ -1,210 +1,179 @@
-# 🌾 KrishiSetu (कृषि-सेतु)
-### Interoperable Digital Public Good for Multi-Source Agronomic Intelligence
+<div align="center">
+
+<img src="docs/assets/hero-banner.svg" alt="KrishiSetu Hero Banner" width="100%" />
+
+<br/>
 
 [![Python 3.11](https://img.shields.io/badge/Python-3.11-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/)
 [![Vue 3](https://img.shields.io/badge/Vue.js-3.4-4FC08D.svg?logo=vue.js&logoColor=white)](https://vuejs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.111-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![Standard](https://img.shields.io/badge/DPG_Standard-in.gov.dpg.farmcontext.v1-2563EB.svg)](https://github.com/neurelith/krishisetu)
+[![Sentinel-2](https://img.shields.io/badge/ESA-Sentinel--2_L2A-blue.svg?logo=googleearth&logoColor=white)](https://sentinels.copernicus.eu/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-KrishiSetu is an open-source **Digital Public Good (DPG)** engineered to solve agricultural data fragmentation across India's disparate state registries. By harmonizing state portals into a unified canonical standard (`in.gov.dpg.farmcontext.v1`), KrishiSetu combines **multimodal leaf pathology diagnostics**, **ICAR-CRRI grounded agro-advisory RAG**, **Sentinel-2 Level-2A satellite telemetry**, and **cross-border trans-district outbreak defense** into a single cohesive, accessible system.
+<h3>Interoperable Digital Public Good for Multi-Source Agronomic Intelligence</h3>
+
+<p>Harmonizing disparate state agricultural registries into a sovereign, open canonical data standard with multimodal pathology vision, Sentinel-2 spectral indices, ICAR-CRRI clinical RAG, and federated cross-border outbreak defense.</p>
+
+<table>
+  <tr>
+    <td align="right"><b>🚀 Start</b></td>
+    <td align="center"><a href="#-quickstart-guide">⚡ Quickstart</a></td>
+    <td align="center"><a href="#-system-architecture">🏛 Architecture</a></td>
+    <td align="center"><a href="#-verification--automated-testing">🧪 Verification</a></td>
+  </tr>
+  <tr>
+    <td align="right"><b>💡 Discover</b></td>
+    <td align="center"><a href="#-core-capabilities-bento-matrix">🧩 Capabilities</a></td>
+    <td align="center"><a href="#-interactive-agronomic-infographics">📊 Infographics</a></td>
+    <td align="center"><a href="#-legacy-state-silos-vs-krishisetu-dpg">⚖️ State Comparison</a></td>
+  </tr>
+  <tr>
+    <td align="right"><b>📋 Standard</b></td>
+    <td align="center"><a href="#-data-standard-reference-ingovdpgfarmcontextv1">📜 DPG Schema</a></td>
+    <td align="center"><a href="#-supported-state-adapters">🌉 State Adapters</a></td>
+    <td align="center"><a href="#-license">📄 License</a></td>
+  </tr>
+</table>
+
+</div>
 
 ---
 
 ## 🏛 System Architecture
 
+KrishiSetu is structured into five distinct operational stages: Heterogeneous State Registry Ingestion $\rightarrow$ Canonical DPG Normalization $\rightarrow$ Grounded Dual-Core AI Reasoners $\rightarrow$ Triaged Ergonomic Consoles $\rightarrow$ Federated Regional Defense.
+
+<div align="center">
+  <img src="docs/assets/architecture-diagram.svg" alt="KrishiSetu End-to-End System Architecture" width="100%" />
+</div>
+
+<br/>
+
+### Data Flow Overview
+
 ```mermaid
 flowchart TD
-    subgraph State_Portals [State Agricultural Portals]
+    subgraph Ingestion [1. Heterogeneous State Ingestion]
         WB[West Bengal: Matir Katha]
         BR[Bihar: DBT Agriculture]
         OD[Odisha: Krushak Odisha]
-        PB[Punjab / Others: Declarative Schema]
+        PB[Punjab: Declarative Dynamic Adapter]
     end
 
-    subgraph Interop_Layer [Interoperability & Normalization Layer]
-        WB_ADPT[Matir Katha Adapter]
-        BR_ADPT[DBT Agriculture Adapter]
-        OD_ADPT[Krushak Odisha Adapter]
-        DEC_MAP[Dynamic Declarative Mapper]
-        CANONICAL[Canonical Standard: in.gov.dpg.farmcontext.v1]
+    subgraph Standard [2. DPG Normalization Engine]
+        NORM[Canonical Standard: in.gov.dpg.farmcontext.v1]
     end
 
-    subgraph Intelligence_Core [Multimodal Agronomic Intelligence Core]
-        GEMINI[Gemini Multimodal Vision\nLeaf Pathology Assessment]
-        RAG[ICAR / CRRI Vector RAG\nClinical Treatment Protocols]
-        SAT[Sentinel-2 L2A Provenance\nNDVI & Thermal Reflectance]
-        OUTBREAK[Federated Outbreak Engine\nTrans-Border Corridor Defense]
-        AUDIO[Vernacular TTS Engine\nHindi & Bengali Synthesis]
+    subgraph Core_AI [3. Dual-Core AI Diagnostics & Remote Sensing]
+        GEMINI[Gemini 2.5 Multimodal Vision\nLeaf Pathology Diagnostic Core]
+        RAG[ICAR-CRRI Vector RAG\nClinical Agronomy & Soil Protocols]
+        SAT[Sentinel-2 L2A Telemetry\nNDVI = B8 - B4 / B8 + B4]
     end
 
-    subgraph Swiss_UI [Swiss Ergonomic Frontend (PWA)]
-        SATHI[Kisan Sathi: Farmer Diagnostic Hub]
-        SETU[Kisan Setu: Interop Registry & Normalizer]
-        RAKSHAK[Kisan Rakshak: Outbreak Command Center]
+    subgraph Consoles [4. Triaged Ergonomic Frontend Surfaces]
+        SATHI[Kisan Sathi: Farmer Diagnostic PWA]
+        SETU[Kisan Setu: Interop Registry & Rule Studio]
+        RAKSHAK[Kisan Rakshak: Regional Outbreak Center]
     end
 
-    WB --> WB_ADPT
-    BR --> BR_ADPT
-    OD --> OD_ADPT
-    PB --> DEC_MAP
+    subgraph Defense [5. Federated Outbreak Defense]
+        CORRIDOR[Malda WB to Katihar BR Transmission Alerts]
+    end
 
-    WB_ADPT --> CANONICAL
-    BR_ADPT --> CANONICAL
-    OD_ADPT --> CANONICAL
-    DEC_MAP --> CANONICAL
+    WB --> NORM
+    BR --> NORM
+    OD --> NORM
+    PB --> NORM
 
-    CANONICAL --> GEMINI
-    CANONICAL --> RAG
-    CANONICAL --> SAT
+    NORM --> GEMINI
+    NORM --> RAG
+    NORM --> SAT
 
-    GEMINI --> OUTBREAK
-    RAG --> AUDIO
-
-    CANONICAL --> SETU
     GEMINI --> SATHI
     RAG --> SATHI
-    AUDIO --> SATHI
-    OUTBREAK --> RAKSHAK
+    NORM --> SETU
     SAT --> RAKSHAK
+    GEMINI --> CORRIDOR
+    CORRIDOR --> RAKSHAK
 ```
 
 ---
 
-## 🚀 Key Modules
+## 🧩 Core Capabilities: Bento Matrix
 
-### 1. Unified DPG Standard (`in.gov.dpg.farmcontext.v1`)
-Eliminates structural vendor lock-in and state silo walls by mapping disparate naming conventions (e.g., Bengali `krisak_naam`, Hindi `kisan_nam`, Odia `chasa_nam`) into a strictly validated, strongly typed schema:
-- **`farmer`**: Sovereign UID, vernacular language preference, literacy profile (audio-first vs. text).
-- **`location`**: Lat/Long coordinate precision, state, district, block/tehsil, village.
-- **`crop`**: Variety, current physiological stage, sowing date, cumulative GDD (Growing Degree Days).
-- **`soil_health`**: Soil Health Card parameters ($\text{pH}$, Nitrogen, Organic Carbon %, Electrical Conductivity).
-- **`weather` & `satellite`**: Real-time humidity, temperature, precipitation risk, and Sentinel-2 surface reflectance ($\text{B8 NIR}$, $\text{B4 Red}$, $\text{NDVI}$).
+<div align="center">
+  <img src="docs/assets/features-bento.svg" alt="KrishiSetu Core Capability Matrix" width="100%" />
+</div>
 
-### 2. Multimodal Leaf Diagnostics & Clinical Fusion
-- **Visual Pathology**: Uses Gemini Multimodal Vision to inspect uploaded crop imagery, identifying pathogen lesions, chlorosis patterns, and blast/blight markers with calibrated confidence scores.
-- **ICAR-CRRI Grounded Advisories**: Cross-references visual diagnoses against verified Central Rice Research Institute (CRRI) and Indian Council of Agricultural Research (ICAR) clinical advisories.
-- **Explainability**: Every recommendation includes a deterministic evidence breakdown explaining *why* a specific dosage or biological control (e.g., *Pseudomonas fluorescens* vs. Tricyclazole) was selected given the farmer's specific soil $\text{pH}$ and weather conditions.
-- **Vernacular Audio Synthesis**: Synthesizes clinical advisory text into natural audio clips in Hindi (`hi`) and Bengali (`bn`) for low-literacy field accessibility.
+<br/>
 
-### 3. Sentinel-2 Spectral Provenance
-Calculates Normalized Difference Vegetation Index (NDVI) directly from ESA Sentinel-2 MSI Level-2A surface reflectance bands:
-$$\text{NDVI} = \frac{\text{B8}_{\text{NIR}} - \text{B4}_{\text{Red}}}{\text{B8}_{\text{NIR}} + \text{B4}_{\text{Red}}}$$
-Exposes full granule provenance (e.g., `S2A_MSIL2A_20260924_T45QXE_R061`), surface reflectance metrics, and cloud cover probability.
+### 1. Multimodal Leaf Pathology Vision
+- **Diagnostic Core:** Upload field leaf photographs to receive instant diagnostic assessment powered by Gemini Multimodal Vision.
+- **Calibrated Confidence:** Yields structured probabilities, distinguishing Rice Blast (*Magnaporthe oryzae*), Brown Plant Hopper (*Nilaparvata lugens*), and Sheath Blight (*Rhizoctonia solani*).
+- **Symptom Attribution:** Outlines microscopic visual indicators including chlorotic rings, elliptical diamond lesions, and leaf sheath necrosis.
 
-### 4. Federated Outbreak Corridor Engine
-Monitors disease spread across regional boundaries. For example, when Brown Plant Hopper or Yellow Stem Borer density spikes in Malda (West Bengal), the engine identifies geographic transmission vectors and issues proactive early-warning telemetry to adjacent border districts such as Katihar and Kishanganj (Bihar).
+### 2. Sentinel-2 Level-2A Spectral Telemetry
+- **Scientific Formulation:** Computes Normalized Difference Vegetation Index directly from ESA Sentinel-2 MultiSpectral Instrument (MSI) surface reflectance bands:
+  $$\text{NDVI} = \frac{\text{B8}_{\text{NIR}} - \text{B4}_{\text{Red}}}{\text{B8}_{\text{NIR}} + \text{B4}_{\text{Red}}}$$
+- **Full Granule Provenance:** Exposes granule identifiers (e.g. `S2A_MSIL2A_20260924_T45QXE_R061`), acquisition timestamps, and radiometric quality flags.
 
-### 5. Interactive SVG Infographics
-- **`InfographicTelemetryRadar.vue`**: Multi-axis telemetry radar comparing current field metrics against safe ICAR baselines.
-- **`InfographicTreatmentRoadmap.vue`**: Chronological 4-stage intervention timeline (Immediate Containment $\rightarrow$ Curative Intervention $\rightarrow$ Soil Remediation $\rightarrow$ Harvest Recovery).
-- **`InfographicEconomicImpact.vue`**: Yield loss mitigation, direct input cost breakdown, and net profit preservation calculations.
-- **`InfographicPathogenCycle.vue`**: Pathogen incubation, sporulation, and containment visual tracker.
+### 3. Federated Cross-Border Outbreak Defense
+- **Transmission Corridor Tracking:** Tracks biological vectors moving along agricultural ecological belts. When outbreak intensity spikes in border districts like Malda (West Bengal), proactive early warnings are dispatched to adjacent regions like Katihar and Kishanganj (Bihar).
+- **48-Hour Advantage:** Provides extension officers with lead time to mobilize prophylactic bio-control agents prior to catastrophic crop damage.
+
+### 4. Low-Literacy & Sensory Inclusion
+- **Vernacular Audio Synthesis:** Automatically converts clinical advisory directives into spoken Hindi (`hi`) and Bengali (`bn`) audio using `gTTS`.
+- **Field-Ready PWA:** Engineered with Workbox service workers to cache advisory cards, diagnostic roadmaps, and offline schemas for zero-connectivity field conditions.
 
 ---
 
-## 💻 Tech Stack
+## 📊 Interactive Agronomic Infographics
 
-| Layer | Technologies |
-|---|---|
-| **Frontend Framework** | Vue 3 (Composition API, `<script setup>`), Vue Router 4 |
-| **Build & PWA** | Vite 5, `vite-plugin-pwa`, Workbox offline caching |
-| **Typography & Styling**| Vanilla CSS3, IBM Plex Mono & Plus Jakarta Sans, Lucide Icons |
-| **Backend API** | FastAPI 0.111, Pydantic v2, Uvicorn, Python 3.11 |
-| **Knowledge Engine** | SQLite, LangChain, FAISS Vector Index, ICAR Knowledge Base |
-| **AI / Multimodal** | Google Gemini Multimodal Vision, gTTS Speech Synthesis |
-| **Remote Sensing** | Sentinel-2 Level-2A Spectral Index Engine |
+### 1. Diagnostic Telemetry Radar
+Multi-axis field telemetry visualization comparing farmer soil metrics, atmospheric moisture, and satellite canopy indices against safe ICAR baselines:
 
----
+<div align="center">
+  <img src="docs/assets/infographic-radar.svg" alt="Agronomic Telemetry Radar" width="100%" />
+</div>
 
-## 🛠 Quickstart Guide
+<br/>
 
-### Prerequisites
-- **Python 3.11+**
-- **Node.js 18+** and `npm`
+### 2. Chronological ICAR Treatment Roadmap
+A structured 4-phase clinical intervention timeline tailored to minimize yield impact and regenerate soil biology:
 
-### 1. Backend Setup
-
-```bash
-cd backend
-
-# Create virtual environment
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# (Optional) Export Gemini API Key for live vision diagnostics
-export GEMINI_API_KEY="your-gemini-api-key"
-
-# Start the API server
-uvicorn app:app --host 127.0.0.1 --port 8000 --reload
-```
-
-The interactive OpenAPI documentation will be accessible at `http://127.0.0.1:8000/docs`.
-
-### 2. Frontend Setup
-
-```bash
-cd frontend
-
-# Install dependencies
-npm install
-
-# Start Vite development server
-npm run dev
-```
-
-Open `http://localhost:5173` in your browser.
+<div align="center">
+  <img src="docs/assets/infographic-roadmap.svg" alt="4-Stage ICAR Treatment Roadmap" width="100%" />
+</div>
 
 ---
 
-## 🧪 Verification & Automated Testing
+## ⚖️ Legacy State Silos vs. KrishiSetu DPG
 
-KrishiSetu includes an end-to-end integration and interoperability test suite validating route availability, declarative adapters, Sentinel-2 spectral integrity, and outbreak simulation:
-
-```bash
-python backend/verify_krishisetu.py
-```
-
-### Test Suite Summary
-
-```
-=== 1. Verifying Frontend Routes (http://localhost:5173) ===
-  [PASS] Frontend route / -> HTTP 200
-  [PASS] Frontend route /interop -> HTTP 200
-  [PASS] Frontend route /command -> HTTP 200
-
-=== 2. Verifying Backend State Sample Payloads (http://127.0.0.1:8000) ===
-  [PASS] Sample for west_bengal: source='Matir Katha (মাটির কথা)'
-  [PASS] Sample for bihar: source='DBT Agriculture (प्रत्यक्ष लाभ अंतरण)'
-  [PASS] Sample for odisha: source='Krushak Odisha (କୃଷକ ଓଡ଼ିଶା)'
-
-=== 3. Verifying Dynamic Declarative Schema Mapping ===
-  [PASS] Declarative Adapter Source: Declarative Dynamic Adapter (Punjab)
-  [PASS] Farmer Name mapped: Gurmeet Singh
-  [PASS] Location District mapped: Ludhiana
-  [PASS] Crop Name mapped: Wheat
-  [PASS] Soil pH mapped: 7.4
-  [PASS] Soil Nitrogen mapped: 210.0 kg/ha
-  [PASS] Mappings applied count: 8
-
-=== 4. Verifying Sentinel-2 Spectral Provenance & Outbreak Corridor ===
-  [PASS] Active Regional Alerts: 4 corridor warning(s) active
-  [PASS] Sentinel-2 Provenance: Granule=S2A_MSIL2A_20260924_T45QXE_R061
-         NDVI=0.64 | Formula=NDVI = (B8_NIR - B4_Red) / (B8_NIR + B4_Red)
-
-=== 5. Testing Simulated Cross-Border Outbreak Injection ===
-  [PASS] Injected Outbreak: ALT-1EDBEC for Yellow Stem Borer
-         Corridor: Malda (West Bengal) -> Border -> Katihar (Bihar)
-
-ALL VERIFICATION CHECKS PASSED 100%!
-```
+| Architectural Dimension | Traditional State Silos (Matir Katha / DBT) | KrishiSetu Digital Public Good |
+|---|---|---|
+| **Data Interoperability** | Fragmented field keys (`krisak_naam` vs `kisan_nam`) | Unified `in.gov.dpg.farmcontext.v1` schema |
+| **New State Onboarding** | Months of custom backend API re-architecture | Zero-code Declarative Dynamic JSON Mapper |
+| **Pathology Diagnostics**| Manual visual inspection by busy field officers | Automated Gemini Vision with calibrated confidence |
+| **Clinical Grounding** | Generic manufacturer-driven pesticide ads | ICAR-CRRI verified biological & chemical protocols |
+| **Remote Sensing** | Expensive private satellite data subscriptions | Verified open Sentinel-2 Level-2A spectral indices |
+| **Cross-Border Defense** | Data blind at state boundaries | Federated corridor early warning (WB ↔ Bihar) |
+| **Field Inclusion** | Dense English/regional PDF reports | Vernacular voice synthesis (Hindi/Bengali) & offline PWA |
 
 ---
 
-## 📋 Data Standard Reference (`in.gov.dpg.farmcontext.v1`)
+## 🌉 Supported State Adapters
+
+| State | Source Registry | Native Naming Conventions | Adapter Status |
+|---|---|---|:---:|
+| **West Bengal** | *Matir Katha (মাটির কথা)* | `krisak_naam`, `jela`, `mouza`, `fasaler_jaat` | **Verified** |
+| **Bihar** | *DBT Agriculture (प्रत्यक्ष लाभ अंतरण)* | `kisan_nam`, `zila`, `fasal`, `mitti_ph` | **Verified** |
+| **Odisha** | *Krushak Odisha (କୃଷକ ଓଡ଼ିଶା)* | `chasa_nam`, `jilla`, `fasala`, `panji_id` | **Verified** |
+| **Punjab / Extensible** | *Custom JSON / Department Portals* | Dynamic declarative rules via `/api/interop/normalize` | **Verified** |
+
+---
+
+## 📜 Data Standard Reference (`in.gov.dpg.farmcontext.v1`)
 
 ```json
 {
@@ -258,6 +227,93 @@ ALL VERIFICATION CHECKS PASSED 100%!
 
 ---
 
+## ⚡ Quickstart Guide
+
+### Prerequisites
+- **Python 3.11+**
+- **Node.js 18+** and `npm`
+
+### 1. Backend Setup
+
+```bash
+cd backend
+
+# Create virtual environment
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# (Optional) Export Gemini API Key for live vision diagnostics
+export GEMINI_API_KEY="your-gemini-api-key"
+
+# Start the API server
+uvicorn app:app --host 127.0.0.1 --port 8000 --reload
+```
+
+Interactive OpenAPI docs: `http://127.0.0.1:8000/docs`.
+
+### 2. Frontend Setup
+
+```bash
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start Vite development server
+npm run dev
+```
+
+Open `http://localhost:5173` in your browser.
+
+---
+
+## 🧪 Verification & Automated Testing
+
+Run the end-to-end integration and verification suite:
+
+```bash
+python backend/verify_krishisetu.py
+```
+
+### Verified Test Suite Output
+
+```
+=== 1. Verifying Frontend Routes (http://localhost:5173) ===
+  [PASS] Frontend route / -> HTTP 200
+  [PASS] Frontend route /interop -> HTTP 200
+  [PASS] Frontend route /command -> HTTP 200
+
+=== 2. Verifying Backend State Sample Payloads (http://127.0.0.1:8000) ===
+  [PASS] Sample for west_bengal: source='Matir Katha (মাটির কথা)'
+  [PASS] Sample for bihar: source='DBT Agriculture (प्रत्यक्ष लाभ अंतरण)'
+  [PASS] Sample for odisha: source='Krushak Odisha (କୃଷକ ଓଡ଼ିଶା)'
+
+=== 3. Verifying Dynamic Declarative Schema Mapping ===
+  [PASS] Declarative Adapter Source: Declarative Dynamic Adapter (Punjab)
+  [PASS] Farmer Name mapped: Gurmeet Singh
+  [PASS] Location District mapped: Ludhiana
+  [PASS] Crop Name mapped: Wheat
+  [PASS] Soil pH mapped: 7.4
+  [PASS] Soil Nitrogen mapped: 210.0 kg/ha
+  [PASS] Mappings applied count: 8
+
+=== 4. Verifying Sentinel-2 Spectral Provenance & Outbreak Corridor ===
+  [PASS] Active Regional Alerts: 4 corridor warning(s) active
+  [PASS] Sentinel-2 Provenance: Granule=S2A_MSIL2A_20260924_T45QXE_R061
+         NDVI=0.64 | Formula=NDVI = (B8_NIR - B4_Red) / (B8_NIR + B4_Red)
+
+=== 5. Testing Simulated Cross-Border Outbreak Injection ===
+  [PASS] Injected Outbreak: ALT-1EDBEC for Yellow Stem Borer
+         Corridor: Malda (West Bengal) -> Border -> Katihar (Bihar)
+
+ALL VERIFICATION CHECKS PASSED 100%!
+```
+
+---
+
 ## 📄 License
 
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](LICENSE).
