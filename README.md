@@ -31,7 +31,7 @@
   <tr>
     <td align="right"><b>📋 Standard</b></td>
     <td align="center"><a href="#-data-standard-reference-ingovdpgfarmcontextv1">📜 DPG Schema</a></td>
-    <td align="center"><a href="#-supported-state-adapters">🌉 State Adapters</a></td>
+    <td align="center"><a href="docs/PURPOSE_AND_CONTEXT_ARCHITECTURE.md">📖 Context Guide</a></td>
     <td align="center"><a href="#-license">📄 License</a></td>
   </tr>
 </table>
