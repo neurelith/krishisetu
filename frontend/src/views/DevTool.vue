@@ -4,13 +4,11 @@
     <header class="interop-header card-solid">
       <div class="header-left">
         <div class="dpg-badge-icon">
-          <svg class="svg-icon-lg text-forest" viewBox="0 0 24 24" stroke="currentColor" fill="none" role="img" aria-label="Interoperability Transfer Icon">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
-          </svg>
+          <PhArrowsLeftRight :size="24" weight="bold" class="badge-icon-elem" />
         </div>
         <div>
           <div class="title-row">
-            <h1>Kisan Setu: cross-state interoperability console</h1>
+            <h1>Registry converter</h1>
             <span class="badge-institutional badge-forest">Digital Public Good (DPG)</span>
           </div>
           <p class="subtitle">
@@ -20,10 +18,8 @@
       </div>
 
       <div class="header-right">
-        <button type="button" @click="showSchemaModal = true" class="btn-gov-outline">
-          <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor" fill="none" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-          </svg>
+        <button type="button" @click="showSchemaModal = true" class="btn-gov-outline" style="min-height: 48px;">
+          <PhFileCode :size="18" weight="bold" />
           <span>View DPG JSON Schema</span>
         </button>
       </div>
@@ -72,19 +68,13 @@
       </div>
 
       <div class="action-buttons">
-        <button type="button" @click="loadSample" class="btn-gov-outline" :disabled="isLoading">
-          <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor" fill="none" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-          </svg>
+        <button type="button" @click="loadSample" class="btn-gov-outline" :disabled="isLoading" style="min-height: 48px;">
+          <PhArrowsClockwise :size="18" weight="bold" />
           <span>Reset Sample Payload</span>
         </button>
-        <button type="button" @click="runNormalization" class="btn-gov-primary" :disabled="isLoading">
-          <svg v-if="isLoading" class="svg-icon spin" viewBox="0 0 24 24" stroke="currentColor" fill="none" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-          </svg>
-          <svg v-else class="svg-icon" viewBox="0 0 24 24" stroke="currentColor" fill="none" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
-          </svg>
+        <button type="button" @click="runNormalization" class="btn-gov-primary" :disabled="isLoading" style="min-height: 48px;">
+          <PhArrowsClockwise v-if="isLoading" :size="18" weight="bold" class="spin" />
+          <PhArrowsLeftRight v-else :size="18" weight="bold" />
           <span>Normalize into Common DPG Contract</span>
         </button>
       </div>
@@ -97,7 +87,7 @@
       <section class="panel-left card-solid">
         <div class="panel-head">
           <div>
-            <h2>1. Heterogeneous state-specific payload</h2>
+            <h2>State registry data</h2>
             <span class="portal-badge" v-text="rawPayload.source_portal || 'State Registry'"></span>
           </div>
           <span class="badge-institutional badge-slate">Source Schema</span>
@@ -118,7 +108,7 @@
           </div>
         </div>
 
-        <div class="editor-wrapper">
+        <div class="editor-wrapper" :class="{ 'anim-highlight': isHighlighting }">
           <textarea 
             id="raw-state-payload-editor"
             aria-label="Raw State Payload JSON"
@@ -171,7 +161,7 @@
       <section class="panel-right card-solid">
         <div class="panel-head">
           <div>
-            <h2>2. Standardized FarmContext v1.0</h2>
+            <h2>Standard FarmContext</h2>
             <span class="standard-badge">Canonical: in.gov.dpg.farmcontext.v1</span>
           </div>
           <span class="badge-institutional badge-forest">Validated Contract</span>
@@ -189,7 +179,11 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(target, src) in normalizedResponse.field_mappings_applied" :key="src">
+              <tr 
+                v-for="(target, src) in normalizedResponse.field_mappings_applied" 
+                :key="src"
+                :class="{ 'anim-highlight': isHighlighting }"
+              >
                 <td><code>{{ src }}</code></td>
                 <td><strong class="target-field">{{ target }}</strong></td>
                 <td><span class="badge-institutional badge-forest">[Normalized]</span></td>
@@ -199,7 +193,7 @@
         </div>
 
         <!-- Normalized JSON Inspector -->
-        <div class="output-wrapper">
+        <div class="output-wrapper" :class="{ 'anim-highlight': isHighlighting }">
           <pre class="code-preview"><code>{{ formattedNormalizedJson }}</code></pre>
         </div>
 
@@ -222,9 +216,7 @@
         <div class="modal-head">
           <h2>Digital public good schema: FarmContext v1.0</h2>
           <button type="button" @click="showSchemaModal = false" class="btn-close" aria-label="Close DPG Schema Modal">
-            <svg class="close-svg-icon" viewBox="0 0 24 24" stroke="currentColor" fill="none" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <PhX :size="20" weight="bold" />
           </button>
         </div>
         <div class="modal-body">
@@ -234,10 +226,10 @@
           <pre class="schema-code"><code>{{ schemaJsonString }}</code></pre>
         </div>
         <div class="modal-foot">
-          <button type="button" @click="copySchema" class="btn-gov-primary">
+          <button type="button" @click="copySchema" class="btn-gov-primary" style="min-height: 48px;">
             <span>{{ copySuccess ? 'Copied to Clipboard' : 'Copy JSON Schema' }}</span>
           </button>
-          <button type="button" @click="showSchemaModal = false" class="btn-gov-outline">Close</button>
+          <button type="button" @click="showSchemaModal = false" class="btn-gov-outline" style="min-height: 48px;">Close</button>
         </div>
       </div>
     </div>
@@ -247,6 +239,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { PhArrowsLeftRight, PhFileCode, PhArrowsClockwise, PhX } from '@phosphor-icons/vue'
 import { normalizeStatePayload, fetchSampleStatePayload } from '../api'
 
 const selectedState = ref('west_bengal')
@@ -266,6 +259,7 @@ const rawPayload = ref({})
 const rawPayloadString = ref('{}')
 const normalizedResponse = ref(null)
 const isLoading = ref(false)
+const isHighlighting = ref(false)
 const showSchemaModal = ref(false)
 const copySuccess = ref(false)
 
@@ -321,7 +315,6 @@ const schemaJsonString = computed(() => {
           "nitrogen_kg_ha": { "type": "number" },
           "phosphorus_kg_ha": { "type": "number" },
           "potassium_kg_ha": { "type": "number" },
-          "organic_carbon_pct": { "type": "number" },
           "ph": { "type": "number" }
         }
       },
@@ -329,15 +322,14 @@ const schemaJsonString = computed(() => {
         "type": "object",
         "properties": {
           "temperature_c": { "type": "number" },
-          "relative_humidity_pct": { "type": "number" },
-          "rainfall_forecast_7d_mm": { "type": "number" }
+          "relative_humidity_pct": { "type": "number" }
         }
       },
       "satellite": {
         "type": "object",
         "properties": {
           "ndvi": { "type": "number" },
-          "soil_moisture_index": { "type": "number" }
+          "tile_reference": { "type": "string" }
         }
       }
     }
@@ -355,29 +347,13 @@ async function selectState(stateKey) {
 
 async function loadSample() {
   isLoading.value = true
+  normalizedResponse.value = null
   try {
-    if (selectedState.value === 'custom') {
-      const customData = {
-        "source_portal": "Punjab Kisan Portal (PGRKAM) - Dept of Agriculture",
-        "kisan_nam": "Gurmeet Singh",
-        "zila": "Ludhiana",
-        "fasal": "Wheat (Kanak)",
-        "fasal_kism": "HD-3086",
-        "mitti_ph": 7.4,
-        "nitrogen": 210.0,
-        "carbon": 0.55,
-        "ardrata": 72.0
-      }
-      rawPayload.value = customData
-      rawPayloadString.value = JSON.stringify(customData, null, 2)
-    } else {
-      const data = await fetchSampleStatePayload(selectedState.value)
-      rawPayload.value = data
-      rawPayloadString.value = JSON.stringify(data, null, 2)
-    }
-    await runNormalization()
+    const data = await fetchSampleStatePayload(selectedState.value)
+    rawPayload.value = data
+    rawPayloadString.value = JSON.stringify(data, null, 2)
   } catch (err) {
-    console.error('Error loading sample payload:', err)
+    console.error('Failed to load sample state payload:', err)
   } finally {
     isLoading.value = false
   }
@@ -385,12 +361,15 @@ async function loadSample() {
 
 async function runNormalization() {
   isLoading.value = true
+  isHighlighting.value = true
   try {
-    let parsed
+    let payloadToNormalize = {}
     try {
-      parsed = JSON.parse(rawPayloadString.value)
-    } catch (e) {
-      alert('Invalid JSON in payload editor: ' + e.message)
+      payloadToNormalize = JSON.parse(rawPayloadString.value)
+    } catch {
+      alert('Invalid JSON in State Payload Editor')
+      isLoading.value = false
+      isHighlighting.value = false
       return
     }
 
@@ -398,188 +377,200 @@ async function runNormalization() {
     if (selectedState.value === 'custom') {
       try {
         customRules = JSON.parse(customRulesString.value)
-      } catch (e) {
-        alert('Invalid JSON in Declarative Schema Mapping Rules: ' + e.message)
+      } catch {
+        alert('Invalid JSON in Custom Declarative Rules Editor')
+        isLoading.value = false
+        isHighlighting.value = false
         return
       }
     }
 
-    const stateName = selectedState.value === 'custom' 
-      ? (customStateName.value.trim() || 'Custom State') 
-      : selectedState.value
-
-    const res = await normalizeStatePayload(stateName, parsed, customRules)
+    const res = await normalizeStatePayload(
+      selectedState.value, 
+      payloadToNormalize, 
+      selectedState.value === 'custom' ? customStateName.value : null,
+      customRules
+    )
     normalizedResponse.value = res
   } catch (err) {
     console.error('Normalization failed:', err)
+    alert('Normalization error: ' + err.message)
   } finally {
     isLoading.value = false
+    setTimeout(() => {
+      isHighlighting.value = false
+    }, 900)
   }
 }
 
 function copySchema() {
   navigator.clipboard.writeText(schemaJsonString.value)
   copySuccess.value = true
-  setTimeout(() => { copySuccess.value = false }, 2000)
+  setTimeout(() => {
+    copySuccess.value = false
+  }, 3000)
 }
 </script>
 
 <style scoped>
 .interop-shell {
-  padding: 32px 28px;
+  padding: var(--space-6) var(--space-5);
   max-width: 1400px;
   margin: 0 auto;
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: var(--space-6);
 }
 
 /* Header */
 .interop-header {
-  padding: 22px 24px;
+  padding: var(--space-5) var(--space-6);
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-card);
+  border: 1px solid var(--hairline);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: var(--space-4);
   flex-wrap: wrap;
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .dpg-badge-icon {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   border-radius: var(--radius-sm);
-  background: var(--forest-50);
-  border: 1px solid var(--forest-200);
+  background: var(--sarson);
+  color: var(--canopy);
+  border: 1.5px solid var(--canopy);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
 
+.badge-icon-elem {
+  color: var(--canopy);
+}
+
 .title-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
   flex-wrap: wrap;
 }
 
 .title-row h1 {
-  font-size: 19px;
+  font-size: var(--step-2);
   font-weight: 800;
-  color: var(--slate-900);
+  color: var(--ink);
   letter-spacing: -0.01em;
   margin: 0;
 }
 
 .subtitle {
-  margin-top: 6px;
-  font-size: 13px;
-  color: var(--color-text-secondary);
+  margin-top: var(--space-1);
+  font-size: var(--step-0);
+  color: var(--ink-2);
   line-height: 1.5;
+  max-width: 75ch;
 }
 
 .subtitle code {
-  background: var(--slate-100);
+  background: var(--paper-sunken);
   padding: 2px 6px;
   border-radius: var(--radius-xs);
-  color: var(--slate-800);
+  color: var(--ink);
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 0.8125rem;
 }
 
 /* State Control Bar */
 .state-control-bar {
-  padding: 16px 20px;
+  padding: var(--space-4) var(--space-5);
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-card);
+  border: 1px solid var(--hairline);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--space-4);
   flex-wrap: wrap;
 }
 
 .state-pills {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-2);
   flex-wrap: wrap;
 }
 
 .control-label {
-  font-size: 12px;
+  font-size: 0.8125rem;
   font-weight: 700;
-  color: var(--slate-700);
+  color: var(--ink-2);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   margin-right: 4px;
 }
 
+/* State tabs are large pills (min 48px) */
 .state-tab-btn {
-  background: var(--slate-100);
-  border: 1px solid var(--color-border);
-  color: var(--slate-700);
-  font-size: 12px;
-  font-weight: 600;
-  padding: 8px 16px;
-  border-radius: var(--radius-sm);
+  background: var(--paper-sunken);
+  border: 1.5px solid var(--hairline);
+  color: var(--ink-2);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  min-height: 48px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-pill);
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
-  transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease, color 0.18s ease;
-  font-variant-numeric: tabular-nums;
+  gap: var(--space-2);
+  transition: background-color 120ms, border-color 120ms, transform 120ms, color 120ms;
 }
 
 .state-tab-btn:hover {
-  background: var(--slate-200);
-  border-color: var(--slate-400);
+  background: var(--paper);
+  border-color: var(--hairline-strong);
   transform: translateY(-1px);
 }
 
 .state-tab-btn:active {
-  transform: scale(0.98);
+  transform: translateY(1px);
 }
 
 .state-tab-btn:focus-visible {
-  outline: 2px solid var(--forest-600);
-  outline-offset: 1px;
+  outline: 3px solid var(--canopy);
+  outline-offset: 2px;
 }
 
 .state-tab-btn.active {
-  background: var(--forest-900);
-  color: #ffffff;
-  border-color: var(--forest-900);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: var(--sarson);
+  color: var(--canopy);
+  border-color: var(--canopy);
 }
 
 .state-tag {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 0.8125rem;
   font-weight: 700;
-  color: #64748b;
-  font-variant-numeric: tabular-nums;
+  color: var(--ink-3);
 }
 
 .state-tab-btn.active .state-tag {
-  color: #86efac;
+  color: var(--canopy);
 }
 
 .action-buttons {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
   flex-wrap: wrap;
 }
 
@@ -587,14 +578,13 @@ function copySchema() {
 .split-workspace {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
+  gap: var(--space-5);
 }
 
 .panel-left, .panel-right {
-  padding: 22px 24px;
+  padding: var(--space-5);
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-card);
+  border: 1px solid var(--hairline);
   display: flex;
   flex-direction: column;
 }
@@ -603,219 +593,238 @@ function copySchema() {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--color-border);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--hairline);
 }
 
 .panel-head h2 {
-  font-size: 14.5px;
+  font-size: var(--step-1);
   font-weight: 800;
-  color: var(--slate-900);
-  margin: 0 0 4px 0;
+  color: var(--ink);
+  margin: 0 0 var(--space-1) 0;
 }
 
 .portal-badge {
-  font-size: 11.5px;
-  color: var(--sky-700);
+  font-size: 0.8125rem;
+  color: var(--leaf);
   font-weight: 600;
 }
 
 .standard-badge {
-  font-size: 11.5px;
-  color: var(--forest-800);
+  font-size: 0.8125rem;
+  color: var(--canopy);
   font-weight: 600;
 }
 
 /* Custom State & Declarative Rules Editor */
 .custom-state-config {
-  margin-bottom: 14px;
+  margin-bottom: var(--space-3);
 }
 
 .custom-field-row {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-1);
 }
 
 .custom-label {
-  font-size: 12px;
+  font-size: 0.8125rem;
   font-weight: 700;
-  color: var(--slate-700);
+  color: var(--ink-2);
 }
 
 .custom-name-input {
-  padding: 8px 12px;
+  padding: 10px 14px;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--color-border-strong);
-  font-size: 12.5px;
-  color: var(--slate-900);
-  background: var(--bg-surface);
-  transition: border-color 0.15s ease;
-}
-
-.custom-name-input:focus {
-  border-color: var(--forest-600);
+  border: 1.5px solid var(--hairline-strong);
+  font-size: var(--step-0);
+  color: var(--ink);
+  background: var(--paper-raised);
+  transition: border-color 120ms;
 }
 
 .custom-name-input:focus-visible {
-  outline: 2px solid var(--forest-600);
+  outline: 3px solid var(--canopy);
   outline-offset: 2px;
 }
 
 .custom-rules-panel {
-  background: var(--slate-50);
-  border: 1px solid var(--color-border);
+  background: var(--paper-sunken);
+  border: 1px solid var(--hairline);
   border-radius: var(--radius-sm);
-  padding: 14px;
-  margin-bottom: 16px;
+  padding: var(--space-3);
+  margin-bottom: var(--space-4);
 }
 
 .rules-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
 }
 
 .rules-title h3 {
-  font-size: 13px;
+  font-size: 0.875rem;
   font-weight: 700;
-  color: var(--slate-900);
+  color: var(--ink);
   margin: 0;
 }
 
 .rules-hint {
-  margin: 0 0 10px 0;
-  font-size: 11.5px;
-  color: var(--slate-600);
+  margin: 0 0 var(--space-2) 0;
+  font-size: 0.8125rem;
+  color: var(--ink-2);
   line-height: 1.45;
 }
 
 .rules-hint code {
-  background: var(--slate-200);
-  padding: 1px 5px;
+  background: var(--paper-raised);
+  padding: 2px 6px;
   border-radius: var(--radius-xs);
-  color: var(--slate-800);
+  color: var(--ink);
   font-family: var(--font-mono);
 }
 
 /* Editor & Output */
 .editor-wrapper, .output-wrapper {
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
   flex: 1;
 }
 
 .code-editor {
   width: 100%;
-  background: #0f172a;
-  color: #e2e8f0;
+  background: var(--inkwell);
+  color: var(--paper-raised);
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 0.8125rem;
   font-variant-numeric: tabular-nums;
   line-height: 1.6;
-  padding: 14px;
+  padding: var(--space-3);
   border-radius: var(--radius-sm);
-  border: 1px solid #1e293b;
+  border: 1px solid var(--inkwell-line);
   resize: vertical;
   box-sizing: border-box;
 }
 
-.code-editor:focus {
-  border-color: #3b82f6;
-}
-
 .code-editor:focus-visible {
-  outline: 2px solid #3b82f6;
+  outline: 3px solid var(--sarson);
   outline-offset: 2px;
 }
 
 .code-preview {
   margin: 0;
-  background: #022c22;
-  color: #86efac;
+  background: var(--inkwell-2);
+  color: var(--green-wash);
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 0.8125rem;
   font-variant-numeric: tabular-nums;
   line-height: 1.6;
-  padding: 14px;
+  padding: var(--space-3);
   border-radius: var(--radius-sm);
-  border: 1px solid #064e3b;
+  border: 1px solid var(--inkwell-line);
   max-height: 380px;
   overflow: auto;
   box-sizing: border-box;
 }
 
+/* 900ms transform and opacity animation for conversion highlight */
+@keyframes convertTransfer {
+  0% {
+    opacity: 0.3;
+    transform: translateY(6px);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.anim-highlight {
+  animation: convertTransfer 850ms ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-highlight {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 .schema-hint-box {
-  background: var(--slate-50);
-  border: 1px solid var(--color-border);
+  background: var(--paper-sunken);
+  border: 1px solid var(--hairline);
   border-radius: var(--radius-sm);
-  padding: 12px 14px;
-  font-size: 12px;
-  color: var(--slate-700);
+  padding: var(--space-3);
+  font-size: 0.8125rem;
+  color: var(--ink-2);
   line-height: 1.5;
 }
 
 .hint-title {
-  font-size: 12px;
+  font-size: 0.8125rem;
   font-weight: 700;
-  color: var(--slate-800);
+  color: var(--ink);
   display: block;
   margin-bottom: 4px;
 }
 
 .hint-text {
   margin: 0;
-  font-family: var(--font-editorial);
   font-style: italic;
-  font-size: 13px;
-  color: var(--slate-700);
+  font-size: 0.8125rem;
+  color: var(--ink-2);
   line-height: 1.5;
 }
 
 .schema-hint-box code {
-  background: var(--slate-200);
+  background: var(--paper-raised);
   padding: 1px 5px;
   border-radius: var(--radius-xs);
-  color: var(--slate-900);
+  color: var(--ink);
   font-style: normal;
   font-family: var(--font-mono);
 }
 
 /* Mapping Table */
 .mapping-table-container {
-  margin-bottom: 16px;
-  border: 1px solid var(--color-border);
+  margin-bottom: var(--space-4);
+  border: 1px solid var(--hairline);
   border-radius: var(--radius-sm);
   overflow: hidden;
 }
 
 .mapping-table-container h3 {
-  padding: 10px 14px;
-  background: var(--slate-50);
-  border-bottom: 1px solid var(--color-border);
-  font-size: 12.5px;
+  padding: var(--space-2) var(--space-3);
+  background: var(--paper-sunken);
+  border-bottom: 1px solid var(--hairline);
+  font-size: 0.8125rem;
   font-weight: 700;
-  color: var(--slate-800);
+  color: var(--ink);
   margin: 0;
 }
 
 .mapping-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 12px;
+  font-size: 0.8125rem;
 }
 
 .mapping-table th, .mapping-table td {
-  padding: 8px 14px;
+  padding: var(--space-2) var(--space-3);
   text-align: left;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--hairline);
 }
 
 .mapping-table th {
-  background: var(--bg-surface);
-  color: var(--slate-500);
-  font-size: 11px;
+  background: var(--paper);
+  color: var(--ink-3);
+  font-size: 0.8125rem;
   font-weight: 700;
   letter-spacing: 0.03em;
   text-transform: uppercase;
@@ -826,34 +835,33 @@ function copySchema() {
 }
 
 .target-field {
-  color: var(--forest-800);
+  color: var(--canopy);
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
 }
 
 .audit-notes-box {
-  background: var(--slate-50);
-  border: 1px solid var(--color-border);
+  background: var(--paper-sunken);
+  border: 1px solid var(--hairline);
   border-radius: var(--radius-sm);
-  padding: 12px 14px;
-  font-size: 12px;
+  padding: var(--space-3);
+  font-size: 0.8125rem;
 }
 
 .audit-notes-box h3 {
-  font-size: 12px;
+  font-size: 0.8125rem;
   font-weight: 700;
-  color: var(--slate-800);
-  margin: 0 0 6px 0;
+  color: var(--ink);
+  margin: 0 0 var(--space-1) 0;
 }
 
 .audit-list {
   margin: 0;
-  padding-left: 20px;
-  color: var(--slate-700);
+  padding-left: var(--space-4);
+  color: var(--ink-2);
   line-height: 1.6;
-  font-family: var(--font-editorial);
   font-style: italic;
-  font-size: 12.5px;
+  font-size: 0.8125rem;
 }
 
 /* Modal */
@@ -863,19 +871,18 @@ function copySchema() {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(15, 23, 42, 0.7);
+  background: rgba(10, 47, 34, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2000;
-  padding: 24px;
+  padding: var(--space-5);
 }
 
 .modal-card {
-  background: #ffffff;
+  background: var(--paper-raised);
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--hairline-strong);
   width: 100%;
   max-width: 720px;
   max-height: 85vh;
@@ -885,64 +892,59 @@ function copySchema() {
 }
 
 .modal-head {
-  padding: 16px 22px;
-  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--hairline);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--slate-50);
+  background: var(--paper);
 }
 
 .modal-head h2 {
-  font-size: 15px;
+  font-size: var(--step-1);
   font-weight: 800;
-  color: var(--slate-900);
+  color: var(--ink);
   margin: 0;
 }
 
 .btn-close {
   background: none;
   border: none;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: var(--slate-500);
-  transition: background-color 0.15s ease, color 0.15s ease;
+  color: var(--ink-2);
+  transition: background-color 120ms, color 120ms;
 }
 
 .btn-close:hover {
-  background: var(--slate-200);
-  color: var(--slate-800);
-}
-
-.close-svg-icon {
-  width: 18px;
-  height: 18px;
+  background: var(--paper-sunken);
+  color: var(--ink);
 }
 
 .modal-body {
-  padding: 20px 22px;
+  padding: var(--space-5);
   overflow-y: auto;
 }
 
 .modal-desc {
-  font-size: 13px;
-  color: var(--slate-700);
-  margin: 0 0 14px 0;
+  font-size: var(--step-0);
+  color: var(--ink-2);
+  margin: 0 0 var(--space-3) 0;
   line-height: 1.5;
 }
 
 .schema-code {
-  background: #0f172a;
-  color: #93c5fd;
-  padding: 14px;
+  background: var(--inkwell);
+  color: var(--green-wash);
+  padding: var(--space-3);
   border-radius: var(--radius-sm);
   font-family: var(--font-mono);
-  font-size: 11.5px;
+  font-size: 0.8125rem;
   font-variant-numeric: tabular-nums;
   line-height: 1.55;
   max-height: 380px;
@@ -951,12 +953,12 @@ function copySchema() {
 }
 
 .modal-foot {
-  padding: 14px 22px;
-  border-top: 1px solid var(--color-border);
+  padding: var(--space-3) var(--space-5);
+  border-top: 1px solid var(--hairline);
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
-  background: var(--slate-50);
+  gap: var(--space-3);
+  background: var(--paper);
 }
 
 @media (max-width: 1000px) {
