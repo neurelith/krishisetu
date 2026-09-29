@@ -4,15 +4,11 @@
     <header class="command-header card-solid">
       <div class="header-left">
         <div class="command-badge-icon">
-          <svg class="svg-icon-lg text-forest" viewBox="0 0 24 24" stroke="currentColor" fill="none" role="img" aria-label="Command Center Outbreak Radar">
-            <circle cx="12" cy="12" r="9" />
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3a9 9 0 0 1 9 9m-9 9a9 9 0 0 1-9-9" />
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12l4-4" />
-          </svg>
+          <PhBroadcast :size="24" weight="bold" class="badge-icon-elem" />
         </div>
         <div>
           <div class="title-row">
-            <h1>Kisan Rakshak: regional outbreak command center</h1>
+            <h1>Outbreak watch</h1>
             <span class="badge-institutional badge-forest">Extension Officer & KVK Network</span>
           </div>
           <p class="subtitle">
@@ -23,10 +19,8 @@
 
       <div class="header-right">
         <button type="button" @click="showSimModal = true" class="btn-gov-primary">
-          <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor" fill="none" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-          </svg>
-          <span>Simulate Cross-Border Outbreak</span>
+          <PhWarningCircle :size="18" weight="bold" />
+          <span>Simulate an outbreak</span>
         </button>
       </div>
     </header>
@@ -35,21 +29,17 @@
     <section class="kpi-grid">
       <div class="kpi-card card-solid">
         <div class="kpi-icon-box">
-          <svg class="svg-icon text-forest" viewBox="0 0 24 24" stroke="currentColor" fill="none" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
-          </svg>
+          <PhUsers :size="20" weight="bold" class="kpi-icon-elem text-forest" />
         </div>
         <div>
-          <span class="kpi-number">24,580</span>
-          <span class="kpi-label">Registered Smallholders</span>
+          <span class="kpi-number">{{ smallholdersKpi }}</span>
+          <span class="kpi-label">Registered Smallholders <span class="meta-tag">(Sample data)</span></span>
         </div>
       </div>
 
       <div class="kpi-card card-solid">
         <div class="kpi-icon-box">
-          <svg class="svg-icon text-sky" viewBox="0 0 24 24" stroke="currentColor" fill="none" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.284a1.875 1.875 0 00-1.006 0L3.623 5.72A1.125 1.125 0 003 6.726v11.928c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z" />
-          </svg>
+          <PhMapTrifold :size="20" weight="bold" class="kpi-icon-elem text-sky" />
         </div>
         <div>
           <span class="kpi-number">8 Districts</span>
@@ -59,9 +49,7 @@
 
       <div class="kpi-card card-solid">
         <div class="kpi-icon-box">
-          <svg class="svg-icon text-soil" viewBox="0 0 24 24" stroke="currentColor" fill="none" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-          </svg>
+          <PhBug :size="20" weight="bold" class="kpi-icon-elem text-soil" />
         </div>
         <div>
           <span class="kpi-number">{{ alerts.length }} Vectors</span>
@@ -71,9 +59,7 @@
 
       <div class="kpi-card card-solid">
         <div class="kpi-icon-box">
-          <svg class="svg-icon text-forest" viewBox="0 0 24 24" stroke="currentColor" fill="none" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
+          <PhClock :size="20" weight="bold" class="kpi-icon-elem text-forest" />
         </div>
         <div>
           <span class="kpi-number">48 Hours</span>
@@ -89,13 +75,11 @@
       <section class="corridor-section card-solid">
         <div class="section-head">
           <div>
-            <h2>Active trans-boundary outbreak vectors</h2>
+            <h2>Outbreaks crossing borders</h2>
             <span class="section-sub">Cross-state pest progression tracking</span>
           </div>
           <button type="button" @click="refreshTelemetry" class="btn-gov-outline btn-compact" :disabled="loadingAlerts">
-            <svg class="svg-icon" :class="{ 'spin': loadingAlerts }" viewBox="0 0 24 24" stroke="currentColor" fill="none" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-            </svg>
+            <PhArrowsClockwise :size="16" weight="bold" :class="{ 'spin': loadingAlerts }" />
             <span>Refresh</span>
           </button>
         </div>
@@ -105,6 +89,7 @@
             v-for="alert in alerts" 
             :key="alert.alert_id" 
             class="alert-card"
+            :class="{ 'alert-card-severe': alert.severity_level === 'Severe' }"
           >
             <div class="alert-top">
               <span class="alert-id" v-text="alert.alert_id"></span>
@@ -144,6 +129,7 @@
 
             <div class="alert-actions">
               <button type="button" @click="broadcastAdvisory(alert)" class="btn-gov-outline w-full justify-center">
+                <PhPaperPlaneTilt :size="16" weight="bold" />
                 <span>Broadcast Early Warning to <span v-text="alert.threatened_neighboring_districts[0]"></span></span>
               </button>
             </div>
@@ -152,67 +138,67 @@
       </section>
 
       <!-- Right Column: Regional Geographic Map Visualizer -->
-      <section class="map-section card-solid">
-        <div class="section-head">
+      <section class="map-section band-dark">
+        <div class="section-head map-head">
           <div>
-            <h2>Agro-ecological interstate map</h2>
-            <span class="section-sub">Kosi-Mahananda-Gangetic Convergence Corridor</span>
+            <h2>Border map</h2>
+            <span class="section-sub map-sub">Kosi-Mahananda-Gangetic Convergence Corridor</span>
           </div>
-          <span class="badge-institutional badge-sky">GIS Telemetry</span>
+          <span class="badge-institutional badge-forest">GIS Telemetry</span>
         </div>
 
         <!-- Stylized Interactive GIS SVG Corridor Map -->
         <div class="map-container">
           <svg viewBox="0 0 540 420" class="regional-map-svg" role="img" aria-label="Kosi-Mahananda-Gangetic Agro-Ecological Corridor Map">
             <!-- Background base -->
-            <rect width="540" height="420" fill="#0f172a" rx="6"/>
+            <rect width="540" height="420" class="map-bg" rx="10"/>
 
             <!-- State Region: Bihar (West) -->
-            <path d="M 20,40 L 260,30 L 250,220 L 210,380 L 30,360 Z" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
-            <text x="70" y="80" fill="#94a3b8" font-size="14" font-weight="700" letter-spacing="1">BIHAR STATE</text>
+            <path d="M 20,40 L 260,30 L 250,220 L 210,380 L 30,360 Z" class="map-region-bihar"/>
+            <text x="70" y="80" class="map-state-label">BIHAR STATE</text>
 
             <!-- State Region: West Bengal (East) -->
-            <path d="M 260,30 L 510,40 L 490,370 L 250,380 L 250,220 Z" fill="#064e3b" stroke="#059669" stroke-width="1.5"/>
-            <text x="340" y="80" fill="#86efac" font-size="14" font-weight="700" letter-spacing="1">WEST BENGAL</text>
+            <path d="M 260,30 L 510,40 L 490,370 L 250,380 L 250,220 Z" class="map-region-wb"/>
+            <text x="340" y="80" class="map-state-label-wb">WEST BENGAL</text>
 
             <!-- Interstate Border Line (Dashed) -->
-            <line x1="255" y1="30" x2="250" y2="380" stroke="#f59e0b" stroke-width="2" stroke-dasharray="6,4"/>
-            <text x="260" y="200" fill="#f59e0b" font-size="10" font-weight="700" transform="rotate(90 260 200)">INTERSTATE BORDER (280 km)</text>
+            <line x1="255" y1="30" x2="250" y2="380" class="map-border-line"/>
+            <text x="260" y="200" class="map-border-text" transform="rotate(90 260 200)">INTERSTATE BORDER (280 km)</text>
 
             <!-- Major Agricultural Hub Points -->
             <!-- Purnia (Bihar) -->
-            <circle cx="170" cy="180" r="7" fill="#f59e0b" />
-            <text x="110" y="185" fill="#f8fafc" font-size="11" font-weight="600">Purnia Hub</text>
+            <circle cx="170" cy="180" r="7" class="node-selected" />
+            <text x="110" y="185" class="map-node-label">Purnia Hub</text>
 
             <!-- Katihar (Bihar) -->
-            <circle cx="210" cy="220" r="7" fill="#f59e0b" />
-            <text x="145" y="235" fill="#f8fafc" font-size="11" font-weight="600">Katihar</text>
+            <circle cx="210" cy="220" r="7" class="node-selected" />
+            <text x="145" y="235" class="map-node-label">Katihar</text>
 
-            <!-- Malda (WB) -->
-            <circle cx="310" cy="230" r="9" fill="#ef4444" stroke="#ffffff" stroke-width="2"/>
-            <text x="330" y="235" fill="#ffffff" font-size="12" font-weight="bold">Malda Hub (Active Outbreak)</text>
+            <!-- Dynamic Active Outbreak Hub (Derived from Alerts) -->
+            <circle cx="310" cy="230" r="9" class="node-outbreak" />
+            <text x="330" y="235" class="map-label-bold">{{ activeOutbreakHub }}</text>
 
             <!-- Nadia (WB) -->
-            <circle cx="370" cy="330" r="7" fill="#22c55e" />
-            <text x="390" y="335" fill="#f8fafc" font-size="11" font-weight="600">Nadia (Bethuadahari)</text>
+            <circle cx="370" cy="330" r="7" class="node-safe" />
+            <text x="390" y="335" class="map-node-label">Nadia (Bethuadahari)</text>
 
             <!-- Transmission Corridor Vector Arrow (Malda to Katihar) -->
-            <path d="M 290,225 Q 255,210 220,220" fill="none" stroke="#ef4444" stroke-width="3" stroke-dasharray="5,3"/>
-            <polygon points="220,220 230,214 228,225" fill="#ef4444"/>
+            <path d="M 290,225 Q 255,210 220,220" class="corridor-vector"/>
+            <polygon points="220,220 230,214 228,225" class="corridor-arrow"/>
 
             <!-- Transmission Corridor Vector Arrow (Nadia to Murshidabad) -->
-            <path d="M 365,315 Q 345,280 325,250" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4,3"/>
+            <path d="M 365,315 Q 345,280 325,250" class="corridor-vector-secondary"/>
 
             <!-- Map Legend Box -->
-            <g transform="translate(20, 310)">
-              <rect width="180" height="90" fill="#020817" rx="4" stroke="#334155" stroke-width="1"/>
-              <text x="12" y="20" fill="#f8fafc" font-size="11" font-weight="700">VECTOR SURVEILLANCE</text>
-              <circle cx="20" cy="38" r="5" fill="#ef4444"/>
-              <text x="32" y="42" fill="#94a3b8" font-size="10">Active Outbreak Origin</text>
-              <circle cx="20" cy="56" r="5" fill="#f59e0b"/>
-              <text x="32" y="60" fill="#94a3b8" font-size="10">Threatened Border Node</text>
-              <line x1="12" y1="74" x2="28" y2="74" stroke="#ef4444" stroke-width="2" stroke-dasharray="3,2"/>
-              <text x="32" y="77" fill="#94a3b8" font-size="10">Pathogen Flight Vector</text>
+            <g transform="translate(20, 300)">
+              <rect width="200" height="98" class="legend-bg" rx="6"/>
+              <text x="12" y="22" class="legend-title">VECTOR SURVEILLANCE</text>
+              <circle cx="20" cy="42" r="5" class="node-outbreak"/>
+              <text x="32" y="46" class="legend-text">Active Outbreak Origin</text>
+              <circle cx="20" cy="62" r="5" class="node-selected"/>
+              <text x="32" y="66" class="legend-text">Threatened Border Node</text>
+              <line x1="12" y1="82" x2="28" y2="82" class="corridor-vector-sample"/>
+              <text x="32" y="86" class="legend-text">Pathogen Flight Vector</text>
             </g>
           </svg>
         </div>
@@ -233,11 +219,9 @@
     <div v-if="showSimModal" class="modal-backdrop" @click="showSimModal = false">
       <div class="modal-card" @click.stop>
         <div class="modal-head">
-          <h2>Inject simulated outbreak event</h2>
+          <h2>Simulate an outbreak</h2>
           <button type="button" @click="showSimModal = false" class="btn-close" aria-label="Close Simulation Modal">
-            <svg class="close-svg-icon" viewBox="0 0 24 24" stroke="currentColor" fill="none" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <PhX :size="20" weight="bold" />
           </button>
         </div>
         <div class="modal-body">
@@ -286,9 +270,7 @@
             <div class="modal-foot">
               <button type="button" @click="showSimModal = false" class="btn-gov-outline">Cancel</button>
               <button type="submit" class="btn-gov-primary" :disabled="isSimulating">
-                <svg v-if="isSimulating" class="svg-icon spin" viewBox="0 0 24 24" stroke="currentColor" fill="none" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-                </svg>
+                <PhArrowsClockwise v-if="isSimulating" :size="18" weight="bold" class="spin" />
                 <span>Broadcast Federated Alert</span>
               </button>
             </div>
@@ -304,7 +286,18 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
+import {
+  PhBroadcast,
+  PhWarningCircle,
+  PhUsers,
+  PhMapTrifold,
+  PhBug,
+  PhClock,
+  PhArrowsClockwise,
+  PhX,
+  PhPaperPlaneTilt
+} from '@phosphor-icons/vue'
 import { fetchOutbreakTelemetry, simulateOutbreak } from '../api'
 
 const alerts = ref([])
@@ -312,6 +305,15 @@ const loadingAlerts = ref(false)
 const showSimModal = ref(false)
 const isSimulating = ref(false)
 const toastMessage = ref('')
+const smallholdersKpi = ref('24,580')
+
+const activeOutbreakHub = computed(() => {
+  const severeAlert = alerts.value.find(a => a.severity_level === 'Severe') || alerts.value[0]
+  if (severeAlert && severeAlert.origin_district) {
+    return `${severeAlert.origin_district} Hub (Active Outbreak)`
+  }
+  return 'Regional Hub (Active Outbreak)'
+})
 
 const simForm = reactive({
   pest_name: 'Yellow Stem Borer (Scirpophaga incertulas)',
@@ -391,97 +393,101 @@ function getBinomial(name) {
 
 <style scoped>
 .command-shell {
-  padding: 32px 28px;
+  padding: var(--space-6) var(--space-5);
   max-width: 1400px;
   margin: 0 auto;
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: var(--space-6);
 }
 
 /* Header */
 .command-header {
-  padding: 22px 24px;
+  padding: var(--space-5) var(--space-6);
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-card);
+  border: 1px solid var(--hairline);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: var(--space-4);
   flex-wrap: wrap;
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .command-badge-icon {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   border-radius: var(--radius-sm);
-  background: var(--forest-50);
-  border: 1px solid var(--forest-200);
+  background: var(--sarson);
+  color: var(--canopy);
+  border: 1.5px solid var(--canopy);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
 
+.badge-icon-elem {
+  color: var(--canopy);
+}
+
 .title-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
   flex-wrap: wrap;
 }
 
 .title-row h1 {
-  font-size: 19px;
+  font-size: var(--step-2);
   font-weight: 800;
-  color: var(--slate-900);
+  color: var(--ink);
   letter-spacing: -0.01em;
   margin: 0;
 }
 
 .subtitle {
-  margin-top: 6px;
-  font-size: 13px;
-  color: var(--color-text-secondary);
+  margin-top: var(--space-1);
+  font-size: var(--step-0);
+  color: var(--ink-2);
   line-height: 1.5;
+  max-width: 70ch;
 }
 
 /* KPI Matrix */
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .kpi-card {
-  padding: 18px 20px;
+  padding: var(--space-4) var(--space-5);
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-card);
+  border: 1px solid var(--hairline);
   display: flex;
   align-items: center;
-  gap: 14px;
-  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  gap: var(--space-3);
+  transition: transform 120ms, border-color 120ms;
 }
 
 .kpi-card:hover {
   transform: translateY(-1px);
-  border-color: var(--slate-300);
+  border-color: var(--hairline-strong);
 }
 
 .kpi-icon-box {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: var(--radius-sm);
-  background: var(--slate-100);
-  border: 1px solid var(--slate-300);
+  background: var(--paper-sunken);
+  border: 1px solid var(--hairline-strong);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -490,237 +496,371 @@ function getBinomial(name) {
 
 .kpi-number {
   font-family: var(--font-mono);
-  font-size: 20px;
+  font-size: var(--step-2);
   font-weight: 800;
-  color: var(--slate-900);
+  color: var(--ink);
   display: block;
   line-height: 1.1;
   font-variant-numeric: tabular-nums;
 }
 
 .kpi-label {
-  font-size: 11.5px;
-  color: var(--slate-500);
+  font-size: 0.8125rem;
+  color: var(--ink-3);
   font-weight: 600;
-  margin-top: 2px;
+  margin-top: var(--space-1);
   display: block;
 }
 
-.text-forest { color: var(--forest-800); }
-.text-sky { color: var(--sky-700); }
-.text-soil { color: var(--soil-700); }
+.meta-tag {
+  color: var(--ink-3);
+  font-size: 0.8125rem;
+}
+
+.text-forest { color: var(--green); }
+.text-sky { color: var(--leaf-bright); }
+.text-soil { color: var(--brick); }
 
 /* Command Workspace */
 .command-workspace {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
+  gap: var(--space-5);
   align-items: start;
 }
 
-.corridor-section, .map-section {
+.corridor-section {
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-card);
+  border: 1px solid var(--hairline);
   overflow: hidden;
 }
 
+.map-section {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--inkwell-line);
+}
+
 .section-head {
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--hairline);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--slate-50);
+  background: var(--paper-sunken);
 }
 
-.section-head h2,
-.section-head h3 {
-  font-size: 14.5px;
+.section-head.map-head {
+  background: var(--inkwell-2);
+  border-bottom: 1px solid var(--inkwell-line);
+}
+
+.section-head h2 {
+  font-size: var(--step-1);
   font-weight: 800;
-  color: var(--slate-900);
-  margin: 0 0 2px 0;
+  color: var(--ink);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.map-head h2 {
+  color: var(--inkwell-text);
 }
 
 .section-sub {
-  font-size: 11.5px;
-  color: var(--slate-500);
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+}
+
+.map-sub {
+  color: var(--green-line);
 }
 
 .btn-compact {
-  padding: 6px 12px;
-  font-size: 12px;
-  border-radius: var(--radius-sm);
+  min-height: 38px;
+  padding: 0 var(--space-3);
+  font-size: 0.8125rem;
+  border-radius: var(--radius-pill);
 }
 
 /* Alerts List */
 .alerts-list {
-  padding: 18px 20px;
+  padding: var(--space-4) var(--space-5);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-4);
   max-height: 720px;
   overflow-y: auto;
 }
 
 .alert-card {
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--hairline);
   border-radius: var(--radius-sm);
-  padding: 16px 18px;
-  background: var(--bg-surface);
-  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: var(--space-4) var(--space-4);
+  background: var(--paper-raised);
+  transition: transform 120ms, border-color 120ms;
 }
 
 .alert-card:hover {
-  border-color: var(--slate-300);
+  border-color: var(--hairline-strong);
   transform: translateY(-1px);
+}
+
+.alert-card-severe {
+  border-left: 4px solid var(--alert-text);
 }
 
 .alert-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
 }
 
 .alert-id {
   font-family: var(--font-mono);
-  font-size: 11.5px;
+  font-size: 0.8125rem;
   font-weight: 700;
-  color: var(--slate-600);
+  color: var(--ink-2);
   font-variant-numeric: tabular-nums;
 }
 
 .pest-title-block {
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
 }
 
 .pest-name {
-  font-size: 15px;
+  font-size: var(--step-1);
   font-weight: 800;
-  color: var(--slate-900);
-  margin: 0 0 3px 0;
+  color: var(--ink);
+  margin: 0 0 var(--space-1) 0;
 }
 
 .pest-binomial {
-  font-family: var(--font-editorial);
+  font-family: var(--font-sans);
   font-style: italic;
-  font-size: 13px;
-  color: var(--slate-600);
+  font-size: 0.875rem;
+  color: var(--ink-3);
   display: block;
 }
 
 .pest-details {
   display: flex;
-  gap: 16px;
-  font-size: 12.5px;
-  color: var(--slate-600);
-  margin-bottom: 12px;
+  gap: var(--space-4);
+  font-size: 0.875rem;
+  color: var(--ink-2);
+  margin-bottom: var(--space-3);
 }
 
 .corridor-box {
-  background: var(--slate-50);
-  border: 1px solid var(--color-border);
+  background: var(--paper-sunken);
+  border: 1px solid var(--hairline);
   border-radius: var(--radius-sm);
-  padding: 10px 12px;
-  font-size: 12px;
-  margin-bottom: 12px;
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.8125rem;
+  margin-bottom: var(--space-3);
 }
 
 .corridor-label {
   font-weight: 700;
-  color: var(--slate-700);
+  color: var(--ink-2);
   display: block;
-  margin-bottom: 4px;
+  margin-bottom: var(--space-1);
 }
 
 .corridor-path {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: var(--slate-900);
+  color: var(--ink);
 }
 
 .dist-badge {
   font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--soil-700);
+  font-size: 0.8125rem;
+  color: var(--alert-text);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
 
 .threatened-row {
-  font-size: 12px;
-  color: var(--slate-700);
-  margin-bottom: 12px;
+  font-size: 0.8125rem;
+  color: var(--ink-2);
+  margin-bottom: var(--space-3);
 }
 
 .threat-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 6px;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
 }
 
 .quarantine-box {
-  background: var(--slate-50);
-  border: 1px solid var(--color-border);
+  background: var(--paper-sunken);
+  border: 1px solid var(--hairline);
   border-radius: var(--radius-sm);
-  padding: 10px 12px;
-  font-size: 12px;
-  margin-bottom: 14px;
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.8125rem;
+  margin-bottom: var(--space-4);
 }
 
 .quarantine-box strong {
-  color: var(--slate-800);
+  color: var(--ink);
 }
 
 .quarantine-box p {
-  margin: 4px 0 0 0;
-  color: var(--slate-700);
+  margin: var(--space-1) 0 0 0;
+  color: var(--ink-2);
   line-height: 1.5;
 }
 
 .w-full { width: 100%; }
 .justify-center { justify-content: center; }
 
-/* Map Section */
+/* Map Section (band-dark) */
 .map-container {
-  padding: 20px;
+  padding: var(--space-4);
 }
 
 .regional-map-svg {
   width: 100%;
   border-radius: var(--radius-sm);
-  border: 1px solid #1e293b;
+  border: 1px solid var(--inkwell-line);
   display: block;
 }
 
-.gis-metrics-card {
-  margin: 0 20px 20px;
-  background: var(--slate-50);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: 14px 16px;
+.map-bg {
+  fill: var(--inkwell);
+}
+
+.map-region-bihar {
+  fill: var(--inkwell-2);
+  stroke: var(--inkwell-line);
+  stroke-width: 1.5;
+}
+
+.map-region-wb {
+  fill: var(--canopy);
+  stroke: var(--leaf);
+  stroke-width: 1.5;
+}
+
+.map-state-label {
+  fill: var(--green-line);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.map-state-label-wb {
+  fill: var(--green-wash);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.map-border-line {
+  stroke: var(--sarson);
+  stroke-width: 2;
+  stroke-dasharray: 6,4;
+}
+
+.map-border-text {
+  fill: var(--sarson);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.node-selected {
+  fill: var(--sarson);
+}
+
+.node-outbreak {
+  fill: var(--alert-lite);
+  stroke: var(--paper-raised);
+  stroke-width: 2;
+}
+
+.node-safe {
+  fill: var(--leaf-bright);
+}
+
+.map-node-label {
+  fill: var(--inkwell-text);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.map-label-bold {
+  fill: var(--paper-raised);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.corridor-vector {
+  fill: none;
+  stroke: var(--alert-lite);
+  stroke-width: 3;
+  stroke-dasharray: 5,3;
+}
+
+.corridor-arrow {
+  fill: var(--alert-lite);
+}
+
+.corridor-vector-secondary {
+  fill: none;
+  stroke: var(--sarson);
+  stroke-width: 2;
+  stroke-dasharray: 4,3;
+}
+
+.legend-bg {
+  fill: var(--inkwell-2);
+  stroke: var(--inkwell-line);
+  stroke-width: 1;
+}
+
+.legend-title {
+  fill: var(--paper-raised);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.legend-text {
+  fill: var(--green-wash);
   font-size: 12px;
 }
 
-.gis-metrics-card h3,
-.gis-metrics-card h4 {
-  font-size: 12.5px;
+.corridor-vector-sample {
+  stroke: var(--alert-lite);
+  stroke-width: 2;
+  stroke-dasharray: 3,2;
+}
+
+.gis-metrics-card {
+  margin: 0 var(--space-4) var(--space-4);
+  background: var(--inkwell-2);
+  border: 1px solid var(--inkwell-line);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+  font-size: 0.8125rem;
+}
+
+.gis-metrics-card h3 {
+  font-size: var(--step-0);
   font-weight: 700;
-  color: var(--slate-900);
-  margin: 0 0 8px 0;
+  color: var(--sarson);
+  margin: 0 0 var(--space-2) 0;
 }
 
 .gis-metrics-card ul, .gis-field-notes {
   margin: 0;
-  padding-left: 20px;
-  color: var(--slate-700);
+  padding-left: var(--space-4);
+  color: var(--inkwell-text);
   line-height: 1.6;
-  font-family: var(--font-editorial);
   font-style: italic;
-  font-size: 12.5px;
+  font-size: 0.8125rem;
 }
 
 /* Modal */
@@ -730,132 +870,124 @@ function getBinomial(name) {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(15, 23, 42, 0.75);
+  background: rgba(10, 47, 34, 0.75);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2000;
-  padding: 24px;
+  padding: var(--space-5);
 }
 
 .modal-card {
-  background: #ffffff;
+  background: var(--paper-raised);
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--hairline-strong);
   width: 100%;
   max-width: 600px;
   overflow: hidden;
 }
 
 .modal-head {
-  padding: 16px 22px;
-  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--hairline);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--slate-50);
+  background: var(--paper);
 }
 
-.modal-head h2,
-.modal-head h3 {
-  font-size: 15px;
+.modal-head h2 {
+  font-size: var(--step-1);
   font-weight: 800;
-  color: var(--slate-900);
+  color: var(--ink);
   margin: 0;
 }
 
 .btn-close {
   background: none;
   border: none;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: var(--slate-500);
-  transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease;
+  color: var(--ink-2);
+  transition: background-color 120ms, color 120ms;
 }
 
 .btn-close:hover {
-  background: var(--slate-200);
-  color: var(--slate-800);
-}
-
-.close-svg-icon {
-  width: 18px;
-  height: 18px;
+  background: var(--paper-sunken);
+  color: var(--ink);
 }
 
 .modal-body {
-  padding: 20px 22px;
+  padding: var(--space-5);
 }
 
 .modal-desc {
-  font-size: 12.5px;
-  color: var(--slate-600);
-  margin: 0 0 16px 0;
+  font-size: var(--step-0);
+  color: var(--ink-2);
+  margin: 0 0 var(--space-4) 0;
   line-height: 1.5;
 }
 
 .form-group {
-  margin-bottom: 14px;
+  margin-bottom: var(--space-3);
 }
 
 .form-group label {
   display: block;
-  font-size: 12px;
+  font-size: 0.8125rem;
   font-weight: 700;
-  color: var(--slate-700);
-  margin-bottom: 6px;
+  color: var(--ink-2);
+  margin-bottom: var(--space-1);
 }
 
 .form-input {
   width: 100%;
-  border: 1px solid var(--color-border-strong);
+  border: 1.5px solid var(--hairline-strong);
   border-radius: var(--radius-sm);
-  padding: 8px 12px;
-  font-size: 12.5px;
-  color: var(--slate-900);
-  background: var(--bg-surface);
+  padding: 10px 14px;
+  font-size: var(--step-0);
+  color: var(--ink);
+  background: var(--paper-raised);
   box-sizing: border-box;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 120ms;
 }
 
 .form-input:focus-visible {
-  border-color: var(--forest-600);
-  outline: 2px solid var(--forest-600);
-  outline-offset: 1px;
+  border-color: var(--canopy);
+  outline: 3px solid var(--canopy);
+  outline-offset: 2px;
 }
 
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: var(--space-3);
 }
 
 .modal-foot {
-  margin-top: 20px;
+  margin-top: var(--space-4);
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 /* Toast */
 .toast-notification {
   position: fixed;
-  bottom: 28px;
-  right: 28px;
-  background: #0f172a;
-  color: #ffffff;
-  padding: 12px 20px;
+  bottom: var(--space-6);
+  right: var(--space-6);
+  background: var(--canopy);
+  color: var(--paper-raised);
+  padding: var(--space-3) var(--space-5);
   border-radius: var(--radius-pill);
-  font-size: 12.5px;
+  font-size: var(--step-0);
   font-weight: 600;
-  border: 1px solid #334155;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  border: 1.5px solid var(--hairline-strong);
   z-index: 3000;
 }
 
