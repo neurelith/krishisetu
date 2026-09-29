@@ -183,13 +183,58 @@
 
 ---
 
+## Milestone 9: "Field to Satellite" Design Transformation (Phases 0–7)
+
+### What Was Done
+1. **Automated Design Gatekeeper (`scripts/design-check.mjs`)**:
+   - Implemented strict phase gates (Phases 0 to 7) enforcing 21 automated design heuristics: zero raw hex, zero font sizes $< 12\text{px}$, zero blur shadows, zero non-token gradients, zero `transition: all`, zero raw SVGs, strict line limits ($\le 600$ for `Home.vue`, $\le 700$ for all `.vue` files), and required copy rewrites.
+2. **Phase 0 — Dead File & Route Purge**:
+   - Removed 10 obsolete components and views (`AppHeader`, `CampaignOutput`, `EmptyState`, `HistoryList`, `MediaPreview`, `ResultsSkeleton`, `ScoreBand`, `Onboarding`, `Inbox`, `Selfie`).
+   - Cleaned `router/index.js` of obsolete routes and imports.
+3. **Phase 1 — Institutional Identity Foundation**:
+   - Created `src/styles/tokens.css` with Gov/ICAR design tokens (Sarson `#E5A93C`, Canopy `#1B4D3E`, Ink `#1B2421`, Paper `#F9FBF7`, `prefers-reduced-motion` overrides).
+   - Configured `index.html` with Google Anek Bengali and Devanagari typography and `#EAF0DC` theme color.
+   - Refactored `App.vue` with institutional navigation: "Check a leaf", "Registry converter", "Outbreak watch" using Phosphor icons (`PhPlant`).
+4. **Phase 2 — Story Experience & Social Sharing Metadata**:
+   - Authored narrative story page at `/` (`Story.vue`) containing 5 chapters (Mustard Hero `.band`, 3 Paper chapters, 48h Corridor Warning `.band-dark`).
+   - Moved clinical diagnosis tool to `/sathi` with redirect from `/home`.
+   - Embedded Open Graph and Twitter Card tags in `index.html`.
+5. **Phase 3 — Outbreak Watch Command Center (`views/Admin.vue`)**:
+   - Rewrote copy to official DPG terminology ("Outbreak watch", "Outbreaks crossing borders", "Border map", "Simulate an outbreak").
+   - Implemented `.band-dark` vector GIS map with dynamic active outbreak hub derived from live alerts.
+   - Added `(Sample data)` badge to KPI 24,580.
+6. **Phase 4 — Kisan Sathi Modular Architecture (`views/Home.vue`)**:
+   - Extracted `Home.vue` into focused section components: `FarmerRibbon.vue`, `LeafCheckSection.vue`, `DiagnosisResultSection.vue`, `FieldDataSection.vue`, `TreatmentPlanSection.vue`.
+   - Extracted scoped styles into `src/styles/sathi.css`.
+   - Added computed relative humidity risk threshold against 82% benchmark ("Safe" below, "High risk" at or above).
+   - Upgraded all 4 Infographic components (`InfographicEconomicImpact.vue`, `InfographicPathogenCycle.vue`, `InfographicTelemetryRadar.vue`, `InfographicTreatmentRoadmap.vue`) to 100% token styling.
+7. **Phase 5 — Interoperable Registry Converter (`views/DevTool.vue`)**:
+   - Styled state tabs as 48px+ tactile pills.
+   - Added 900ms transform and opacity conversion animation that respects `prefers-reduced-motion`.
+8. **Phase 6 — Share Cards & Strict Line Limits**:
+   - Installed `html-to-image` and created `ShareCard.vue` (1080 × 1350 canvas for Instagram/WhatsApp export with local language headline, district, risk level, next action, and app URL).
+   - Integrated "Share card" buttons on diagnosis results and outbreak alert cards.
+   - Externalized CSS to `admin.css` and `devtool.css`, reducing all `.vue` files to $\le 513$ lines.
+9. **Phase 7 — Verification & Production Build**:
+   - Tested all 8 phases sequentially (`0..7`) with 100% pass across all 21 rules.
+   - Verified clean production Vite build with PWA service worker generation.
+
+### Why It Was Done
+* **Design System Discipline:** Eliminating arbitrary hex codes, blurry dropshadows, and non-token transitions creates an interface that looks like an authentic, highly-engineered Digital Public Good rather than a generic hackathon prototype.
+* **Maintainability & Modularity:** Decomposing 1000+ line monoliths into single-responsibility subcomponents under 500 lines dramatically improves long-term developer ergonomics, readability, and performance.
+* **Farmer & Officer Utility:** High-resolution 1080 × 1350 share cards allow extension workers to broadcast actionable bilingual pest alerts directly over WhatsApp and local channels without requiring farmers to log into the portal.
+
+---
+
 ## 📊 Summary of System Status
 
 | Component | Status | Verification Metric |
 | :--- | :---: | :--- |
 | **Backend API** | **Active** | FastAPI running on `http://127.0.0.1:8000` |
 | **Frontend PWA** | **Active** | Vite Vue 3 running on `http://localhost:5173` |
-| **Integration Suite** | **100% Pass** | `verify_krishisetu.py` (5/5 suites passing) |
-| **Production Build** | **Success** | `npm run build` generates PWA service workers cleanly |
+| **Design Compliance** | **100% Pass** | `npm run check -- --phase 7` (21/21 rules passing) |
+| **Vue File Limits** | **100% Pass** | Max lines: `InfographicTreatmentRoadmap.vue` (513 lines $\le 700$) |
+| **Production Build** | **Success** | `npm run build` compiles in 2.8s (`dist/` with PWA manifest & SW) |
 | **GitHub Remote** | **Synced** | [neurelith/krishisetu](https://github.com/neurelith/krishisetu) (clean `main` branch) |
-| **Visual Assets** | **Live** | 5 custom SVGs embedded in `docs/assets/` |
+| **Visual Assets** | **Live** | 5 custom SVGs + 1080x1350 ShareCard exporter |
+
