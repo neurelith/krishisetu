@@ -37,10 +37,16 @@
           <h3 class="diag-condition-title" v-text="diagnosisResult.condition_detected"></h3>
           <em class="diag-scientific-name font-editorial-italic" v-text="diagnosisResult.scientific_name"></em>
         </div>
-        <!-- Precision Certainty Gauge -->
-        <div class="diag-match-badge">
-          <span class="match-percentage">{{ Math.round(diagnosisResult.confidence * 100) }}%</span>
-          <span class="meta">Clinical Confidence</span>
+        <div style="display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap;">
+          <button type="button" @click="$emit('share-card')" class="btn-gov-outline" title="Export Share Card PNG" style="min-height: 44px; display: inline-flex; align-items: center; gap: var(--space-2);">
+            <PhShareNetwork :size="18" weight="bold" />
+            <span>Share card</span>
+          </button>
+          <!-- Precision Certainty Gauge -->
+          <div class="diag-match-badge">
+            <span class="match-percentage">{{ Math.round(diagnosisResult.confidence * 100) }}%</span>
+            <span class="meta">Clinical Confidence</span>
+          </div>
         </div>
       </div>
 
@@ -69,11 +75,13 @@
 </template>
 
 <script setup>
-import { PhWarningCircle } from '@phosphor-icons/vue'
+import { PhWarningCircle, PhShareNetwork } from '@phosphor-icons/vue'
 import InfographicPathogenCycle from '../InfographicPathogenCycle.vue'
 
 defineProps({
   diagnosisResult: { type: Object, default: null },
   isDiagnosing: { type: Boolean, default: false }
 })
+
+defineEmits(['share-card'])
 </script>

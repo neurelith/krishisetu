@@ -38,6 +38,7 @@
       <DiagnosisResultSection 
         :diagnosis-result="diagnosisResult"
         :is-diagnosing="isDiagnosing"
+        @share-card="exportDiagnosisShareCard"
       />
     </div>
 
@@ -52,12 +53,24 @@
     <TreatmentPlanSection 
       :advisory-result="advisoryResult" 
     />
+
+    <!-- Hidden Share Card for Export -->
+    <ShareCard 
+      ref="diagnosisShareCardRef"
+      :title="diagnosisResult?.condition_detected || 'Crop Disease Alert'"
+      :district="currentContext.location.district"
+      :state="currentContext.location.state"
+      :risk-level="diagnosisResult?.confidence > 0.8 ? 'High' : 'Elevated'"
+      :next-step="diagnosisResult?.immediate_bio_action || 'Consult local Krishi Vigyan Kendra.'"
+      :crop="currentContext.crop.name"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import '../styles/sathi.css'
+import ShareCard from '../components/ShareCard.vue'
 import FarmerRibbon from '../components/sathi/FarmerRibbon.vue'
 import LeafCheckSection from '../components/sathi/LeafCheckSection.vue'
 import DiagnosisResultSection from '../components/sathi/DiagnosisResultSection.vue'
@@ -503,6 +516,13 @@ async function refreshTelemetry() {
   } finally {
     loadingTelemetry.value = false
   }
+}
+
+const diagnosisShareCardRef = ref(null)
+
+async function exportDiagnosisShareCard() {
+  if (!diagnosisResult.value || !diagnosisShareCardRef.value) return
+  await diagnosisShareCardRef.value.exportCardPng(`krishisetu-diagnosis-${Date.now()}.png`)
 }
 
 function onLanguageChange() {
