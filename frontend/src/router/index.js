@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import Story from '../views/Story.vue'
 import Home from '../views/Home.vue'
 import DevTool from '../views/DevTool.vue'
 import Admin from '../views/Admin.vue'
@@ -8,12 +9,17 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      name: 'story',
+      component: Story
+    },
+    {
+      path: '/sathi',
       name: 'kisan-sathi',
       component: Home
     },
     {
       path: '/home',
-      redirect: '/'
+      redirect: '/sathi'
     },
     {
       path: '/interop',

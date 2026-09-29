@@ -19,7 +19,7 @@
       </div>
 
       <nav class="nav-links">
-        <router-link to="/" class="nav-item">
+        <router-link to="/sathi" class="nav-item">
           <PhPlant :size="18" weight="bold" class="nav-icon" />
           <span>Check a leaf</span>
         </router-link>
