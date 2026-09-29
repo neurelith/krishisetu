@@ -2,9 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import DevTool from '../views/DevTool.vue'
 import Admin from '../views/Admin.vue'
-import Onboarding from '../views/Onboarding.vue'
-import Inbox from '../views/Inbox.vue'
-import Selfie from '../views/Selfie.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,18 +32,6 @@ const router = createRouter({
     {
       path: '/admin',
       redirect: '/command'
-    },
-    {
-      path: '/onboarding',
-      redirect: '/'
-    },
-    {
-      path: '/inbox',
-      redirect: '/'
-    },
-    {
-      path: '/selfie',
-      redirect: '/'
     }
   ]
 })
