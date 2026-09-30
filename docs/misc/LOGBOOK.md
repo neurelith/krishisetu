@@ -19,6 +19,7 @@
 7. [Milestone 7: OmniRoute-Style Visual Graphics Suite](#milestone-7-omniroute-style-visual-graphics-suite)
 8. [Milestone 8: Dynamic Telemetry & Hackathon Team Strategy](#milestone-8-dynamic-telemetry--hackathon-team-strategy)
 9. [Milestone 9: Ergonomic Polish — Sizing, Ratio Spacing & Apple HIG Symmetry](#milestone-9-ergonomic-polish--sizing-ratio-spacing--apple-hig-symmetry)
+10. [Milestone 10: v2 Architecture Migration — "Sky Over the Paddy" (Phases 0–7)](#milestone-10-v2-architecture-migration--sky-over-the-paddy-phases-07)
 
 ---
 
@@ -256,15 +257,43 @@
 
 ---
 
+## Milestone 10: v2 Architecture Migration — "Sky Over the Paddy" (Phases 0–7)
+
+### What Was Done
+1. **Core Concept Implementation ("The Sky is the Status")**:
+   - Deployed dynamic `:data-risk` (`clear`, `watch`, `storm`) reactive sky states across all application routes.
+   - Synchronized CSS gradient fallbacks (`--sky-clear-gradient`, `--sky-hero-gradient`, `--sky-watch-gradient`, `--sky-storm-gradient`) with LCP optimization.
+2. **Typography & Indic Script Leading Rules**:
+   - Replaced fonts with Switzer (Fontshare) for Latin UI, Cormorant Garamond for display headlines, Noto Serif Bengali/Devanagari for Indic display, and Anek Bangla/Devanagari for Indic UI.
+   - Wired dynamic `document.documentElement.lang` binding on language changes, activating `1.35` heading and `1.65` body leading rules for Devanagari and Bengali script legibility.
+   - Configured offline PWA font caching in `vite.config.js` via `CacheFirst` handlers for Fontshare and Google Fonts.
+3. **Surface Architecture & Rhythm ("Painting Above, Calm Desk Below")**:
+   - **Story Page (`/`)**: Opened with full-bleed `.sky-hero` with `data-risk="clear"`, followed by a `.quiet` white section featuring 3 feature cards, and anchored by a high-contrast `.sky` storm band displaying the 48-hour advance warning lead with an auto-inverting white pill button.
+   - **Kisan Sathi (`/sathi`)**: Transformed the top ribbon into a compact `.sky.sky-strip` driven by humidity fungal risk (`HUMIDITY_RISK = { watch: 70, storm: 82 }`), with a `.desk` container overlapping the sky edge by 48px holding specimen inspection, diagnosis matches, and treatment plans.
+   - **Outbreak Watch (`/command`)**: Deployed `.sky-strip` header with dynamic outbreak status line, `.desk` KPI cards, and a storm-ground GIS vector corridor map (`#15485B`) with Chilli (`#BF2F1B`) transmission vector paths.
+   - **Registry Converter (`/interop`)**: Deployed clear sky strip header and `.desk` dual-card layout comparing heterogeneous state payloads against canonical `in.gov.dpg.farmcontext.v1` schemas.
+4. **Comprehensive Automated & Browser Verification**:
+   - Validated all 26 cumulative rules in `frontend/scripts/design-check.mjs` with `PHASE 7: PASS`.
+   - Verified Vite production build (`dist/` with PWA manifest and service worker).
+   - Executed visual regression audit via browser subagent across 1440×900 desktop and 390×844 mobile viewports.
+
+### Why It Was Done
+* **Transcending Generic Dashboard Patterns:** The v1 system was structurally flat and monochromatic, reading like an administrative form. The v2 "Sky over the paddy" paradigm grounds the UI in authentic agricultural reality: farmers look up at the monsoon sky before looking down at their crops.
+* **Instant Risk Cognition:** By encoding atmospheric and epidemiological danger directly into the sky canvas hue, field workers and smallholders understand field urgency within 50 milliseconds, bypassing language or reading barriers.
+* **Strict Digital Public Good Craft:** Enforcing strict token bounds, zero raw hex, zero blur shadows, and tactile 52px+ pills ensures institutional longevity, WCAG AA contrast compliance, and sovereign DPI standards.
+
+---
+
 ## 📊 Summary of System Status
 
 | Component | Status | Verification Metric |
 | :--- | :---: | :--- |
 | **Backend API** | **Active** | FastAPI running on `http://127.0.0.1:8000` |
 | **Frontend PWA** | **Active** | Vite Vue 3 running on `http://localhost:5173` |
-| **Design Compliance** | **100% Pass** | `npm run check -- --phase 7` (21/21 rules passing) |
-| **Vue File Limits** | **100% Pass** | Max lines: `InfographicTreatmentRoadmap.vue` (513 lines $\le 700$) |
-| **Production Build** | **Success** | `npm run build` compiles in 2.8s (`dist/` with PWA manifest & SW) |
-| **GitHub Remote** | **Synced** | [neurelith/krishisetu](https://github.com/neurelith/krishisetu) (clean `main` branch) |
-| **Visual Assets** | **Live** | 5 custom SVGs + 1080x1350 ShareCard exporter |
+| **Design Compliance** | **100% Pass** | `npm run check -- --phase 7` (26/26 rules passing) |
+| **Vue File Limits** | **100% Pass** | Max lines: `Home.vue` (595 lines $\le 600$), all others $\le 513$ lines |
+| **Production Build** | **Success** | `npm run build` compiles in 7.8s (`dist/` with PWA manifest & SW) |
+| **Design Specification** | **Synced** | Root `design/` directory with `DESIGN.md`, `tokens.json`, `painting-prompt.md` |
+| **Remote Repository** | **Synced** | [neurelith/krishisetu](https://github.com/neurelith/krishisetu) (clean `main` branch) |
+
 

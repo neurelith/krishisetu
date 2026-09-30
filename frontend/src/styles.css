@@ -7,7 +7,7 @@
 
 /* Typography Helpers */
 .font-editorial-italic {
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-style: italic;
 }
 
@@ -23,14 +23,14 @@
 
 code, pre {
   font-family: var(--font-mono);
-  font-size: var(--step-0);
+  font-size: 0.8125rem;
   font-variant-numeric: tabular-nums;
 }
 
 /* Skeleton Loading Infrastructure */
 .skeleton-block {
-  background-color: var(--paper-sunken);
-  border-radius: var(--radius-xs);
+  background-color: var(--color-paddy-mist);
+  border-radius: var(--radius-inputs);
   position: relative;
   overflow: hidden;
 }
@@ -66,61 +66,61 @@ code, pre {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--paper);
+  background: var(--color-cloud-white);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--hairline-strong);
-  border-radius: var(--radius-xs);
+  background: var(--color-fog);
+  border-radius: var(--radius-inputs);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--ink-3);
+  background: var(--color-stone);
 }
 
-/* Footer & Legal Governance Notice */
+/* Footer & Legal Governance Notice (White with hairline top) */
 .site-footer {
-  border-top: 1px solid var(--hairline);
-  background: var(--paper-raised);
-  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--color-fog);
+  background: var(--color-cloud-white);
+  padding: var(--spacing-24) var(--spacing-24);
   margin-top: auto;
-  font-size: var(--step-0);
-  color: var(--ink-2);
+  font-size: var(--text-caption);
+  color: var(--color-graphite);
 }
 
 .footer-content {
-  max-width: 1400px;
+  max-width: var(--page-max-width);
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: var(--space-3);
+  gap: var(--spacing-16);
 }
 
 .footer-left {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--spacing-12);
 }
 
 .footer-links {
   display: flex;
   align-items: center;
-  gap: var(--space-4);
+  gap: var(--spacing-16);
 }
 
 .footer-link-btn {
   background: none;
   border: none;
   padding: 0;
-  color: var(--leaf);
+  color: var(--color-deep-monsoon);
   cursor: pointer;
-  font-size: var(--step-0);
+  font-size: var(--text-caption);
   font-weight: 500;
   text-decoration: underline;
 }
 
 .footer-link-btn:hover {
-  color: var(--canopy);
+  color: var(--color-canopy);
 }

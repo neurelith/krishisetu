@@ -1,29 +1,34 @@
 <template>
   <div class="command-shell">
-    <!-- Header -->
-    <header class="command-header card-solid">
-      <div class="header-left">
-        <div class="command-badge-icon">
-          <PhBroadcast :size="24" weight="bold" class="badge-icon-elem" />
-        </div>
-        <div>
-          <div class="title-row">
-            <h1>Outbreak watch</h1>
-            <span class="badge-institutional badge-forest">Extension Officer & KVK Network</span>
+    <!-- Header Sky Strip following alerts risk -->
+    <header class="sky sky-strip command-header" :data-risk="alertsRisk">
+      <div class="sky-strip-inner">
+        <div class="header-left">
+          <div class="command-badge-icon">
+            <PhBroadcast :size="24" weight="bold" class="badge-icon-elem" />
           </div>
-          <p class="subtitle">
-            Federated real-time pest and disease telemetry monitoring cross-border agricultural corridors across West Bengal and Bihar.
-          </p>
+          <div>
+            <div class="title-row">
+              <h1>Outbreak watch</h1>
+              <span class="badge-institutional badge-forest">Extension Officer & KVK Network</span>
+            </div>
+            <p class="sky-status-line">
+              {{ alertsStatusLine }}
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div class="header-right">
-        <button type="button" @click="showSimModal = true" class="btn-gov-primary">
-          <PhWarningCircle :size="18" weight="bold" />
-          <span>Simulate an outbreak</span>
-        </button>
+        <div class="header-right">
+          <button type="button" @click="showSimModal = true" class="btn-gov-primary">
+            <PhWarningCircle :size="18" weight="bold" />
+            <span>Simulate an outbreak</span>
+          </button>
+        </div>
       </div>
     </header>
+
+    <!-- Main Desk of White Cards -->
+    <div class="desk">
 
     <!-- Operational KPI Matrix -->
     <section class="kpi-grid">
@@ -142,7 +147,7 @@
       </section>
 
       <!-- Right Column: Regional Geographic Map Visualizer -->
-      <section class="map-section band-dark">
+      <section class="map-section card-solid card-float">
         <div class="section-head map-head">
           <div>
             <h2>Border map</h2>
@@ -218,6 +223,7 @@
       </section>
 
     </div>
+    </div> <!-- .desk -->
 
     <!-- Outbreak Simulation Modal -->
     <div v-if="showSimModal" class="modal-backdrop" @click="showSimModal = false">
@@ -343,6 +349,23 @@ const activeOutbreakHub = computed(() => {
     return `${wbAlert.origin_district} Hub (Active Outbreak)`
   }
   return 'Malda Extension Hub'
+})
+
+const alertsRisk = computed(() => {
+  if (alerts.value.some(a => a.severity_level === 'Severe' || a.severity_level === 'High' || a.severity === 'Severe' || a.severity === 'High')) {
+    return 'storm'
+  }
+  if (alerts.value.length > 0) {
+    return 'watch'
+  }
+  return 'clear'
+})
+
+const alertsStatusLine = computed(() => {
+  const total = alerts.value.length
+  if (total === 0) return 'No active cross-border disease outbreaks detected.'
+  const crossing = alerts.value.filter(a => a.transmission_vector?.includes('➔') || a.severity_level === 'Severe').length || 1
+  return `${total} outbreak${total > 1 ? 's' : ''} active. ${crossing} cross${crossing === 1 ? 'es' : ''} a border.`
 })
 
 const simForm = reactive({

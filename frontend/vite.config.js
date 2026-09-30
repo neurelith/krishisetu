@@ -12,8 +12,8 @@ export default defineConfig({
         name: 'KrishiSetu',
         short_name: 'KrishiSetu',
         description: 'KrishiSetu (कृषि-सेतु) - Interoperable Digital Public Good for Multi-Source Agronomic Intelligence',
-        theme_color: '#059669',
-        background_color: '#ffffff',
+        theme_color: '#0E7AA3',
+        background_color: '#FFFFFF',
         display: 'standalone',
         start_url: '/',
         icons: [
@@ -38,6 +38,20 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
         runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/(api|cdn)\.fontshare\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'fontshare-fonts-cache',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          },
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
             handler: 'CacheFirst',

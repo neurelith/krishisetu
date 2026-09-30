@@ -10,49 +10,84 @@
       <span class="badge-institutional badge-slate">IndexedDB Local Cache</span>
     </div>
 
-    <!-- Farmer Identity & Agro-Ecological Node Header (Slim Line) -->
-    <FarmerRibbon 
-      :context="currentContext" 
-      @language-change="onLanguageChange" 
-    />
+    <!-- Sky Strip: The Sky carries the status based on humidity risk -->
+    <header class="sky sky-strip sathi-header" :data-risk="humidityRisk">
+      <div class="sky-strip-inner">
+        <div class="sky-strip-left">
+          <div class="farmer-title-row">
+            <h1>{{ currentContext.farmer.name }}</h1>
+            <span class="badge-institutional badge-forest">
+              {{ currentContext.location.district }}, {{ currentContext.location.state }}
+            </span>
+            <span class="badge-institutional badge-slate">
+              {{ currentContext.crop.name }} ({{ currentContext.crop.variety }})
+            </span>
+          </div>
+          <p class="sky-status-line">
+            {{ humidityStatusLine }}
+          </p>
+        </div>
 
-    <!-- Main Diagnostic Lab Grid: (1) Leaf Check & (2) Result -->
-    <div class="diagnostic-lab-grid">
-      <!-- (1) Check a leaf -->
-      <LeafCheckSection 
-        :selected-sample="selectedSample"
-        :preview-image="previewImage"
-        :selected-file-name="selectedFileName"
-        :is-recording="isRecording"
-        :voice-transcript="voiceTranscript"
-        :is-diagnosing="isDiagnosing"
-        :preferred-language="currentContext.farmer.preferred_language"
-        @select-sample="selectAndRunBenchmark"
-        @file-selected="onCustomFileSelected"
-        @toggle-voice="toggleVoiceRecording"
-        @clear-voice="clearVoiceObservation"
-        @run-diagnosis="runDiagnosis"
+        <div class="sky-strip-right">
+          <!-- Language Selector -->
+          <div class="lang-selector-group">
+            <label for="farmer-preferred-lang" class="selector-label">Language:</label>
+            <select 
+              id="farmer-preferred-lang" 
+              aria-label="Advisory Language" 
+              v-model="currentContext.farmer.preferred_language" 
+              @change="onLanguageChange" 
+              class="lang-dropdown"
+            >
+              <option value="bn">Bengali (বাংলা)</option>
+              <option value="hi">Hindi (हिन्दी)</option>
+              <option value="en">English (Global)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Desk of White Cards -->
+    <div class="desk">
+      <!-- Main Diagnostic Lab Grid: (1) Check a leaf & (2) What it is and what to do now -->
+      <div class="diagnostic-lab-grid">
+        <!-- (1) Check a leaf -->
+        <LeafCheckSection 
+          :selected-sample="selectedSample"
+          :preview-image="previewImage"
+          :selected-file-name="selectedFileName"
+          :is-recording="isRecording"
+          :voice-transcript="voiceTranscript"
+          :is-diagnosing="isDiagnosing"
+          :preferred-language="currentContext.farmer.preferred_language"
+          @select-sample="selectAndRunBenchmark"
+          @file-selected="onCustomFileSelected"
+          @toggle-voice="toggleVoiceRecording"
+          @clear-voice="clearVoiceObservation"
+          @run-diagnosis="runDiagnosis"
+        />
+
+        <!-- (2) What it is and what to do now -->
+        <DiagnosisResultSection 
+          :diagnosis-result="diagnosisResult"
+          :is-diagnosing="isDiagnosing"
+          @share-card="exportDiagnosisShareCard"
+        />
+      </div>
+
+      <!-- (3) Your field today -->
+      <FieldDataSection 
+        :context="currentContext"
+        :loading-telemetry="loadingTelemetry"
+        @refresh-telemetry="refreshTelemetry"
       />
 
-      <!-- (2) What it is and what to do now -->
-      <DiagnosisResultSection 
-        :diagnosis-result="diagnosisResult"
-        :is-diagnosing="isDiagnosing"
-        @share-card="exportDiagnosisShareCard"
+      <!-- (4) Your treatment plan -->
+      <TreatmentPlanSection 
+        :advisory-result="advisoryResult" 
       />
     </div>
-
-    <!-- (3) Your field today -->
-    <FieldDataSection 
-      :context="currentContext"
-      :loading-telemetry="loadingTelemetry"
-      @refresh-telemetry="refreshTelemetry"
-    />
-
-    <!-- (4) Your treatment plan -->
-    <TreatmentPlanSection 
-      :advisory-result="advisoryResult" 
-    />
 
     <!-- Hidden Share Card for Export -->
     <ShareCard 
@@ -68,10 +103,9 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import '../styles/sathi.css'
 import ShareCard from '../components/ShareCard.vue'
-import FarmerRibbon from '../components/sathi/FarmerRibbon.vue'
 import LeafCheckSection from '../components/sathi/LeafCheckSection.vue'
 import DiagnosisResultSection from '../components/sathi/DiagnosisResultSection.vue'
 import FieldDataSection from '../components/sathi/FieldDataSection.vue'
@@ -526,8 +560,35 @@ async function exportDiagnosisShareCard() {
 }
 
 function onLanguageChange() {
+  const lang = currentContext.farmer.preferred_language || 'bn'
+  document.documentElement.lang = lang
   if (advisoryResult.value) {
     generateAdvisoryPlan()
   }
 }
+
+const HUMIDITY_RISK = { watch: 70, storm: 82 }
+
+const humidityRisk = computed(() => {
+  const h = currentContext.weather?.relative_humidity_pct || 0
+  if (h >= HUMIDITY_RISK.storm) return 'storm'
+  if (h >= HUMIDITY_RISK.watch) return 'watch'
+  return 'clear'
+})
+
+const humidityStatusLine = computed(() => {
+  const h = currentContext.weather?.relative_humidity_pct || 0
+  if (h >= HUMIDITY_RISK.storm) {
+    return `Humidity is high (${h}%). Check the lower leaves today.`
+  }
+  if (h >= HUMIDITY_RISK.watch) {
+    return `Humidity is elevated (${h}%). Monitor morning dew and canopy moisture.`
+  }
+  return `Field conditions are stable. Humidity is safe at ${h}%.`
+})
+
+onMounted(() => {
+  document.documentElement.lang = currentContext.farmer.preferred_language || 'bn'
+  selectAndRunBenchmark('rice', true)
+})
 </script>

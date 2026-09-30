@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!-- KrishiSetu Global Header Navigation -->
-    <header class="krishi-nav">
+    <header class="krishi-nav" :class="{ 'nav-transparent': isStoryRoute, sky: !isStoryRoute }">
       <div class="nav-left">
         <router-link to="/" class="brand-link">
           <!-- Institutional Brand Logo Frame -->
@@ -150,10 +150,13 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { PhPlant, PhArrowsLeftRight, PhBroadcast, PhX } from '@phosphor-icons/vue'
 import { useOfflineStorage } from './composables/useOfflineStorage'
 
-const { isOnline, isOfflineSimulation, setOfflineSimulation } = useOfflineStorage()
+const route = useRoute()
+const isStoryRoute = computed(() => route.name === 'story' || route.path === '/')
+const { isOnline, isOfflineSimulation, setOfflineStorage: _noop, setOfflineSimulation } = useOfflineStorage()
 
 const activeModal = ref(null)
 
@@ -182,37 +185,50 @@ function toggleOfflineSimulation() {
 /* Institutional Navigation Header */
 .krishi-nav {
   min-height: 64px;
-  background: var(--inkwell);
-  border-bottom: 1px solid var(--inkwell-line);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 var(--space-6);
+  padding: 0 var(--spacing-24);
   position: sticky;
   top: 0;
   z-index: 1000;
+  transition: background-color 150ms, border-color 150ms;
+}
+
+.krishi-nav.sky {
+  background: var(--sky-clear-gradient);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.krishi-nav.nav-transparent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .nav-left {
   display: flex;
   align-items: center;
-  gap: var(--space-4);
+  gap: var(--spacing-16);
 }
 
 .brand-link {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--spacing-12);
   text-decoration: none;
 }
 
 .brand-logo-frame {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-sm);
-  background: var(--sarson);
-  color: var(--canopy);
-  border: 1.5px solid var(--canopy);
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-inputs);
+  background: transparent;
+  color: var(--color-cloud-white);
+  border: 1px solid var(--color-cloud-white);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -220,7 +236,7 @@ function toggleOfflineSimulation() {
 }
 
 .brand-icon {
-  color: var(--canopy);
+  color: var(--color-cloud-white);
 }
 
 .brand-text {
@@ -231,55 +247,57 @@ function toggleOfflineSimulation() {
 .brand-title-row {
   display: flex;
   align-items: baseline;
-  gap: var(--space-2);
+  gap: var(--spacing-8);
 }
 
 .brand-title {
-  color: var(--paper-raised);
-  font-size: var(--step-1);
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  color: var(--color-cloud-white);
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
 }
 
 .brand-subtitle {
-  color: var(--sarson);
-  font-size: var(--step-0);
-  font-weight: 700;
+  color: var(--color-cloud-white);
+  font-size: var(--text-caption);
+  opacity: 0.9;
+  font-weight: 500;
 }
 
 .brand-caption {
-  color: var(--green-line);
-  font-size: var(--step-0);
+  color: var(--color-haze);
+  font-size: var(--text-caption);
   letter-spacing: 0.01em;
 }
 
 .nav-links {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  background: var(--inkwell-2);
-  border: 1px solid var(--inkwell-line);
-  border-radius: var(--radius-pill);
-  padding: var(--space-1);
+  gap: var(--spacing-8);
+  background: rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius-buttons);
+  padding: 4px;
 }
 
 .nav-item {
-  color: var(--inkwell-text);
+  color: var(--color-cloud-white);
   text-decoration: none;
-  font-size: var(--step-0);
-  font-weight: 600;
-  padding: 8px 18px;
-  border-radius: var(--radius-pill);
+  font-size: var(--text-body-sm);
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: var(--radius-buttons);
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  transition: background-color 120ms, color 120ms, transform 120ms;
-  border: 1px solid transparent;
+  gap: var(--spacing-8);
+  transition: background-color 120ms, border-color 120ms, color 120ms;
+  border: 1.5px solid transparent;
 }
 
 .nav-item:hover {
-  color: var(--paper-raised);
-  background: var(--inkwell-line);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .nav-item:active {
@@ -287,15 +305,15 @@ function toggleOfflineSimulation() {
 }
 
 .nav-item:focus-visible {
-  outline: 3px solid var(--sarson);
+  outline: 3px solid var(--color-cloud-white);
   outline-offset: 2px;
 }
 
 .nav-item.router-link-exact-active {
-  color: var(--canopy);
-  background: var(--sarson);
-  border-color: var(--canopy);
-  font-weight: 700;
+  color: var(--color-cloud-white);
+  background: rgba(205, 233, 239, 0.18);
+  border-color: var(--color-haze);
+  font-weight: 600;
 }
 
 .nav-right {
@@ -306,20 +324,20 @@ function toggleOfflineSimulation() {
 .offline-toggle-btn {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  background: var(--inkwell-2);
-  color: var(--inkwell-text);
-  border: 1.5px solid var(--inkwell-line);
-  border-radius: var(--radius-pill);
+  gap: var(--spacing-8);
+  background: rgba(0, 0, 0, 0.12);
+  color: var(--color-cloud-white);
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  border-radius: var(--radius-buttons);
   padding: 8px 16px;
-  font-size: var(--step-0);
-  font-weight: 600;
+  font-size: var(--text-caption);
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 120ms, border-color 120ms, transform 120ms;
+  transition: background-color 120ms, border-color 120ms;
 }
 
 .offline-toggle-btn:hover {
-  background: var(--inkwell-line);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .offline-toggle-btn:active {
@@ -327,35 +345,35 @@ function toggleOfflineSimulation() {
 }
 
 .offline-toggle-btn:focus-visible {
-  outline: 3px solid var(--sarson);
+  outline: 3px solid var(--color-cloud-white);
   outline-offset: 2px;
 }
 
 .status-marker {
   width: 8px;
   height: 8px;
-  border-radius: var(--radius-pill);
-  background: var(--leaf-bright);
+  border-radius: var(--radius-buttons);
+  background: var(--color-leaf);
 }
 
 .status-marker.marker-offline {
-  background: var(--alert);
+  background: var(--color-chilli);
 }
 
 .status-mode-tag {
   font-family: var(--font-mono);
-  font-size: var(--step-0);
-  background: var(--canopy);
-  border: 1px solid var(--inkwell-line);
-  color: var(--sarson);
+  font-size: var(--text-caption);
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--color-cloud-white);
   padding: 2px 6px;
-  border-radius: var(--radius-xs);
+  border-radius: var(--radius-inputs);
 }
 
 .offline-toggle-btn.is-offline {
-  background: var(--brick);
-  border-color: var(--brick-line);
-  color: var(--paper-raised);
+  background: var(--color-chilli);
+  border-color: var(--color-chilli);
+  color: var(--color-cloud-white);
 }
 
 .main-viewport {

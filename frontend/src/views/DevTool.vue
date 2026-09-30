@@ -1,29 +1,34 @@
 <template>
   <div class="interop-shell">
-    <!-- Header -->
-    <header class="interop-header card-solid">
-      <div class="header-left">
-        <div class="dpg-badge-icon">
-          <PhArrowsLeftRight :size="24" weight="bold" class="badge-icon-elem" />
-        </div>
-        <div>
-          <div class="title-row">
-            <h1>Registry converter</h1>
-            <span class="badge-institutional badge-forest">Digital Public Good (DPG)</span>
+    <!-- Header Sky Strip -->
+    <header class="sky sky-strip interop-header" data-risk="clear">
+      <div class="sky-strip-inner">
+        <div class="header-left">
+          <div class="dpg-badge-icon">
+            <PhArrowsLeftRight :size="24" weight="bold" class="badge-icon-elem" />
           </div>
-          <p class="subtitle">
-            Harmonizing disparate state agricultural registries (West Bengal <em>Matir Katha</em>, Bihar <em>DBT Krishi</em>, Odisha <em>Krushak</em>) into the unified <code>in.gov.dpg.farmcontext.v1</code> schema.
-          </p>
+          <div>
+            <div class="title-row">
+              <h1>Registry converter</h1>
+              <span class="badge-institutional badge-forest">Digital Public Good (DPG)</span>
+            </div>
+            <p class="sky-status-line">
+              Harmonizing disparate state agricultural registries into the unified <code>in.gov.dpg.farmcontext.v1</code> schema.
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div class="header-right">
-        <button type="button" @click="showSchemaModal = true" class="btn-gov-outline" style="min-height: 48px;">
-          <PhFileCode :size="18" weight="bold" />
-          <span>View DPG JSON Schema</span>
-        </button>
+        <div class="header-right">
+          <button type="button" @click="showSchemaModal = true" class="btn-gov-outline">
+            <PhFileCode :size="18" weight="bold" />
+            <span>View DPG JSON Schema</span>
+          </button>
+        </div>
       </div>
     </header>
+
+    <!-- Main Desk of White Cards -->
+    <div class="desk">
 
     <!-- State Switcher & Payload Inspection Bar -->
     <section class="state-control-bar card-solid">
@@ -233,6 +238,7 @@
       </section>
 
     </div>
+    </div> <!-- .desk -->
 
     <!-- Schema Modal -->
     <div v-if="showSchemaModal" class="modal-backdrop" @click="showSchemaModal = false">

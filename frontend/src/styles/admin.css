@@ -1,40 +1,41 @@
 /* KrishiSetu - Outbreak Watch (Admin) Stylesheet */
 
 .command-shell {
-  padding: var(--space-6) var(--space-5);
-  max-width: 1400px;
-  margin: 0 auto;
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
 }
 
-/* Header */
+/* Header Sky Strip */
 .command-header {
-  padding: var(--space-5) var(--space-6);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--hairline);
+  padding: var(--spacing-24) var(--spacing-24) var(--spacing-64);
+  color: var(--color-cloud-white);
+}
+
+.sky-strip-inner {
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-4);
+  gap: var(--spacing-16);
   flex-wrap: wrap;
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: var(--space-4);
+  gap: var(--spacing-16);
 }
 
 .command-badge-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-sm);
-  background: var(--sarson);
-  color: var(--canopy);
-  border: 1.5px solid var(--canopy);
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-inputs);
+  background: transparent;
+  color: var(--color-cloud-white);
+  border: 1px solid var(--color-cloud-white);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -42,29 +43,32 @@
 }
 
 .badge-icon-elem {
-  color: var(--canopy);
+  color: var(--color-cloud-white);
 }
 
 .title-row {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--spacing-12);
   flex-wrap: wrap;
 }
 
 .title-row h1 {
-  font-size: var(--step-2);
-  font-weight: 800;
-  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: var(--text-heading-sm);
+  font-weight: 300;
+  color: var(--color-cloud-white);
   letter-spacing: -0.01em;
   margin: 0;
+  line-height: 1.1;
 }
 
-.subtitle {
-  margin-top: var(--space-1);
-  font-size: var(--step-0);
-  color: var(--ink-2);
-  line-height: 1.5;
+.sky-status-line {
+  margin-top: var(--spacing-4);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  color: var(--color-cloud-white);
+  line-height: 1.4;
   max-width: 70ch;
 }
 
@@ -349,102 +353,101 @@
   fill: var(--inkwell);
 }
 
+.map-bg {
+  fill: var(--color-storm);
+}
+
 .map-region-bihar {
-  fill: var(--inkwell-2);
-  stroke: var(--inkwell-line);
+  fill: var(--color-deep-monsoon);
+  stroke: var(--color-haze);
   stroke-width: 1.5;
 }
 
 .map-region-wb {
-  fill: var(--canopy);
-  stroke: var(--leaf);
+  fill: var(--color-canopy-hover);
+  stroke: var(--color-haze);
   stroke-width: 1.5;
 }
 
-.map-state-label {
-  fill: var(--green-line);
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 1px;
-}
-
+.map-state-label,
 .map-state-label-wb {
-  fill: var(--green-wash);
-  font-size: 14px;
+  fill: var(--color-cloud-white);
+  font-family: var(--font-sans);
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 1px;
 }
 
 .map-border-line {
-  stroke: var(--sarson);
+  stroke: var(--color-haze);
   stroke-width: 2;
   stroke-dasharray: 6,4;
 }
 
 .map-border-text {
-  fill: var(--sarson);
+  fill: var(--color-haze);
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .node-selected {
-  fill: var(--sarson);
+  fill: var(--color-straw-fill);
 }
 
 .node-outbreak {
-  fill: var(--alert-lite);
-  stroke: var(--paper-raised);
+  fill: var(--color-chilli);
+  stroke: var(--color-cloud-white);
   stroke-width: 2;
 }
 
 .node-safe {
-  fill: var(--leaf-bright);
+  fill: var(--color-leaf);
 }
 
 .map-node-label {
-  fill: var(--inkwell-text);
+  fill: var(--color-cloud-white);
   font-size: 12px;
   font-weight: 600;
 }
 
 .map-label-bold {
-  fill: var(--paper-raised);
+  fill: var(--color-cloud-white);
   font-size: 13px;
   font-weight: 700;
 }
 
 .corridor-vector {
   fill: none;
-  stroke: var(--alert-lite);
+  stroke: var(--color-chilli);
   stroke-width: 3;
   stroke-dasharray: 5,3;
 }
 
 .corridor-arrow {
-  fill: var(--alert-lite);
+  fill: var(--color-chilli);
 }
 
 .corridor-vector-secondary {
   fill: none;
-  stroke: var(--sarson);
+  stroke: var(--color-straw-fill);
   stroke-width: 2;
   stroke-dasharray: 4,3;
 }
 
 .legend-bg {
-  fill: var(--inkwell-2);
-  stroke: var(--inkwell-line);
+  fill: var(--color-storm);
+  stroke: var(--color-haze);
   stroke-width: 1;
 }
 
 .legend-title {
-  fill: var(--paper-raised);
+  fill: var(--color-cloud-white);
   font-size: 12px;
   font-weight: 700;
 }
 
 .legend-text {
-  fill: var(--green-wash);
+  fill: var(--color-cloud-white);
   font-size: 12px;
 }
 
