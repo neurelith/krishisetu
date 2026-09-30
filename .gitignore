@@ -54,3 +54,9 @@ logs/
 
 # Generated audio advisories
 backend/audio/*.mp3
+
+# Project internal documentation, specifications, and exploratory notebooks
+design/
+docs/
+notebooks/
+notebook/
