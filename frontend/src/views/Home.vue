@@ -246,6 +246,9 @@ onMounted(async () => {
   } else {
     loadSampleLeaf('rice', false)
   }
+
+  // Auto-fetch latest Earth Engine Sentinel-2 satellite telemetry on mount
+  refreshTelemetry()
 })
 
 // Stop the mic if the farmer leaves the page mid-recording
