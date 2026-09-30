@@ -160,13 +160,21 @@
         </div>
 
         <div class="metrics-tabular">
-          <div class="metric-row">
-            <span class="metric-key">Soil moisture index</span>
-            <span class="metric-val" v-text="context.satellite.soil_moisture_index"></span>
+          <div v-if="context.satellite.observation_date" class="metric-row">
+            <span class="metric-key">Observation date</span>
+            <span class="metric-val" v-text="context.satellite.observation_date"></span>
           </div>
-          <div class="metric-row">
+          <div v-if="context.satellite.clear_pixel_pct !== undefined && context.satellite.clear_pixel_pct !== null" class="metric-row">
+            <span class="metric-key">Clear pixels (Cloud Score+)</span>
+            <span class="metric-val">{{ context.satellite.clear_pixel_pct }}%</span>
+          </div>
+          <div v-else-if="context.satellite.cloud_cover_pct !== undefined" class="metric-row">
             <span class="metric-key">Cloud cover</span>
             <span class="metric-val">{{ context.satellite.cloud_cover_pct }}%</span>
+          </div>
+          <div v-if="context.satellite.soil_moisture_index !== undefined" class="metric-row">
+            <span class="metric-key">Soil moisture index</span>
+            <span class="metric-val" v-text="context.satellite.soil_moisture_index"></span>
           </div>
         </div>
 
@@ -174,8 +182,18 @@
         <DetailDisclosure show-label="Satellite image details" hide-label="Hide satellite details">
           <div class="stream-risk-note">
             <span class="gauge-label">Image provenance:</span>
-            <p class="font-mono meta" v-text="context.satellite.spectral_formula || 'NDVI = (B08_NIR - B04_Red) / (B08_NIR + B04_Red)'"></p>
-            <p class="font-mono meta" v-text="'Granule: ' + (context.satellite.tile_reference || 'S2A_MSIL2A_20260924_T45QXE_R061')"></p>
+            <p class="font-mono meta" v-text="context.satellite.source || 'Google Earth Engine / Sentinel-2'"></p>
+            <p v-if="context.satellite.spectral_formula" class="font-mono meta" v-text="context.satellite.spectral_formula"></p>
+            <p v-if="context.satellite.tile_reference" class="font-mono meta" v-text="'Granule: ' + context.satellite.tile_reference"></p>
+            <p v-if="!context.satellite.available && context.satellite.reason" class="font-editorial-italic" style="color: var(--color-slate); font-size: var(--text-body-sm); margin-top: var(--space-2);">
+              "{{ context.satellite.reason }}"
+            </p>
+            <div v-if="context.satellite.thumbnail_url" style="margin-top: var(--space-3); border-radius: var(--radius-inputs); overflow: hidden; border: 1px solid var(--color-fog);">
+              <img :src="context.satellite.thumbnail_url" alt="Sentinel-2 True Color RGB" style="width: 100%; height: auto; display: block;" />
+              <div style="padding: var(--space-2) var(--space-3); background: var(--color-cream); font-size: var(--text-caption); color: var(--color-canopy);">
+                ESA Copernicus Sentinel-2 MSI RGB Surface Reflectance
+              </div>
+            </div>
           </div>
         </DetailDisclosure>
       </div>

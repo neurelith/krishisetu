@@ -1,5 +1,7 @@
 import urllib.request
+import urllib.parse
 import json
+import os
 import sys
 
 if hasattr(sys.stdout, 'reconfigure'):
@@ -66,7 +68,7 @@ with urllib.request.urlopen(req) as resp:
     for note in res.get('transformation_notes', []):
         print(f"         Audit Note: {note}")
 
-print("\n=== 4. Verifying Sentinel-2 Spectral Provenance & Outbreak Corridor ===")
+print("\n=== 4. Verifying Earth Engine Sentinel-2 Telemetry & Outbreak Corridor ===")
 with urllib.request.urlopen('http://127.0.0.1:8000/api/interop/telemetry') as resp:
     alerts = json.loads(resp.read().decode('utf-8'))
     print(f"  [PASS] Active Regional Alerts: {len(alerts)} corridor warning(s) active.")
@@ -75,11 +77,20 @@ with urllib.request.urlopen('http://127.0.0.1:8000/api/interop/telemetry') as re
         print(f"           Corridor: {a['transmission_corridor']}")
         print(f"           Threatened Districts: {a['threatened_neighboring_districts']}")
 
-with urllib.request.urlopen('http://127.0.0.1:8000/api/telemetry/satellite?lat=25.77&lon=87.47') as resp:
-    sat = json.loads(resp.read().decode('utf-8'))
-    print(f"  [PASS] Sentinel-2 Provenance: Granule={sat.get('tile_reference')}")
-    print(f"         NDVI={sat.get('ndvi')} | Formula={sat.get('spectral_formula')}")
-    print(f"         Band B8 (NIR)={sat.get('nir_band_reflectance')} | Band B4 (Red)={sat.get('red_band_reflectance')}")
+latitude = os.getenv("KRISHISETU_TEST_LATITUDE")
+longitude = os.getenv("KRISHISETU_TEST_LONGITUDE")
+if latitude and longitude:
+    query = urllib.parse.urlencode({"latitude": latitude, "longitude": longitude})
+    with urllib.request.urlopen(f'http://127.0.0.1:8000/api/telemetry/satellite?{query}') as resp:
+        sat = json.loads(resp.read().decode('utf-8'))
+        if sat.get("available"):
+            print(f"  [PASS] Earth Engine observation: {sat.get('observation_date')}")
+            print(f"         NDVI={sat.get('ndvi')} | Vegetation={sat.get('vegetation_status')}")
+            print(f"         Clear pixels={sat.get('clear_pixel_pct')}%")
+        else:
+            print(f"  [UNAVAILABLE] Satellite telemetry: {sat.get('reason')}")
+else:
+    print("  [SKIP] Set KRISHISETU_TEST_LATITUDE and KRISHISETU_TEST_LONGITUDE to query a farm.")
 
 print("\n=== 5. Testing Simulated Cross-Border Outbreak Injection ===")
 sim_url = 'http://127.0.0.1:8000/api/interop/simulate-outbreak?pest_name=Yellow+Stem+Borer&origin_state=West+Bengal&origin_district=Malda&affected_crop=Rice&severity=High'

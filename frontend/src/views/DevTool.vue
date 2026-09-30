@@ -372,8 +372,20 @@ const schemaJsonString = computed(() => {
       "satellite": {
         "type": "object",
         "properties": {
-          "ndvi": { "type": "number" },
-          "tile_reference": { "type": "string" }
+          "available": { "type": "boolean" },
+          "source": { "type": "string" },
+          "observation_date": { "type": ["string", "null"] },
+          "latitude": { "type": ["number", "null"] },
+          "longitude": { "type": ["number", "null"] },
+          "ndvi": { "type": ["number", "null"] },
+          "b4_reflectance": { "type": ["number", "null"] },
+          "b8_reflectance": { "type": ["number", "null"] },
+          "scene_cloud_cover_pct": { "type": ["number", "null"] },
+          "clear_pixel_pct": { "type": ["number", "null"] },
+          "vegetation_status": { "type": ["string", "null"] },
+          "is_fresh": { "type": ["boolean", "null"] },
+          "thumbnail_url": { "type": ["string", "null"] },
+          "reason": { "type": ["string", "null"] }
         }
       }
     }

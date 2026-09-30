@@ -31,7 +31,7 @@
   <tr>
     <td align="right"><b>📋 Standard</b></td>
     <td align="center"><a href="#-data-standard-reference-ingovdpgfarmcontextv1">📜 DPG Schema</a></td>
-    <td align="center"><a href="docs/PURPOSE_AND_CONTEXT_ARCHITECTURE.md">📖 Context Guide</a></td>
+    <td align="center"><a href="#-supported-state-adapters">🌉 State Adapters</a></td>
     <td align="center"><a href="#-license">📄 License</a></td>
   </tr>
 </table>
@@ -114,9 +114,11 @@ flowchart TD
 - **Symptom Attribution:** Outlines microscopic visual indicators including chlorotic rings, elliptical diamond lesions, and leaf sheath necrosis.
 
 ### 2. Sentinel-2 Level-2A Spectral Telemetry
-- **Scientific Formulation:** Computes Normalized Difference Vegetation Index directly from ESA Sentinel-2 MultiSpectral Instrument (MSI) surface reflectance bands:
+- **Real imagery:** Google Earth Engine queries Sentinel-2 L2A imagery for supplied farm coordinates and masks cloudy pixels with Cloud Score+ (`cs_cdf >= 0.60`).
+- **Scientific formulation:** Computes the Normalized Difference Vegetation Index from surface reflectance:
   $$\text{NDVI} = \frac{\text{B8}_{\text{NIR}} - \text{B4}_{\text{Red}}}{\text{B8}_{\text{NIR}} + \text{B4}_{\text{Red}}}$$
-- **Full Granule Provenance:** Exposes granule identifiers (e.g. `S2A_MSIL2A_20260924_T45QXE_R061`), acquisition timestamps, and radiometric quality flags.
+- **Observation quality:** Returns acquisition date, scene cloud cover, clear-pixel percentage, B4/B8 reflectance, and an optional RGB thumbnail. Missing imagery and Earth Engine errors are reported as unavailable rather than replaced with synthetic values.
+- **Authentication:** The backend requires Earth Engine credentials authorized for project `krishisetu-510211`. Authenticate the backend environment with `earthengine authenticate` before starting the API. Local credentials do not automatically transfer to a hosted deployment.
 
 ### 3. Federated Cross-Border Outbreak Defense
 - **Transmission Corridor Tracking:** Tracks biological vectors moving along agricultural ecological belts. When outbreak intensity spikes in border districts like Malda (West Bengal), proactive early warnings are dispatched to adjacent regions like Katihar and Kishanganj (Bihar).
@@ -190,8 +192,8 @@ A structured 4-phase clinical intervention timeline tailored to minimize yield i
     "district": "Nadia",
     "block_tehsil": "Nakashipara",
     "village": "Bethuadahari",
-    "latitude": 23.47,
-    "longitude": 88.55
+    "latitude": null,
+    "longitude": null
   },
   "crop": {
     "name": "Rice (Paddy)",
@@ -216,11 +218,20 @@ A structured 4-phase clinical intervention timeline tailored to minimize yield i
     "forecast_summary": "High humidity with scattered evening thunderstorms."
   },
   "satellite": {
-    "tile_reference": "S2A_MSIL2A_20260924_T45QXE_R061",
-    "ndvi": 0.64,
-    "spectral_formula": "NDVI = (B8_NIR - B4_Red) / (B8_NIR + B4_Red)",
-    "nir_band_reflectance": 0.78,
-    "red_band_reflectance": 0.17
+    "available": false,
+    "source": "Google Earth Engine / Sentinel-2",
+    "observation_date": null,
+    "latitude": null,
+    "longitude": null,
+    "ndvi": null,
+    "b4_reflectance": null,
+    "b8_reflectance": null,
+    "scene_cloud_cover_pct": null,
+    "clear_pixel_pct": null,
+    "vegetation_status": null,
+    "is_fresh": null,
+    "thumbnail_url": null,
+    "reason": "Farm coordinates are required for satellite telemetry."
   }
 }
 ```
@@ -300,10 +311,10 @@ python backend/verify_krishisetu.py
   [PASS] Soil Nitrogen mapped: 210.0 kg/ha
   [PASS] Mappings applied count: 8
 
-=== 4. Verifying Sentinel-2 Spectral Provenance & Outbreak Corridor ===
+=== 4. Verifying Earth Engine Sentinel-2 Telemetry & Outbreak Corridor ===
   [PASS] Active Regional Alerts: 4 corridor warning(s) active
-  [PASS] Sentinel-2 Provenance: Granule=S2A_MSIL2A_20260924_T45QXE_R061
-         NDVI=0.64 | Formula=NDVI = (B8_NIR - B4_Red) / (B8_NIR + B4_Red)
+  [PASS] Earth Engine observation: <acquisition date>
+         NDVI=<observed value> | Clear pixels=<observed percentage>
 
 === 5. Testing Simulated Cross-Border Outbreak Injection ===
   [PASS] Injected Outbreak: ALT-1EDBEC for Yellow Stem Borer

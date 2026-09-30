@@ -53,6 +53,7 @@ class GeminiAgriService:
         image_bytes: bytes,
         mime_type: str = "image/jpeg",
         crop_hint: Optional[str] = "Rice",
+        farm_context: Optional[FarmContext] = None,
     ) -> DiagnosisResult:
         """
         Analyzes a crop/leaf image using Gemini Multimodal Vision.
@@ -62,14 +63,25 @@ class GeminiAgriService:
             try:
                 from google.genai import types
 
+                context_details = "No additional farm context provided."
+                if farm_context:
+                    context_details = (
+                        f"Crop: {farm_context.crop.name}; variety: {farm_context.crop.variety or 'not provided'}; "
+                        f"growth stage: {farm_context.crop.crop_stage}; "
+                        f"location: {farm_context.location.district}, {farm_context.location.state}; "
+                        f"preferred language: {farm_context.farmer.preferred_language}."
+                    )
+
                 prompt = (
-                    f"You are an expert plant pathologist and agronomist working for the Indian Council of Agricultural Research (ICAR).\n"
-                    f"First, inspect this photograph for agricultural validity. Crop type hint: {crop_hint or 'Paddy/Rice'}.\n"
-                    f"RULE 1 - PLANT VERIFICATION GUARDRAIL: Determine whether the image depicts a plant, crop, leaf, stem, fruit, or agricultural symptom. "
-                    f"If the image clearly depicts an animal, vehicle, human face, electronic gadget, document, or non-plant object, set 'is_valid_crop_image': false and provide a polite 'rejection_reason'.\n"
-                    f"RULE 2 - PATHOLOGY IDENTIFICATION: If it IS a plant/leaf, set 'is_valid_crop_image': true, identify the disease/pathogen/deficiency, confidence (0.0 - 1.0), severity, symptoms list, and immediate non-toxic emergency bio-action.\n\n"
-                    "Respond ONLY with a valid JSON object matching this schema:\n"
+                    "You are an agricultural image assessment assistant. Do not claim ICAR affiliation.\n"
+                    f"Inspect this image. Farmer-provided context: {context_details}\n"
+                    f"Crop hint: {crop_hint or 'not provided'}. Use context only to narrow possibilities; do not assume a disease from the crop.\n"
+                    "If the image is not a plant/crop, set is_valid_crop_image=false and provide a polite rejection_reason. "
+                    "If it is a plant but the image or evidence is insufficient, set diagnosis_status='uncertain', describe only visible observations, "
+                    "and do not name a disease or recommend treatment. Only use diagnosis_status='complete' when a disease/condition is visibly supported.\n"
+                    "Respond ONLY with a JSON object matching this schema:\n"
                     "{\n"
+                    '  "diagnosis_status": "complete" | "uncertain",\n'
                     '  "is_valid_crop_image": true,\n'
                     '  "rejection_reason": null,\n'
                     '  "condition_detected": "Common Name of disease/pest",\n'
@@ -97,8 +109,13 @@ class GeminiAgriService:
                 if response and response.text:
                     parsed = json.loads(response.text)
                     is_valid = parsed.get("is_valid_crop_image", True)
+                    diag_status = parsed.get("diagnosis_status", "complete")
+                    if diag_status not in {"complete", "uncertain", "unavailable"}:
+                        diag_status = "complete" if is_valid else "unavailable"
+
                     if not is_valid:
                         return DiagnosisResult(
+                            diagnosis_status=diag_status,
                             is_valid_crop_image=False,
                             rejection_reason=parsed.get(
                                 "rejection_reason",
@@ -115,6 +132,7 @@ class GeminiAgriService:
                         )
 
                     return DiagnosisResult(
+                        diagnosis_status=diag_status,
                         is_valid_crop_image=True,
                         rejection_reason=None,
                         condition_detected=parsed.get("condition_detected", "Unknown Leaf Anomaly"),
@@ -399,6 +417,51 @@ class GeminiAgriService:
             explainability=explainability,
             rag_sources=rag_sources[:3],
             audio_url=f"/audio/{audio_file}" if audio_file else None,
+            language=preferred_lang,
+        )
+
+    @staticmethod
+    def unavailable_contextual_advisory(
+        context: FarmContext,
+        status: str = "unavailable",
+    ) -> AdvisoryResponse:
+        preferred_lang = context.farmer.preferred_language or "bn"
+        if status == "uncertain":
+            messages = {
+                "bn": "প্রদত্ত তথ্য থেকে নির্ভরযোগ্য পরামর্শ তৈরি করা যায়নি। কোনো রাসায়নিক প্রয়োগের সুপারিশ দেওয়া হচ্ছে না।",
+                "hi": "दी गई जानकारी से विश्वसनीय सलाह नहीं बन सकी। कोई उपचार सुझाव नहीं दिया जा रहा है।",
+                "en": "The available context is insufficient for reliable advice. No treatment recommendations are available.",
+            }
+        else:
+            status = "unavailable"
+            messages = {
+                "bn": "পরামর্শ পরিষেবা এই মুহূর্তে উপলব্ধ নয়। কোনো চিকিৎসা সুপারিশ দেওয়া হচ্ছে না।",
+                "hi": "सलाह सेवा इस समय उपलब्ध नहीं है। कोई उपचार सुझाव नहीं दिया जा रहा है।",
+                "en": "The advisory service is unavailable. No treatment recommendations are available.",
+            }
+        message = messages.get(preferred_lang, messages["en"])
+        return AdvisoryResponse(
+            status=status,
+            advisory_id=f"ADV-{uuid.uuid4().hex[:8].upper()}",
+            generated_at=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            crop_name=context.crop.name,
+            stage=context.crop.crop_stage,
+            condition_assessed=context.diagnosis.condition_detected if context.diagnosis else "Unable to assess",
+            severity="Unknown",
+            summary_advisory=message,
+            summary_advisory_en=messages["en"],
+            actions=[],
+            soil_conditioning_steps=[],
+            preventive_cultural_practices=[],
+            explainability=[
+                ExplainabilityEvidence(
+                    factor="Diagnostic Confidence Assessment",
+                    observation="Insufficient evidence for automated advisory synthesis",
+                    impact_on_decision="Suppressed recommendations to protect farmer capital and crop safety",
+                )
+            ],
+            rag_sources=[],
+            audio_url=None,
             language=preferred_lang,
         )
 
