@@ -1,14 +1,119 @@
 /* KrishiSetu - Kisan Sathi Shared Stylesheet */
 
-.kisan-sathi-container {
-  padding: var(--space-5) var(--space-5);
-  max-width: 1400px;
-  margin: 0 auto;
+/* Full-width shell (mirrors .command-shell): sky bleeds to viewport edges,
+   the .desk of white cards floats over the banner's bottom edge like /admin. */
+.sathi-shell {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
 }
+
+/* Offline banner sits above the sky, inside the page gutter */
+.sathi-topline {
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  width: 100%;
+  padding: var(--space-4) var(--spacing-24) 0;
+}
+
+.sathi-topline:empty {
+  padding: 0;
+}
+
+/* Header Sky Strip */
+.sathi-header {
+  padding: var(--spacing-24) var(--spacing-24) var(--spacing-64);
+  color: var(--color-cloud-white);
+}
+
+.sathi-header .sky-strip-inner {
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-16);
+  flex-wrap: wrap;
+}
+
+.sky-strip-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-16);
+}
+
+.sathi-badge-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-inputs);
+  background: transparent;
+  color: var(--color-cloud-white);
+  border: 1px solid var(--color-cloud-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sathi-badge-icon-elem {
+  color: var(--color-cloud-white);
+}
+
+/* Serif display title on the sky, matching the Outbreak-watch masthead.
+   Scoped to .sathi-header so the in-card ribbon rule below can't override it. */
+.sathi-header .farmer-title-row h1 {
+  font-family: var(--font-display);
+  font-size: var(--text-heading-sm);
+  font-weight: 300;
+  color: var(--color-cloud-white);
+  letter-spacing: -0.01em;
+  margin: 0;
+  line-height: 1.1;
+}
+
+/* Badges on the sky need the light outline treatment, not paper fills */
+.sathi-header .badge-institutional.badge-forest,
+.sathi-header .badge-institutional.badge-slate,
+.sathi-header .badge-institutional.badge-gold {
+  background: transparent;
+  border: 1px solid var(--color-haze);
+  color: var(--color-cloud-white);
+}
+
+.sathi-header .sky-status-line {
+  margin-top: var(--spacing-4);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  color: var(--color-cloud-white);
+  line-height: 1.4;
+  max-width: 70ch;
+}
+
+.sky-strip-right {
+  display: flex;
+  align-items: center;
+}
+
+/* Language selector adapts to the sky background */
+.sky-strip-right .selector-label {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--color-haze);
+}
+
+.sky-strip-right .lang-dropdown {
+  background: var(--paper);
+  border: 1.5px solid var(--hairline-strong);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  font-size: 0.8125rem;
+  color: var(--ink);
+  min-height: 40px;
+  cursor: pointer;
+}
+
+/* Legacy ribbon styles retained for in-card use */
 
 /* Offline Resiliency Banner */
 .offline-banner {
@@ -923,3 +1028,5 @@
     border-bottom: none;
   }
 }
+
+

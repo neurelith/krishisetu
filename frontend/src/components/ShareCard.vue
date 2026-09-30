@@ -104,6 +104,8 @@ const displayLocalHeadline = computed(() => {
 async function exportCardPng(customName) {
   if (!cardRef.value) return
   try {
+    // Bengali/Hindi glyphs render as tofu boxes if fonts aren't loaded yet.
+    await document.fonts.ready
     const dataUrl = await toPng(cardRef.value, {
       pixelRatio: 1,
       cacheBust: true

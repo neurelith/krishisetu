@@ -4,13 +4,19 @@
  * and audio guidance even during total rural connectivity blackouts.
  */
 
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref } from 'vue'
 
 const DB_NAME = 'KrishiSetuOfflineDB'
 const DB_VERSION = 1
 const STORE_NAME = 'offline_store'
 
 let dbInstance = null
+
+// Module-singleton state: every component calling useOfflineStorage() shares the
+// same isOnline/isOfflineSimulation refs, so the nav toggle drives every banner.
+const isOnlineGlobal = ref(typeof navigator !== 'undefined' ? navigator.onLine : true)
+const isOfflineSimulationGlobal = ref(false)
+const lastSyncTimeGlobal = ref(null)
 
 function openDatabase() {
   return new Promise((resolve, reject) => {
@@ -40,28 +46,23 @@ function openDatabase() {
 }
 
 export function useOfflineStorage() {
-  const isOnline = ref(typeof navigator !== 'undefined' ? navigator.onLine : true)
-  const isOfflineSimulation = ref(false)
-  const lastSyncTime = ref(null)
+  // Singleton refs (module scope) — every consumer shares one truth.
+  const isOnline = isOnlineGlobal
+  const isOfflineSimulation = isOfflineSimulationGlobal
+  const lastSyncTime = lastSyncTimeGlobal
 
   const updateOnlineStatus = () => {
     isOnline.value = navigator.onLine && !isOfflineSimulation.value
   }
 
-  onMounted(() => {
-    if (typeof window !== 'undefined') {
-      window.addEventListener('online', updateOnlineStatus)
-      window.addEventListener('offline', updateOnlineStatus)
-      updateOnlineStatus()
-    }
-  })
-
-  onUnmounted(() => {
-    if (typeof window !== 'undefined') {
-      window.removeEventListener('online', updateOnlineStatus)
-      window.removeEventListener('offline', updateOnlineStatus)
-    }
-  })
+  // Window listeners are registered once at module level; per-component
+  // onMounted/onUnmounted registration would create duplicate closures.
+  if (typeof window !== 'undefined' && !window.__krishisetu_online_listeners) {
+    window.__krishisetu_online_listeners = true
+    window.addEventListener('online', updateOnlineStatus)
+    window.addEventListener('offline', updateOnlineStatus)
+    updateOnlineStatus()
+  }
 
   const setOfflineSimulation = (val) => {
     isOfflineSimulation.value = val

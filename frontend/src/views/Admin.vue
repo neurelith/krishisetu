@@ -412,7 +412,7 @@ async function submitSimulation() {
     showToast(`Alert ${newAlert.alert_id} broadcast to neighboring state border nodes!`)
   } catch (err) {
     console.error('Simulation failed:', err)
-    alert('Simulation error: ' + err.message)
+    showToast('Simulation failed: ' + err.message)
   } finally {
     isSimulating.value = false
   }

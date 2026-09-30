@@ -3,9 +3,9 @@
     <div class="section-header-row">
       <div>
         <h2>What it is and what to do now</h2>
-        <p class="section-sub">Computer Vision Clinical Match · Spectral & Phenological Correlation</p>
+        <p class="section-sub">Leaf result from your photo, matched with field data</p>
       </div>
-      <span class="badge-institutional badge-sky">Laboratory Output</span>
+      <span class="badge-institutional badge-sky">Leaf result</span>
     </div>
 
     <!-- Skeleton Loader for Loading State -->
@@ -23,9 +23,9 @@
         <PhWarningCircle :size="24" weight="bold" class="text-alert" />
       </div>
       <div>
-        <h3 class="guardrail-title">Image Validation Guardrail Activated</h3>
+        <h3 class="guardrail-title">This photo is not a crop</h3>
         <p v-text="diagnosisResult.rejection_reason"></p>
-        <span class="guardrail-sub">Model: <span v-text="diagnosisResult.model_used"></span> · Zero-Misdiagnosis Protection Standard</span>
+        <span class="guardrail-sub">Model: <span v-text="diagnosisResult.model_used"></span> · Zero-misdiagnosis protection</span>
       </div>
     </div>
 
@@ -33,26 +33,26 @@
     <div v-else-if="diagnosisResult && diagnosisResult.is_valid_crop_image" class="lab-findings-body">
       <div class="diag-header-row">
         <div>
-          <span class="diag-label">Identified Pathology Marker</span>
+          <span class="diag-label">What was found</span>
           <h3 class="diag-condition-title" v-text="diagnosisResult.condition_detected"></h3>
           <em class="diag-scientific-name font-editorial-italic" v-text="diagnosisResult.scientific_name"></em>
         </div>
         <div style="display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap;">
-          <button type="button" @click="$emit('share-card')" class="btn-gov-outline" title="Export Share Card PNG" style="min-height: 44px; display: inline-flex; align-items: center; gap: var(--space-2);">
+          <button type="button" @click="$emit('share-card')" class="btn-gov-outline" title="Download this result as a share card image" style="min-height: 48px; display: inline-flex; align-items: center; gap: var(--space-2);">
             <PhShareNetwork :size="18" weight="bold" />
             <span>Share card</span>
           </button>
           <!-- Precision Certainty Gauge -->
           <div class="diag-match-badge">
             <span class="match-percentage">{{ Math.round(diagnosisResult.confidence * 100) }}%</span>
-            <span class="meta">Clinical Confidence</span>
+            <span class="meta">Match confidence</span>
           </div>
         </div>
       </div>
 
       <!-- Specific Morphological Symptoms List -->
       <div class="symptoms-panel">
-        <h4>Observed Pathological Symptoms</h4>
+        <h4>What to look for in your field</h4>
         <ul class="symptoms-list">
           <li v-for="(symp, sIdx) in diagnosisResult.symptoms" :key="sIdx" v-text="symp"></li>
         </ul>
@@ -60,12 +60,14 @@
 
       <!-- Immediate Bio-Action Protocol -->
       <div class="immediate-action-callout">
-        <h4>Immediate Agronomic Prescription</h4>
+        <h4>Do this today</h4>
         <p class="action-narrative" v-text="diagnosisResult.immediate_bio_action"></p>
       </div>
 
-      <!-- Pathogen Cycle Infographic -->
-      <InfographicPathogenCycle />
+      <!-- Pathogen cycle science: available on demand, not in the way -->
+      <DetailDisclosure show-label="How this disease spreads" hide-label="Hide disease cycle">
+        <InfographicPathogenCycle />
+      </DetailDisclosure>
     </div>
 
     <div v-else class="empty-diagnosis-standby">
@@ -73,37 +75,37 @@
         <PhPlant :size="36" weight="bold" class="standby-icon" />
       </div>
       <div class="standby-content">
-        <span class="standby-chip">DIAGNOSTIC STANDBY</span>
-        <h3 class="standby-title">Awaiting Clinical Specimen Intake</h3>
+        <span class="standby-chip">READY</span>
+        <h3 class="standby-title">Waiting for a leaf photo</h3>
         <p class="standby-desc">
-          Select a benchmark specimen on the left or upload a field photograph to trigger multimodal computer vision verification.
+          Pick a sample on the left or upload a photo of your leaf to get a diagnosis.
         </p>
         <div class="standby-steps-matrix">
           <div class="standby-step">
             <span class="step-num">1</span>
             <div>
-              <strong>Sample Intake:</strong>
-              <span>Capture leaf lesion in sunlight or choose benchmark specimen.</span>
+              <strong>Take a photo:</strong>
+              <span>Capture the sick leaf in daylight, or pick a sample.</span>
             </div>
           </div>
           <div class="standby-step">
             <span class="step-num">2</span>
             <div>
-              <strong>Audio Observation:</strong>
-              <span>Speak symptoms in local dialect (Bengali/Hindi) for symptom triage.</span>
+              <strong>Speak your problem:</strong>
+              <span>Record what you see in Bengali or Hindi.</span>
             </div>
           </div>
           <div class="standby-step">
             <span class="step-num">3</span>
             <div>
-              <strong>ICAR Action Plan:</strong>
-              <span>Receive immediate bio-control protocol and 1080x1350 WhatsApp share card.</span>
+              <strong>Get today's action:</strong>
+              <span>See what to do now, and get a WhatsApp-ready share card.</span>
             </div>
           </div>
         </div>
       </div>
       <div class="standby-footer">
-        <span class="badge-institutional badge-forest">DPG Validation Engine · ICAR-CRRI Standard</span>
+        <span class="badge-institutional badge-forest">Verified against ICAR advisory standards</span>
       </div>
     </div>
   </section>
@@ -112,6 +114,7 @@
 <script setup>
 import { PhWarningCircle, PhShareNetwork, PhPlant } from '@phosphor-icons/vue'
 import InfographicPathogenCycle from '../InfographicPathogenCycle.vue'
+import DetailDisclosure from './DetailDisclosure.vue'
 
 defineProps({
   diagnosisResult: { type: Object, default: null },

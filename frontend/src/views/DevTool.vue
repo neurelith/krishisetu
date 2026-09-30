@@ -1,5 +1,15 @@
 <template>
   <div class="interop-shell">
+    <!-- Toast host: registry errors surface here, never in a blocking alert() -->
+    <div class="toast-region" aria-live="polite">
+      <div v-for="t in toasts" :key="t.id" class="toast-notification" :class="'toast-' + t.type">
+        <span class="toast-msg" v-text="t.message"></span>
+        <button type="button" class="toast-close" aria-label="Dismiss message" @click="dismiss(t.id)">
+          <PhX :size="14" weight="bold" />
+        </button>
+      </div>
+    </div>
+
     <!-- Header Sky Strip -->
     <header class="sky sky-strip interop-header" data-risk="clear">
       <div class="sky-strip-inner">
@@ -272,6 +282,7 @@ import { ref, computed, onMounted } from 'vue'
 import '../styles/devtool.css'
 import { PhArrowsLeftRight, PhFileCode, PhArrowsClockwise, PhX } from '@phosphor-icons/vue'
 import { normalizeStatePayload, fetchSampleStatePayload } from '../api'
+import { useToast } from '../composables/useToast'
 
 const selectedState = ref('west_bengal')
 const customStateName = ref('Punjab (PGRKAM)')
@@ -293,6 +304,8 @@ const isLoading = ref(false)
 const isHighlighting = ref(false)
 const showSchemaModal = ref(false)
 const copySuccess = ref(false)
+
+const { toasts, dismiss, success, error: toastError } = useToast()
 
 const formattedNormalizedJson = computed(() => {
   if (!normalizedResponse.value?.normalized_context) {
@@ -385,6 +398,7 @@ async function loadSample() {
     rawPayloadString.value = JSON.stringify(data, null, 2)
   } catch (err) {
     console.error('Failed to load sample state payload:', err)
+    toastError('Could not load the sample registry data. Check your connection and try again.')
   } finally {
     isLoading.value = false
   }
@@ -398,7 +412,7 @@ async function runNormalization() {
     try {
       payloadToNormalize = JSON.parse(rawPayloadString.value)
     } catch {
-      alert('Invalid JSON in State Payload Editor')
+      toastError('The state registry editor has broken JSON. Fix the highlighted text and normalize again.')
       isLoading.value = false
       isHighlighting.value = false
       return
@@ -409,7 +423,7 @@ async function runNormalization() {
       try {
         customRules = JSON.parse(customRulesString.value)
       } catch {
-        alert('Invalid JSON in Custom Declarative Rules Editor')
+        toastError('The custom rules editor has broken JSON. Fix the highlighted text and normalize again.')
         isLoading.value = false
         isHighlighting.value = false
         return
@@ -423,9 +437,10 @@ async function runNormalization() {
       customRules
     )
     normalizedResponse.value = res
+    success('Registry data normalized into the common DPG contract.')
   } catch (err) {
     console.error('Normalization failed:', err)
-    alert('Normalization error: ' + err.message)
+    toastError('Normalization failed: ' + err.message)
   } finally {
     isLoading.value = false
     setTimeout(() => {

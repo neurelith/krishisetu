@@ -5,6 +5,9 @@ Contextual Regenerative Advisory router powered by Google Gemini and ICAR RAG.
 from __future__ import annotations
 
 import logging
+
+import asyncio
+
 from fastapi import APIRouter, HTTPException
 from schemas import AdvisoryResponse, FarmContext
 from services.gemini_service import get_gemini_service
@@ -36,7 +39,8 @@ async def generate_advisory(context: FarmContext):
         sources = rag_result.get("sources", [])
 
         gemini = get_gemini_service()
-        advisory = gemini.generate_contextual_advisory(context, sources)
+        # Sync Gemini SDK + gTTS — off the event loop.
+        advisory = await asyncio.to_thread(gemini.generate_contextual_advisory, context, sources)
         return advisory
     except Exception as exc:
         logger.error("Error generating contextual advisory: %s", exc)

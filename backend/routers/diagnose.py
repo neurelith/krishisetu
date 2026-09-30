@@ -7,6 +7,8 @@ from __future__ import annotations
 import logging
 from typing import Optional
 
+import asyncio
+
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from schemas import DiagnosisResult
 from services.gemini_service import get_gemini_service
@@ -32,7 +34,13 @@ async def diagnose_leaf_image(
 
         mime_type = image.content_type or "image/jpeg"
         service = get_gemini_service()
-        result = service.diagnose_crop_disease(image_bytes=image_bytes, mime_type=mime_type, crop_hint=crop_hint)
+        # Gemini call + gTTS are blocking (sync SDK) — keep them off the event loop.
+        result = await asyncio.to_thread(
+            service.diagnose_crop_disease,
+            image_bytes=image_bytes,
+            mime_type=mime_type,
+            crop_hint=crop_hint,
+        )
         return result
     except Exception as exc:
         logger.error("Error during leaf diagnosis: %s", exc)

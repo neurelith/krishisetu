@@ -3,14 +3,14 @@
     <div class="section-header-row">
       <div>
         <h2>Check a leaf</h2>
-        <p class="section-sub">Multimodal Foliage Specimen + Indic Speech Transcription</p>
+        <p class="section-sub">Photo or voice note — get today's diagnosis</p>
       </div>
-      <span class="badge-institutional badge-forest">Field Intake</span>
+      <span class="badge-institutional badge-forest">Field intake</span>
     </div>
 
-    <!-- Specimen Benchmark Selector (Segmented Tab Bar) -->
+    <!-- Sample picker (try a real case without a camera) -->
     <div class="specimen-selector-bar">
-      <span class="selector-subheading">Select Clinical Test Specimen:</span>
+      <span class="selector-subheading">Or try a sample case:</span>
       <div class="segmented-specimen-group">
         <button 
           @click="$emit('select-sample', 'rice')" 
@@ -86,7 +86,7 @@
     <!-- Farmer Voice Observation Console (56px touch target) -->
     <div class="voice-intake-card">
       <div class="voice-intake-header">
-        <span class="voice-intake-title">Farmer Spoken Observation (Indic STT)</span>
+        <span class="voice-intake-title">Say what you see (voice note)</span>
         <span class="badge-institutional badge-slate"><span v-text="langName"></span></span>
       </div>
       <div class="voice-action-row">
@@ -127,13 +127,13 @@
       >
         <PhArrowsClockwise v-if="isDiagnosing" :size="20" weight="bold" class="spin" />
         <PhSparkle v-else :size="20" weight="bold" />
-        <span>{{ isDiagnosing ? 'Analyzing Pathology with Google Gemini...' : 'Synthesize Multi-Modal Diagnosis & Advisory' }}</span>
+        <span>{{ isDiagnosing ? 'Checking your leaf…' : 'Check my leaf' }}</span>
       </button>
     </div>
 
     <!-- Specimen Technical Metadata -->
     <div class="specimen-tech-bar">
-      <span>Inference Endpoint: <code>gemini-2.5-flash</code></span>
+      <span>AI check · photo deleted after analysis (DPDP Act 2023)</span>
       <span>Zero-Retention DPDP Act 2023 Compliant</span>
     </div>
   </section>

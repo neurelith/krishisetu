@@ -56,8 +56,9 @@
           <!-- Zoospore flagella -->
           <path d="M 132 52 Q 130 42 125 40" class="svg-flagella" />
           <path d="M 148 54 Q 154 44 158 42" class="svg-flagella" />
-          <text x="140" y="28" text-anchor="middle" class="vector-title">Phase 1: Free Water Zoospores</text>
-          <text x="140" y="42" text-anchor="middle" class="vector-sub">RH 86% triggers germination</text>
+          <!-- Phase labels positioned near the visual element (top-left area) -->
+          <text x="140" y="18" text-anchor="middle" class="vector-title">Phase 1: Free Water Zoospores</text>
+          <text x="140" y="34" text-anchor="middle" class="vector-sub">RH 86% triggers germination</text>
         </g>
 
         <!-- Phase 2: Appressorium & Cuticular Penetration -->
@@ -66,8 +67,9 @@
           <!-- Penetration peg piercing cuticle -->
           <path d="M 320 69 L 320 102" class="svg-penetration-peg" />
           <polygon points="316,98 320,106 324,98" class="svg-appressorium" />
-          <text x="320" y="28" text-anchor="middle" class="vector-title">Phase 2: Enzymatic Peg</text>
-          <text x="320" y="42" text-anchor="middle" class="vector-sub">Cutinase dissolves epidermis</text>
+          <!-- Phase labels near this element (top-center area) -->
+          <text x="320" y="18" text-anchor="middle" class="vector-title">Phase 2: Enzymatic Peg</text>
+          <text x="320" y="34" text-anchor="middle" class="vector-sub">Cutinase dissolves epidermis</text>
         </g>
 
         <!-- Phase 3: Intercellular Mycelial Colonization -->
@@ -78,8 +80,9 @@
           <!-- Haustoria (nutrient siphons) -->
           <circle cx="475" cy="130" r="3.5" class="svg-haustoria" />
           <circle cx="510" cy="142" r="3.5" class="svg-haustoria" />
-          <text x="500" y="28" text-anchor="middle" class="vector-title">Phase 3: Hyphal Siphoning</text>
-          <text x="500" y="42" text-anchor="middle" class="vector-sub">Chloroplast lysis & brown rot</text>
+          <!-- Phase labels near this element (top-right area) -->
+          <text x="500" y="18" text-anchor="middle" class="vector-title">Phase 3: Hyphal Siphoning</text>
+          <text x="500" y="34" text-anchor="middle" class="vector-sub">Chloroplast lysis & brown rot</text>
         </g>
 
         <!-- Phase 4: Sporangiophore Eruption (Underside Sporulation) -->
@@ -89,8 +92,9 @@
           <circle cx="660" cy="254" r="5" class="svg-appressorium" />
           <circle cx="685" cy="244" r="4.5" class="svg-appressorium" />
           <circle cx="674" cy="258" r="4" class="svg-appressorium" />
-          <text x="660" y="28" text-anchor="middle" class="vector-title">Phase 4: Active Sporulation</text>
-          <text x="660" y="42" text-anchor="middle" class="vector-sub">White mildew downy ring</text>
+          <!-- Phase labels near this element (bottom-right area), moved up to avoid cutoff -->
+          <text x="660" y="18" text-anchor="middle" class="vector-title">Phase 4: Active Sporulation</text>
+          <text x="660" y="34" text-anchor="middle" class="vector-sub">White mildew downy ring</text>
         </g>
 
         <!-- Biocontrol Interception Overlay (Trichoderma Mycoparasitism) -->

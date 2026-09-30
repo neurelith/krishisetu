@@ -5,6 +5,12 @@
   box-sizing: border-box;
 }
 
+/* KrishiSetu full-width institutional chrome: nav bar and sky strips bleed to
+   the viewport edges (UA default 8px body margin would inset them). */
+body {
+  margin: 0;
+}
+
 /* Typography Helpers */
 .font-editorial-italic {
   font-family: var(--font-display);

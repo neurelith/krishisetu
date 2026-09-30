@@ -150,6 +150,58 @@ hr, .hairline { border: 0; border-top: 1px solid var(--color-fog); }
 .sky[data-risk="storm"] .btn-gov-primary { background: var(--color-cloud-white); color: var(--color-canopy); }   /* canopy vanishes on storm sky */
 .btn-xl { min-height: 60px; padding: 14px 32px; font-size: 1.125rem; }
 .btn-gov-primary:active:not(:disabled), .btn-gov-outline:active:not(:disabled) { transform: translateY(1px); }
+
+/* ---- Toast notifications (global: sathi, interop, any page) ---- */
+.toast-region {
+  position: fixed;
+  bottom: var(--spacing-24);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+  width: min(92vw, 440px);
+}
+
+.toast-notification {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-12);
+  background: var(--color-canopy);
+  color: var(--color-cloud-white);
+  border-radius: var(--radius-inputs);
+  padding: 14px var(--spacing-16);
+  box-shadow: var(--shadow-float);
+  font-size: var(--text-body-sm);
+  line-height: 1.4;
+}
+
+.toast-notification.toast-error { background: var(--color-chilli); }
+.toast-notification.toast-success { background: var(--color-leaf); }
+.toast-notification.toast-info { background: var(--color-canopy); }
+
+.toast-msg { flex: 1; }
+
+.toast-close {
+  background: none;
+  border: 0;
+  color: var(--color-cloud-white);
+  cursor: pointer;
+  padding: var(--spacing-8);
+  min-width: 38px;
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-inputs);
+}
+
+.toast-close:focus-visible { outline: 3px solid var(--color-cloud-white); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .toast-region, .toast-notification { transition: none; animation: none; }
+}
 .btn-gov-primary:disabled, .btn-gov-outline:disabled { opacity: 0.55; cursor: not-allowed; }
 
 /* ---- Tags ---- */
