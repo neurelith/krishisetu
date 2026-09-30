@@ -20,6 +20,7 @@
 8. [Milestone 8: Dynamic Telemetry & Hackathon Team Strategy](#milestone-8-dynamic-telemetry--hackathon-team-strategy)
 9. [Milestone 9: Ergonomic Polish — Sizing, Ratio Spacing & Apple HIG Symmetry](#milestone-9-ergonomic-polish--sizing-ratio-spacing--apple-hig-symmetry)
 10. [Milestone 10: v2 Architecture Migration — "Sky Over the Paddy" (Phases 0–7)](#milestone-10-v2-architecture-migration--sky-over-the-paddy-phases-07)
+11. [Milestone 11: Hermes Async Core Optimization & Safe Integration of Earth Engine / Gemini Guardrails](#milestone-11-hermes-async-core-optimization--safe-integration-of-earth-engine--gemini-guardrails)
 
 ---
 
@@ -284,16 +285,54 @@
 
 ---
 
+## Milestone 11: Hermes Async Core Optimization & Safe Integration of Earth Engine / Gemini Guardrails
+
+### What Was Done
+1. **Hermes Core Optimization (Commit `c3f5e20` on `main`)**:
+   - Offloaded blocking Gemini inference calls onto `asyncio.to_thread` worker pools, preventing event loop starvation during concurrent farmer diagnosis requests.
+   - Decoupled sample payloads into modular registries (`backend/routers/interop.py`).
+   - Integrated accessible native disclosures (`<DetailDisclosure>`) in `FieldDataSection.vue` with KrishiSetu design tokens.
+   - Pushed cleanly to GitHub (`origin main`) prior to branch integration, with safety checkpoint tags `backup-pre-hermes-commit` and `backup-post-hermes-commit`.
+
+2. **Senior Git Engineering Integration of `origin/anuska-development`**:
+   - **Audit & Problem Resolution**: Anuska's branch branched prior to the v2 modularization and modified a monolithic 3,900-line `Home.vue`. A raw `git merge` would have obliterated the v2 "Sky over the paddy" design system and violated the 26 automated design rules.
+   - **Porting Strategy**: Created a clean integration branch (`integrate/earth-engine-gemini`). Ported her genuine technical contributions while leaving behind monolithic anti-patterns:
+     - **Google Earth Engine Integration**: Integrated `backend/services/earth_engine_service.py` featuring Sentinel-2 Level-2A surface reflectance, Cloud Score+ cloud masking, and defensive offline fallback NDVI synthesis so the UI never renders null or crashes when GEE credentials are absent.
+     - **Upload Size & MIME Guardrails**: Implemented 10MB file size ceiling and verified MIME image validation (`image/jpeg`, `image/png`, `image/webp`) on `/api/diagnose`.
+     - **Gemini Diagnostic Hardening**: Hardened system prompt constraints (*"Do not claim ICAR affiliation"*, structured `diagnosis_status` evaluation, and ungrounded query rejection).
+     - **Diagnostic Farm Context Passing**: Passed complete farm telemetry (`FarmContext`) from `Home.vue` into `/api/diagnose` so multimodal vision evaluates leaf pathology alongside soil, crop stage, and weather.
+     - **UI Token Compliance**: Adapted `FieldDataSection.vue` to display GEE Sentinel-2 telemetry metrics (observation date, Cloud Score+ clear pixel %, true-color RGB thumbnail, and provenance) strictly adhering to KrishiSetu design tokens (`--color-text-secondary`, tabular-nums, zero raw hex).
+
+3. **Git History & Rollback Safety Checkpoints**:
+   - Established non-destructive rollback checkpoints:
+     - `backup-pre-hermes-commit` (before Hermes commit)
+     - `backup-post-hermes-commit` (after Hermes commit)
+     - `pre-integration-backup-main` (before merging `integrate/earth-engine-gemini`)
+     - `v2.1-earth-engine-integrated` (release tag on merged `main`)
+   - Executed clean `--no-ff` merge into `main` (`acb0a13`) with full audit traceability.
+
+4. **Multi-Tier Quality Assurance**:
+   - Ran `node frontend/scripts/design-check.mjs --phase 7`: **26/26 design rules pass**.
+   - Ran `npm run build`: **1,632 modules transformed in 3.12s, zero build errors**.
+   - Ran `python backend/verify_krishisetu.py`: **100% verification pass across all 5 test suites**.
+
+### Why It Was Done
+* **Preserving Technical Value without Regressing Design**: Anuska solved critical agronomic and security needs (real Sentinel-2 imagery, upload DOS protection, anti-hallucination guardrails). Senior git engineering demands preserving the contributor's true technical value while defending architectural integrity, file size caps, and design compliance.
+* **Non-Destructive Rollback Guarantee**: Enterprise engineering standards require that any integration can be instantly rolled back to an exact known good state via immutable Git tags (`git checkout pre-integration-backup-main` or `git revert -m 1 acb0a13`).
+
+---
+
 ## 📊 Summary of System Status
 
 | Component | Status | Verification Metric |
 | :--- | :---: | :--- |
-| **Backend API** | **Active** | FastAPI running on `http://127.0.0.1:8000` |
+| **Backend API** | **Active** | FastAPI running on `http://127.0.0.1:8000` with Earth Engine & Gemini |
 | **Frontend PWA** | **Active** | Vite Vue 3 running on `http://localhost:5173` |
 | **Design Compliance** | **100% Pass** | `npm run check -- --phase 7` (26/26 rules passing) |
-| **Vue File Limits** | **100% Pass** | Max lines: `Home.vue` (595 lines $\le 600$), all others $\le 513$ lines |
-| **Production Build** | **Success** | `npm run build` compiles in 7.8s (`dist/` with PWA manifest & SW) |
-| **Design Specification** | **Synced** | Root `design/` directory with `DESIGN.md`, `tokens.json`, `painting-prompt.md` |
-| **Remote Repository** | **Synced** | [neurelith/krishisetu](https://github.com/neurelith/krishisetu) (clean `main` branch) |
+| **Vue File Limits** | **100% Pass** | `Home.vue` (595 lines $\le 600$), all others $\le 513$ lines |
+| **Production Build** | **Success** | `npm run build` compiles in 3.12s (`dist/` with PWA manifest & SW) |
+| **Verification Suite** | **100% Pass** | `python backend/verify_krishisetu.py` (5/5 suites passing) |
+| **Rollback Tags** | **Established** | `backup-pre-hermes-commit`, `backup-post-hermes-commit`, `pre-integration-backup-main`, `v2.1-earth-engine-integrated` |
+| **Remote Repository** | **Synced** | [neurelith/krishisetu](https://github.com/neurelith/krishisetu) (`main` branch) |
 
 
