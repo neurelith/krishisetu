@@ -167,17 +167,21 @@ export async function fetchSoilHealth(state = 'West Bengal', district = 'Nadia')
 }
 
 /**
- * Fetches Copernicus Sentinel-2 NDVI metrics.
+ * Fetches real Google Earth Engine Sentinel-2 NDVI telemetry.
  */
-export async function fetchSatelliteNDVI(lat = 23.47, lon = 88.55) {
+export async function fetchSatelliteNDVI(latitude, longitude) {
   try {
     const { data } = await api.get('/api/telemetry/satellite', {
-      params: { lat, lon }
+      params: { latitude, longitude }
     })
     return data
   } catch (err) {
     console.warn('Satellite fetch fallback:', err)
-    return null
+    return {
+      available: false,
+      source: 'Google Earth Engine / Sentinel-2',
+      reason: describeError(err, 'Satellite telemetry is unavailable.')
+    }
   }
 }
 

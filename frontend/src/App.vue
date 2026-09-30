@@ -144,9 +144,9 @@
   "standard": "in.gov.dpg.farmcontext.v1",
   "contract": {
     "farmer": { "farmer_id": "string", "name": "string", "language": "bn|hi|en" },
-    "location": { "state": "string", "district": "string", "coordinates": { "lat": "number", "lon": "number" } },
+    "location": { "state": "string", "district": "string", "coordinates": { "lat": "number|null", "lon": "number|null" } },
     "soil_health": { "nitrogen_kg_ha": "number", "ph": "number", "organic_carbon_pct": "number" },
-    "satellite": { "tile_reference": "string", "spectral_formula": "string", "ndvi": "number" }
+    "satellite": { "available": "boolean", "source": "string", "observation_date": "string|null", "ndvi": "number|null", "vegetation_status": "string|null", "clear_pixel_pct": "number|null", "reason": "string|null" }
   }
 }</code></pre>
           </div>

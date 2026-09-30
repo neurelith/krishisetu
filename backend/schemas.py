@@ -27,8 +27,8 @@ class GeoLocation(BaseModel):
     district: str = Field("Nadia", description="District name")
     block_tehsil: Optional[str] = Field("Nakashipara", description="Block / Tehsil / Mandal")
     village: Optional[str] = Field("Bethuadahari", description="Village name")
-    latitude: Optional[float] = Field(23.47, description="Latitude")
-    longitude: Optional[float] = Field(88.55, description="Longitude")
+    latitude: Optional[float] = Field(None, description="Latitude")
+    longitude: Optional[float] = Field(None, description="Longitude")
 
 
 class CropDetails(BaseModel):
@@ -68,16 +68,21 @@ class WeatherContext(BaseModel):
 
 
 class SatelliteContext(BaseModel):
-    source: str = Field("Copernicus Sentinel-2 Agro-Index", description="Satellite imagery provider")
-    tile_reference: str = Field("S2A_MSIL2A_20260924_T45QXE_R061", description="Copernicus Sentinel-2 Level-2A Tile Granule ID")
-    spectral_formula: str = Field("NDVI = (B8_NIR - B4_Red) / (B8_NIR + B4_Red)", description="Mathematical spectral index formula")
-    nir_band_reflectance: float = Field(0.78, description="Band 8 (Near-Infrared, 842nm) surface reflectance")
-    red_band_reflectance: float = Field(0.17, description="Band 4 (Red, 665nm) surface reflectance")
-    ndvi: float = Field(0.64, description="Calculated Normalized Difference Vegetation Index (0.0 to 1.0)")
-    ndvi_trend: str = Field("slight_drop_anomaly", description="'stable', 'increasing', 'slight_drop_anomaly', 'severe_dip'")
-    soil_moisture_index: float = Field(0.42, description="Normalized soil moisture index")
-    cloud_cover_pct: float = Field(20.0, description="Cloud cover percentage")
-    vegetation_vigor: str = Field("Moderate canopy vigor with localized chlorosis detected in sector B", description="Spectral interpretation")
+    available: bool = Field(False, description="Whether a usable satellite observation is available")
+    source: str = Field("Google Earth Engine / Sentinel-2", description="Satellite imagery provider")
+    observation_date: Optional[str] = Field(None, description="Acquisition date of the selected Sentinel-2 image")
+    latitude: Optional[float] = Field(None, description="Farm latitude used for the observation")
+    longitude: Optional[float] = Field(None, description="Farm longitude used for the observation")
+    ndvi: Optional[float] = Field(None, description="Cloud-masked Normalized Difference Vegetation Index")
+    b4_reflectance: Optional[float] = Field(None, description="Mean Sentinel-2 B4 surface reflectance")
+    b8_reflectance: Optional[float] = Field(None, description="Mean Sentinel-2 B8 surface reflectance")
+    scene_cloud_cover_pct: Optional[float] = Field(None, description="Scene-level Sentinel-2 cloud cover metadata")
+    clear_pixel_pct: Optional[float] = Field(None, description="Clear Sentinel-2 pixels within the sampled farm area")
+    clear_pixel_threshold: Optional[float] = Field(None, description="Cloud Score+ clear-pixel threshold")
+    vegetation_status: Optional[str] = Field(None, description="Transparent NDVI-threshold interpretation")
+    is_fresh: Optional[bool] = Field(None, description="Whether the observation is within the freshness window")
+    thumbnail_url: Optional[str] = Field(None, description="Earth Engine RGB thumbnail URL")
+    reason: Optional[str] = Field(None, description="Explanation when no usable observation is available")
 
 
 class DiagnosisResult(BaseModel):

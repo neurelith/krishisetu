@@ -85,8 +85,6 @@ def get_sample_state_payload(state: str) -> Dict[str, Any]:
             "jela": "Nadia",
             "block": "Nakashipara",
             "mouza_gram": "Bethuadahari",
-            "latitude": 23.47,
-            "longitude": 88.55,
             "fasal": "Rice (Aman Dhan)",
             "fasaler_jaat": "Swarna-Sub1",
             "mousom": "Kharif",
@@ -106,8 +104,6 @@ def get_sample_state_payload(state: str) -> Dict[str, Any]:
             "bristi_purbabhash_7d": 54.0,
             "bataser_goti": 14.2,
             "abohawar_obostha": "Humid / Active Showers",
-            "satellite_ndvi": 0.64,
-            "soil_moisture": 0.42,
         }
     elif "odisha" in s or "or" in s:
         return {
@@ -124,7 +120,6 @@ def get_sample_state_payload(state: str) -> Dict[str, Any]:
             "jaiba_angara_pct": 0.45,
             "ardrata": 83.0,
             "tapamatra": 31.2,
-            "satellite_ndvi": 0.62
         }
     else:
         return {
@@ -137,8 +132,6 @@ def get_sample_state_payload(state: str) -> Dict[str, Any]:
             "jila": "Purnia",
             "prakhand": "Kasba",
             "panchayat_gram": "Sabdalpur",
-            "latitude": 25.77,
-            "longitude": 87.47,
             "mukhya_fasal": "Rice (Dhan/Paddy)",
             "fasal_kism": "MTU-7029 (Swarna)",
             "mausam": "Kharif",
@@ -158,8 +151,6 @@ def get_sample_state_payload(state: str) -> Dict[str, Any]:
             "varsha_purvanuman_7d": 45.0,
             "hawa_ki_gati": 12.8,
             "mausam_sthiti": "Humid / Partly Cloudy",
-            "ndvi_man": 0.61,
-            "mitti_nami": 0.39,
         }
 
 

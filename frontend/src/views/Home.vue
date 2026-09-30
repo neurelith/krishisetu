@@ -30,7 +30,7 @@
       </div>
 
       <div class="profile-actions">
-        <button type="button" @click="refreshTelemetry" class="btn-gov-outline" :disabled="loadingTelemetry || currentContext.location.latitude == null || currentContext.location.longitude == null">
+        <button type="button" @click="refreshTelemetry" class="btn-gov-outline" :disabled="loadingTelemetry || !hasFarmCoordinates">
           <svg class="svg-icon" :class="{ 'spin': loadingTelemetry }" viewBox="0 0 24 24" stroke="currentColor" fill="none" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
           </svg>
@@ -65,6 +65,14 @@
           <input v-model="currentContext.location.district" autocomplete="address-level2" placeholder="Your district" @input="onFarmContextChanged" />
         </label>
         <label>
+          <span>Farm latitude</span>
+          <input v-model.number="currentContext.location.latitude" type="number" min="-90" max="90" step="any" placeholder="Latitude" @input="onFarmCoordinatesChanged" />
+        </label>
+        <label>
+          <span>Farm longitude</span>
+          <input v-model.number="currentContext.location.longitude" type="number" min="-180" max="180" step="any" placeholder="Longitude" @input="onFarmCoordinatesChanged" />
+        </label>
+        <label>
           <span>Growth stage</span>
           <input v-model="currentContext.crop.crop_stage" autocomplete="off" placeholder="e.g. Flowering" @input="onFarmContextChanged" />
         </label>
@@ -90,7 +98,7 @@
         </div>
         <div class="matrix-sync-tag">
           <span class="live-dot"></span>
-          <span>Sample baselines · not linked to a farm record</span>
+          <span>Weather and soil baselines · live satellite on sync</span>
         </div>
       </div>
 
@@ -217,16 +225,23 @@
         <!-- Stream 3: Satellite NDVI (Copernicus Sentinel-2) -->
         <div class="matrix-column border-left-divider">
           <div class="column-header">
-            <span class="station-provenance">Satellite metrics · sample baseline</span>
-            <h3>Orbital Spectral Telemetry</h3>
-            <span class="source-tag">Sample spectral values · no satellite fetch</span>
+            <span class="station-provenance">Google Earth Engine · Sentinel-2</span>
+            <h3>Satellite Intelligence</h3>
+            <span class="source-tag">Cloud Score+ masked observation</span>
           </div>
 
-          <!-- Vegetative Vigor Chlorophyll Spectrum Gauge -->
+          <p v-if="!hasFarmCoordinates" class="stream-risk-note">
+            Add farm coordinates to enable live satellite intelligence.
+          </p>
+          <p v-else-if="!currentContext.satellite.available && currentContext.satellite.reason" class="stream-risk-note">
+            {{ currentContext.satellite.reason }}
+          </p>
+
+          <template v-if="currentContext.satellite.available">
           <div class="telemetry-gauge-card highlight-gauge-forest">
             <div class="gauge-header">
-              <span class="gauge-label">Canopy Vegetative Vigor (NDVI)</span>
-              <span class="gauge-value text-forest font-bold">{{ currentContext.satellite.ndvi }} (Dense Canopy)</span>
+              <span class="gauge-label">NDVI</span>
+              <span class="gauge-value text-forest font-bold">{{ currentContext.satellite.ndvi }}</span>
             </div>
             <div class="gauge-track-container">
               <div class="gauge-bar-track spectrum-gradient-track">
@@ -240,32 +255,41 @@
             </div>
           </div>
 
-          <div class="metrics-tabular">
-            <div class="metric-row">
-              <span class="metric-key">Surface Soil Moisture Index</span>
-              <span class="metric-val" v-text="currentContext.satellite.soil_moisture_index"></span>
-            </div>
-            <div class="metric-row">
-              <span class="metric-key">Cloud Cover Mask</span>
-              <span class="metric-val"><span v-text="currentContext.satellite.cloud_cover_pct"></span>%</span>
-            </div>
+          <div v-if="currentContext.satellite.thumbnail_url" class="satellite-thumbnail">
+            <img :src="currentContext.satellite.thumbnail_url" alt="Cloud-masked Sentinel-2 RGB farm-area thumbnail" />
           </div>
 
-          <!-- Mathematical Spectral Provenance Box -->
-          <div class="provenance-technical-box">
-            <div class="formula-technical-row">
-              <code v-text="currentContext.satellite.spectral_formula || 'NDVI = (B08_NIR - B04_Red) / (B08_NIR + B04_Red)'"></code>
+          <div class="metrics-tabular">
+            <div class="metric-row">
+              <span class="metric-key">Vegetation status</span>
+              <span class="metric-val">{{ currentContext.satellite.vegetation_status }}</span>
             </div>
-            <div class="granule-technical-row">
-              <span>Granule:</span>
-              <code class="granule-code" v-text="currentContext.satellite.tile_reference || 'S2A_MSIL2A_20260924_T45QXE_R061'"></code>
+            <div class="metric-row">
+              <span class="metric-key">Observation date</span>
+              <span class="metric-val">{{ currentContext.satellite.observation_date }}</span>
+            </div>
+            <div class="metric-row">
+              <span class="metric-key">Clear pixels (Cloud Score+ ≥ {{ currentContext.satellite.clear_pixel_threshold }})</span>
+              <span class="metric-val">{{ currentContext.satellite.clear_pixel_pct }}%</span>
+            </div>
+            <div class="metric-row">
+              <span class="metric-key">Scene cloud cover</span>
+              <span class="metric-val">{{ currentContext.satellite.scene_cloud_cover_pct ?? 'Unavailable' }}<span v-if="currentContext.satellite.scene_cloud_cover_pct != null">%</span></span>
+            </div>
+            <div class="metric-row">
+              <span class="metric-key">B4 / B8 reflectance</span>
+              <span class="metric-val">{{ currentContext.satellite.b4_reflectance }} / {{ currentContext.satellite.b8_reflectance }}</span>
             </div>
           </div>
 
           <div class="stream-risk-note">
-            <span class="risk-label">Canopy Reflectance Assessment:</span>
-            <p class="font-editorial-italic">"Sentinel-2 MSI Level-2A canopy reflectance indicates robust vegetative vigor across 10m grid cell."</p>
+            <span class="risk-label">Observation quality:</span>
+            <p class="font-editorial-italic">
+              {{ currentContext.satellite.is_fresh ? 'Fresh observation (within 30 days).' : 'Observation is older than 30 days.' }}
+              NDVI = (B8 - B4) / (B8 + B4).
+            </p>
           </div>
+          </template>
         </div>
       </div>
 
@@ -892,16 +916,21 @@ const currentContext = reactive({
     microclimate_risk: 'Elevated fungal sporulation risk (RH > 82%)'
   },
   satellite: {
-    source: 'Sample baseline (no satellite imagery fetched)',
-    tile_reference: 'S2A_MSIL2A_20260924_T45QXE_R061',
-    spectral_formula: 'NDVI = (B08_NIR - B04_Red) / (B08_NIR + B04_Red)',
-    nir_band_reflectance: 0.78,
-    red_band_reflectance: 0.17,
-    ndvi: 0.64,
-    ndvi_trend: 'slight_drop_anomaly',
-    soil_moisture_index: 0.42,
-    cloud_cover_pct: 20.0,
-    vegetation_vigor: 'Moderate canopy vigor; localized chlorosis in sector B'
+    available: false,
+    source: 'Google Earth Engine / Sentinel-2',
+    observation_date: null,
+    latitude: null,
+    longitude: null,
+    ndvi: null,
+    b4_reflectance: null,
+    b8_reflectance: null,
+    scene_cloud_cover_pct: null,
+    clear_pixel_pct: null,
+    clear_pixel_threshold: null,
+    vegetation_status: null,
+    is_fresh: null,
+    thumbnail_url: null,
+    reason: null
   },
   diagnosis: null
 })
@@ -928,6 +957,14 @@ const isContextReady = computed(() => Boolean(
   currentContext.location.district.trim() &&
   currentContext.crop.crop_stage.trim()
 ))
+const hasFarmCoordinates = computed(() =>
+  currentContext.location.latitude !== null &&
+  currentContext.location.latitude !== '' &&
+  currentContext.location.longitude !== null &&
+  currentContext.location.longitude !== '' &&
+  Number.isFinite(Number(currentContext.location.latitude)) &&
+  Number.isFinite(Number(currentContext.location.longitude))
+)
 
 // Voice STT State
 const isRecording = ref(false)
@@ -987,6 +1024,7 @@ const SAMPLE_BENCHMARKS = {
           cost_level: 'Moderate (₹320 / acre)',
           expected_outcome: 'Enhances mechanical resistance of culm'
         }
+
       ],
       soil_conditioning_steps: [
         'Current soil pH is 5.8 (acidic); avoid lime during active pathogen sporulation.',
@@ -1252,10 +1290,23 @@ function onFarmContextChanged() {
     },
     location: {
       state: currentContext.location.state,
-      district: currentContext.location.district
+      district: currentContext.location.district,
+      latitude: currentContext.location.latitude,
+      longitude: currentContext.location.longitude
     },
     farmer: { preferred_language: currentContext.farmer.preferred_language }
   })
+}
+
+function onFarmCoordinatesChanged() {
+  currentContext.satellite = {
+    available: false,
+    source: 'Google Earth Engine / Sentinel-2',
+    reason: hasFarmCoordinates.value
+      ? 'Farm coordinates changed. Sync telemetry to fetch a new observation.'
+      : 'Farm coordinates are required for satellite telemetry.'
+  }
+  onFarmContextChanged()
 }
 
 function toggleVoiceRecording() {
@@ -1351,13 +1402,22 @@ async function generateAdvisoryPlan() {
 async function refreshTelemetry() {
   loadingTelemetry.value = true
   try {
+    currentContext.satellite = {
+      available: false,
+      source: 'Google Earth Engine / Sentinel-2',
+      reason: hasFarmCoordinates.value
+        ? 'Satellite telemetry is being refreshed.'
+        : 'Farm coordinates are required for satellite telemetry.'
+    }
     const [w, s, sat] = await Promise.all([
-      fetchAgroWeather(currentContext.location.latitude, currentContext.location.longitude),
+      hasFarmCoordinates.value
+        ? fetchAgroWeather(currentContext.location.latitude, currentContext.location.longitude)
+        : Promise.resolve(null),
       fetchSoilHealth(currentContext.location.state, currentContext.location.district),
       fetchSatelliteNDVI(currentContext.location.latitude, currentContext.location.longitude)
     ])
-    Object.assign(currentContext.weather, w)
-    Object.assign(currentContext.soil_health, s)
+    if (w) Object.assign(currentContext.weather, w)
+    if (s) Object.assign(currentContext.soil_health, s)
     Object.assign(currentContext.satellite, sat)
     await saveOfflineItem('latest_context', JSON.parse(JSON.stringify(currentContext)))
   } catch (err) {
@@ -1511,6 +1571,21 @@ const audioTimeDisplay = computed(() => {
 .farmer-context-grid select:focus-visible {
   outline: 2px solid var(--forest-600);
   outline-offset: 1px;
+}
+
+.satellite-thumbnail {
+  margin: 12px 0;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+}
+
+.satellite-thumbnail img {
+  display: block;
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
 }
 
 .benchmark-controls {

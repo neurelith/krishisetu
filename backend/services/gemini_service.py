@@ -198,6 +198,14 @@ class GeminiAgriService:
         crop_name = context.crop.name
         condition = context.diagnosis.condition_detected if context.diagnosis else "Preventive Health Monitoring"
         severity = context.diagnosis.severity if context.diagnosis else "Low"
+        if context.satellite.available:
+            satellite_summary = (
+                f"available from {context.satellite.source} on {context.satellite.observation_date}: "
+                f"NDVI={context.satellite.ndvi} ({context.satellite.vegetation_status}); "
+                f"clear pixels={context.satellite.clear_pixel_pct}%"
+            )
+        else:
+            satellite_summary = f"unavailable: {context.satellite.reason or 'no usable observation'}"
 
         if not self.client:
             return self.unavailable_contextual_advisory(context)
@@ -214,8 +222,8 @@ class GeminiAgriService:
                 f"K={context.soil_health.potassium_kg_ha} kg/ha, Organic Carbon={context.soil_health.organic_carbon_pct}%, pH={context.soil_health.ph}\n"
                 f"WEATHER (source: {context.weather.source}): Temp={context.weather.temperature_c}°C, Relative Humidity={context.weather.relative_humidity_pct}%, "
                 f"7-Day Rain Forecast={context.weather.rainfall_forecast_7d_mm}mm, Risk={context.weather.microclimate_risk}\n"
-                f"SATELLITE DATA (source: {context.satellite.source}): NDVI={context.satellite.ndvi} ({context.satellite.ndvi_trend}), Soil Moisture={context.satellite.soil_moisture_index}\n"
-                "Treat any soil, weather, or satellite source marked as a sample baseline as unavailable.\n"
+                f"SATELLITE DATA: {satellite_summary}. Do not use unavailable satellite data as evidence. NDVI is vegetation reflectance, not soil moisture.\n"
+                "Treat any soil or weather source marked as a sample baseline as unavailable.\n"
                 f"RETRIEVED KNOWLEDGE:\n{rag_summary}\n\n"
                 f"TARGET LANGUAGE: {preferred_lang}.\n"
                 "Return status='uncertain' with no recommendations if the context does not support safe, specific advice. "

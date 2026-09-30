@@ -8,8 +8,9 @@ import logging
 from typing import Optional
 
 import httpx
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 from schemas import SatelliteContext, SoilHealthCard, WeatherContext
+from services.earth_engine_service import get_satellite_telemetry as query_satellite_telemetry
 
 logger = logging.getLogger("krishisetu.telemetry")
 
@@ -132,39 +133,14 @@ def get_soil_health(
     )
 
 
-@router.get("/satellite", response_model=SatelliteContext, summary="Fetch Sentinel-2 NDVI telemetry")
+@router.get("/satellite", response_model=SatelliteContext, summary="Fetch Google Earth Engine Sentinel-2 telemetry")
 def get_satellite_telemetry(
-    lat: float = 23.47,
-    lon: float = 88.55,
+    latitude: Optional[float] = Query(None, ge=-90, le=90),
+    longitude: Optional[float] = Query(None, ge=-180, le=180),
 ):
-    """
-    Returns Copernicus Sentinel-2 derived NDVI and canopy moisture index
-    with mathematical spectral provenance derived dynamically from coordinates.
-    """
-    # Deterministic geo-spatial reflectance synthesis based on coordinates
-    seed = (abs(lat) * 31.7 + abs(lon) * 17.3) % 10.0
-    nir_band = round(0.70 + (seed / 10.0) * 0.16, 2)
-    red_band = round(0.14 + ((10.0 - seed) / 10.0) * 0.08, 2)
-    calculated_ndvi = round((nir_band - red_band) / (nir_band + red_band), 2)
-    soil_moisture = round(0.35 + (seed / 10.0) * 0.18, 2)
-
-    tile_prefix = "T45QXE" if lat < 25.0 else "T45QYF"
-    tile_ref = f"S2A_MSIL2A_20260924_{tile_prefix}_R061"
-
-    vigor = "Optimal photosynthetic canopy vigor across survey plots" if calculated_ndvi >= 0.65 else (
-        "Moderate canopy vigor with localized chlorosis detected in sector B" if calculated_ndvi >= 0.50 else
-        "High vegetative stress and foliar degradation detected"
-    )
-
-    return SatelliteContext(
-        source="Copernicus Sentinel-2 Level-2A (ESA Hub)",
-        tile_reference=tile_ref,
-        spectral_formula="NDVI = (B8_NIR - B4_Red) / (B8_NIR + B4_Red)",
-        nir_band_reflectance=nir_band,
-        red_band_reflectance=red_band,
-        ndvi=calculated_ndvi,
-        ndvi_trend="stable_healthy" if calculated_ndvi >= 0.60 else "slight_drop_anomaly",
-        soil_moisture_index=soil_moisture,
-        cloud_cover_pct=round(12.0 + (seed * 1.5), 1),
-        vegetation_vigor=vigor,
-    )
+    if latitude is None or longitude is None:
+        return SatelliteContext(
+            available=False,
+            reason="Farm coordinates are required for satellite telemetry.",
+        )
+    return query_satellite_telemetry(latitude, longitude)
