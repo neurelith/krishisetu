@@ -6,7 +6,7 @@ Environmental Telemetry (Weather, Soil Health Card, Sentinel-2 NDVI), and Cross-
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Literal, Optional
 from pydantic import BaseModel, Field, field_validator
 
 
@@ -81,6 +81,7 @@ class SatelliteContext(BaseModel):
 
 
 class DiagnosisResult(BaseModel):
+    diagnosis_status: Literal["complete", "uncertain", "unavailable"] = Field("complete", description="Whether image analysis produced a usable result")
     is_valid_crop_image: bool = Field(True, description="False if image is non-agricultural, animal, face, or invalid")
     rejection_reason: Optional[str] = Field(None, description="Explanation if image is not a recognized plant/crop")
     condition_detected: str = Field("Rice Sheath Blight (Rhizoctonia solani)", description="Pathology or pest name")

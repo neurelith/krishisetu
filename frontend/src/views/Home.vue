@@ -5,7 +5,7 @@
       <div class="banner-marker"></div>
       <div class="banner-body">
         <strong>Offline Resiliency Active:</strong>
-        <span>Viewing intelligence cached in browser IndexedDB. All diagnostic guidelines and previous advisories remain operational without connectivity.</span>
+        <span>Previously saved guidance may be available offline. New image diagnoses and advisories require a connection.</span>
       </div>
       <span class="badge-institutional badge-slate">IndexedDB Local Cache</span>
     </div>
@@ -20,33 +20,62 @@
         </div>
         <div>
           <div class="farmer-title-row">
-            <h1><span v-text="currentContext.farmer.name"></span></h1>
-            <span class="badge-institutional badge-forest"><span v-text="currentContext.location.district"></span>, <span v-text="currentContext.location.state"></span></span>
-            <span class="badge-institutional badge-slate">ID: <span v-text="currentContext.farmer.farmer_id"></span></span>
+            <h1><span v-text="currentContext.farmer.name || 'Your farm'"></span></h1>
+            <span class="badge-institutional badge-forest">{{ [currentContext.location.district, currentContext.location.state].filter(Boolean).join(', ') || 'Location not set' }}</span>
           </div>
           <p class="farmer-meta-line">
-            Crop: <strong v-text="currentContext.crop.name"></strong> (<span v-text="currentContext.crop.variety"></span>) · Growth Stage: <em><span v-text="currentContext.crop.crop_stage"></span></em> · Day <span v-text="currentContext.crop.days_since_sowing"></span> Post-Sowing
+            Crop: <strong>{{ currentContext.crop.name || 'Not set' }}</strong><span v-if="currentContext.crop.variety"> ({{ currentContext.crop.variety }})</span> · Growth stage: <em>{{ currentContext.crop.crop_stage || 'Not set' }}</em>
           </p>
         </div>
       </div>
 
       <div class="profile-actions">
-        <!-- Language Selector -->
-        <div class="lang-selector-group">
-          <label for="farmer-preferred-lang" class="selector-label">Advisory Language:</label>
-          <select id="farmer-preferred-lang" aria-label="Advisory Language" v-model="currentContext.farmer.preferred_language" @change="onLanguageChange" class="lang-dropdown">
-            <option value="bn">Bengali (বাংলা)</option>
-            <option value="hi">Hindi (हिन्दी)</option>
-            <option value="en">English (Global)</option>
-          </select>
-        </div>
-
-        <button type="button" @click="refreshTelemetry" class="btn-gov-outline" :disabled="loadingTelemetry">
+        <button type="button" @click="refreshTelemetry" class="btn-gov-outline" :disabled="loadingTelemetry || currentContext.location.latitude == null || currentContext.location.longitude == null">
           <svg class="svg-icon" :class="{ 'spin': loadingTelemetry }" viewBox="0 0 24 24" stroke="currentColor" fill="none" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
           </svg>
           <span>Sync Environmental Telemetry</span>
         </button>
+      </div>
+    </section>
+
+    <section class="farmer-context-card card-solid">
+      <div class="context-heading">
+        <div>
+          <h2>Your crop and location</h2>
+          <p>These details accompany your image and are used to tailor the advisory.</p>
+        </div>
+        <span class="badge-institutional badge-slate">Farm context</span>
+      </div>
+      <div class="farmer-context-grid">
+        <label>
+          <span>Crop</span>
+          <input v-model="currentContext.crop.name" autocomplete="off" placeholder="e.g. Rice" @input="onFarmContextChanged" />
+        </label>
+        <label>
+          <span>Variety (optional)</span>
+          <input v-model="currentContext.crop.variety" autocomplete="off" placeholder="e.g. Swarna" @input="onFarmContextChanged" />
+        </label>
+        <label>
+          <span>State</span>
+          <input v-model="currentContext.location.state" autocomplete="address-level1" placeholder="Your state" @input="onFarmContextChanged" />
+        </label>
+        <label>
+          <span>District</span>
+          <input v-model="currentContext.location.district" autocomplete="address-level2" placeholder="Your district" @input="onFarmContextChanged" />
+        </label>
+        <label>
+          <span>Growth stage</span>
+          <input v-model="currentContext.crop.crop_stage" autocomplete="off" placeholder="e.g. Flowering" @input="onFarmContextChanged" />
+        </label>
+        <label>
+          <span>Advisory language</span>
+          <select v-model="currentContext.farmer.preferred_language" @change="onFarmContextChanged">
+            <option value="bn">Bengali (বাংলা)</option>
+            <option value="hi">Hindi (हिन्दी)</option>
+            <option value="en">English</option>
+          </select>
+        </label>
       </div>
     </section>
 
@@ -57,11 +86,11 @@
           <svg class="svg-icon text-forest" viewBox="0 0 24 24" stroke="currentColor" fill="none" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5" />
           </svg>
-          <h2>Real-time environmental and orbital observation ledger</h2>
+          <h2>Environmental telemetry</h2>
         </div>
         <div class="matrix-sync-tag">
           <span class="live-dot"></span>
-          <span>Multi-Stream Fusion Active · 10m Ground Resolution</span>
+          <span>Sample baselines · not linked to a farm record</span>
         </div>
       </div>
 
@@ -69,9 +98,9 @@
         <!-- Stream 1: Agro-Weather (Open-Meteo) -->
         <div class="matrix-column">
           <div class="column-header">
-            <span class="station-provenance">Agro-Meteorology · Bethuadahari Station</span>
+            <span class="station-provenance">Agro-Meteorology · sample baseline</span>
             <h3>Atmospheric Microclimate</h3>
-            <span class="source-tag">Open-Meteo High-Resolution Station</span>
+            <span class="source-tag">Sample values · refresh requires farm coordinates</span>
           </div>
 
           <!-- Humidity Visual Warning Range Meter -->
@@ -118,9 +147,9 @@
         <!-- Stream 2: Soil Health Card (GOI SHC) -->
         <div class="matrix-column border-left-divider">
           <div class="column-header">
-            <span class="station-provenance">Pedological Testing Lab · ICAR-NBSS</span>
+            <span class="station-provenance">Soil metrics · sample baseline</span>
             <h3>Soil Fertility Matrix (SHC)</h3>
-            <span class="source-tag">Official Soil Health Card #<span v-text="currentContext.soil_health.card_id"></span></span>
+            <span class="source-tag">Sample soil values · not a farmer health card</span>
           </div>
 
           <!-- Soil Reaction pH Range Gauge -->
@@ -188,9 +217,9 @@
         <!-- Stream 3: Satellite NDVI (Copernicus Sentinel-2) -->
         <div class="matrix-column border-left-divider">
           <div class="column-header">
-            <span class="station-provenance">Copernicus Sentinel-2 MSI · Level-2A</span>
+            <span class="station-provenance">Satellite metrics · sample baseline</span>
             <h3>Orbital Spectral Telemetry</h3>
-            <span class="source-tag">ESA Copernicus 10m Resolution</span>
+            <span class="source-tag">Sample spectral values · no satellite fetch</span>
           </div>
 
           <!-- Vegetative Vigor Chlorophyll Spectrum Gauge -->
@@ -257,9 +286,16 @@
           <span class="badge-institutional badge-forest">Field Intake</span>
         </div>
 
-        <!-- Specimen Benchmark Selector (Segmented Tab Bar) -->
-        <div class="specimen-selector-bar">
-          <span class="selector-subheading">Select Clinical Test Specimen:</span>
+        <div class="benchmark-controls">
+          <button type="button" class="btn-gov-outline" @click="showBenchmarks = !showBenchmarks">
+            {{ showBenchmarks ? 'Hide Demo / Benchmark' : 'Demo / Benchmark' }}
+          </button>
+          <p v-if="showBenchmarks" class="benchmark-note">Sample images and prewritten outputs for demonstration only. They are not diagnoses of your crop.</p>
+        </div>
+
+        <!-- Explicit demo / benchmark selector -->
+        <div v-if="showBenchmarks" class="specimen-selector-bar">
+          <span class="selector-subheading">Choose a sample benchmark:</span>
           <div class="segmented-specimen-group">
             <button 
               @click="selectAndRunBenchmark('rice')" 
@@ -307,7 +343,8 @@
               type="file" 
               ref="fileInputRef" 
               @change="onFileSelected" 
-              accept="image/*" 
+              accept="image/jpeg,image/png,image/webp"
+              capture="environment"
               class="hidden-input-element" 
               aria-label="Specimen leaf photo upload"
               tabindex="-1"
@@ -319,19 +356,23 @@
             <div class="reticle-corner reticle-br"></div>
             <div class="reticle-crosshair"></div>
 
-            <img :src="previewImage" alt="Leaf Sample" width="480" height="320" class="specimen-rendered-image" />
+            <img v-if="previewImage" :src="previewImage" :alt="isDemoResult ? 'Sample benchmark image' : 'Selected crop image preview'" width="480" height="320" class="specimen-rendered-image" />
+            <div v-else class="specimen-empty-state">
+              <strong>Take or upload a crop photo</strong>
+              <span>Tap here to open your camera or choose an image.</span>
+            </div>
             <div class="viewfinder-overlay">
               <div class="viewfinder-tag">
                 <span class="tag-dot"></span>
-                <span>{{ selectedFileName || 'Specimen Photo' }}</span>
-                <span class="reticle-telemetry">VIS-RGB · Calibrated</span>
+                <span>{{ selectedFileName || 'No image selected' }}</span>
+                <span v-if="isDemoResult" class="reticle-telemetry">SAMPLE</span>
               </div>
               <button @click.stop="triggerFileInput" class="btn-change-photo" type="button">
                 <svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor" fill="none" aria-hidden="true">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
                   <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
                 </svg>
-                <span>Upload Custom</span>
+                <span>{{ previewImage ? 'Choose another photo' : 'Take or upload photo' }}</span>
               </button>
             </div>
           </div>
@@ -366,7 +407,7 @@
             <p class="transcript-quote font-editorial-italic">"{{ voiceTranscript }}"</p>
           </div>
           <p v-else class="voice-hint font-editorial-italic">
-            "Spoken farmer queries in Bengali or Hindi are transcribed locally and fused into Gemini's multi-source diagnostic reasoning."
+            Voice transcription is optional and is not currently included in the diagnosis request.
           </p>
         </div>
 
@@ -375,7 +416,7 @@
           <button 
             @click="runDiagnosis" 
             class="btn-gov-primary btn-execute-diagnosis w-full justify-center" 
-            :disabled="isDiagnosing || !previewImage"
+            :disabled="isDiagnosing || !selectedFileBlob || !isContextReady || isDemoResult || !isOnline"
             type="button"
           >
             <svg v-if="isDiagnosing" class="svg-icon spin" viewBox="0 0 24 24" stroke="currentColor" fill="none" aria-hidden="true">
@@ -384,14 +425,14 @@
             <svg v-else class="svg-icon" viewBox="0 0 24 24" stroke="currentColor" fill="none" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
             </svg>
-            <span>{{ isDiagnosing ? 'Analyzing Pathology with Google Gemini...' : 'Synthesize Multi-Modal Diagnosis & Advisory' }}</span>
+            <span>{{ isDiagnosing ? 'Analyzing crop image...' : 'Diagnose crop image' }}</span>
           </button>
         </div>
 
         <!-- Specimen Technical Metadata -->
         <div class="specimen-tech-bar">
-          <span>Inference Endpoint: <code>gemini-2.5-flash</code></span>
-          <span>Zero-Retention DPDP Act 2023 Compliant</span>
+          <span>Image is sent to the KrishiSetu diagnosis API for analysis.</span>
+          <span>Use the result as decision support, not a confirmed diagnosis.</span>
         </div>
       </section>
 
@@ -399,10 +440,24 @@
       <section class="diagnostic-evaluation-card card-solid">
         <div class="section-header-row">
           <div>
-            <h2>Verified diagnostic pathology and immediate action</h2>
-            <p class="section-sub">Computer Vision Clinical Match · Spectral & Phenological Correlation</p>
+            <h2>Image assessment and next steps</h2>
+            <p class="section-sub">Model-generated result · review with a local agricultural expert</p>
           </div>
           <span class="badge-institutional badge-sky">Laboratory Output</span>
+        </div>
+
+        <div v-if="isDemoResult" class="benchmark-result-notice">
+          Sample benchmark output. This is not a diagnosis of your image or farm.
+        </div>
+        <div v-if="diagnosisError" class="diagnosis-error-notice" role="alert">
+          {{ diagnosisError }}
+        </div>
+        <div v-if="advisoryError" class="diagnosis-error-notice" role="alert">
+          Advisory unavailable: {{ advisoryError }}
+        </div>
+        <div v-if="advisoryResult && !isDemoResult && advisoryResult.status !== 'success'" class="diagnosis-unavailable" role="status">
+          <h3>{{ advisoryResult.status === 'uncertain' ? 'Advisory uncertain' : 'Advisory unavailable' }}</h3>
+          <p>{{ advisoryResult.summary_advisory || 'No treatment recommendations are available.' }}</p>
         </div>
 
         <!-- Skeleton Loader for Loading State -->
@@ -414,6 +469,16 @@
           <div class="skeleton-block skeleton-shimmer h-20 w-full"></div>
         </div>
 
+        <div v-else-if="diagnosisResult && diagnosisResult.diagnosis_status === 'unavailable'" class="diagnosis-unavailable" role="status">
+          <h3>Diagnosis unavailable</h3>
+          <p>{{ diagnosisResult.rejection_reason || 'The image could not be analyzed. Check your connection and try again with a clear crop photo.' }}</p>
+        </div>
+
+        <div v-else-if="diagnosisResult && diagnosisResult.diagnosis_status === 'uncertain'" class="diagnosis-unavailable" role="status">
+          <h3>Uncertain image assessment</h3>
+          <p>No disease was identified with enough confidence to provide a diagnosis or advisory. Try a clear, close-up photo and consult a local agricultural expert.</p>
+        </div>
+
         <!-- Guardrail Alert (Rejection of Non-Agricultural / Non-Crop Input) -->
         <div v-else-if="diagnosisResult && !diagnosisResult.is_valid_crop_image" class="guardrail-alert-box">
           <div class="alert-icon-frame">
@@ -422,9 +487,9 @@
             </svg>
           </div>
           <div>
-            <h3 class="guardrail-title">Image Validation Guardrail Activated</h3>
+            <h3 class="guardrail-title">This image could not be assessed as a crop</h3>
             <p v-text="diagnosisResult.rejection_reason"></p>
-            <span class="guardrail-sub">Model: <span v-text="diagnosisResult.model_used"></span> · Zero-Misdiagnosis Protection Standard</span>
+            <span class="guardrail-sub">Model: <span v-text="diagnosisResult.model_used"></span></span>
           </div>
         </div>
 
@@ -440,15 +505,11 @@
             <div class="diag-match-badge">
               <div class="match-score-row">
                 <span class="match-percentage">{{ Math.round(diagnosisResult.confidence * 100) }}%</span>
-                <div class="certainty-segments" title="Clinical Confidence: 94%">
-                  <span class="segment active"></span>
-                  <span class="segment active"></span>
-                  <span class="segment active"></span>
-                  <span class="segment active"></span>
-                  <span class="segment active"></span>
+                <div class="certainty-segments" :title="`Model-reported confidence: ${Math.round(diagnosisResult.confidence * 100)}%`">
+                  <span v-for="segment in 5" :key="segment" class="segment" :class="{ active: segment <= Math.round(diagnosisResult.confidence * 5) }"></span>
                 </div>
               </div>
-              <span class="match-label">Clinical Match (High Certainty)</span>
+              <span class="match-label">Model-reported confidence</span>
             </div>
           </div>
 
@@ -477,8 +538,8 @@
 
           <!-- Bottom Status Strip -->
           <div class="lab-provenance-strip">
-            <span>Validation Standard: <strong>ICAR-CRRI Protocol v2.4</strong></span>
-            <span>Clinical Precision Tier: <strong>High Confidence (>90%)</strong></span>
+            <span>Assessment: <strong>{{ isDemoResult ? 'Sample benchmark' : 'Gemini model output' }}</strong></span>
+            <span>Confidence: <strong>Model-reported, not calibrated</strong></span>
           </div>
         </div>
 
@@ -492,16 +553,19 @@
     </div>
 
     <!-- Integrated Biological Pathogen Etiology & Bio-Fungicidal Cycle Infographic -->
-    <InfographicPathogenCycle v-if="diagnosisResult && diagnosisResult.is_valid_crop_image" />
+    <div v-if="isDemoResult && diagnosisResult && diagnosisResult.is_valid_crop_image" class="post-diagnosis-infographics">
+      <InfographicPathogenCycle />
+    </div>
 
     <!-- Stage 4: Comprehensive Regenerative Action Dossier (Full-Width Publication Grade) -->
-    <section v-if="advisoryResult && diagnosisResult?.is_valid_crop_image" class="advisory-full-dossier card-solid">
+    <section v-if="advisoryResult && (isDemoResult || advisoryResult.status === 'success') && diagnosisResult?.is_valid_crop_image && diagnosisResult?.diagnosis_status !== 'uncertain'" class="advisory-full-dossier card-solid">
       <!-- Dossier Masthead with Custom Voice Player -->
       <div class="dossier-masthead">
         <div class="masthead-left">
           <div class="dossier-badge-row">
+            <span v-if="isDemoResult" class="badge-institutional badge-soil">SAMPLE BENCHMARK</span>
             <span class="badge-institutional badge-forest">Regenerative Advisory Plan</span>
-            <span class="badge-institutional badge-slate">ICAR Guideline Grounded</span>
+            <span class="badge-institutional badge-slate">Generated from submitted farm context</span>
             <span class="timestamp-tag" v-text="advisoryResult.generated_at"></span>
           </div>
           <h2>Comprehensive agronomic management dossier</h2>
@@ -557,7 +621,7 @@
         </div>
 
         <!-- The Golden Hero Prescription Anchor (Primary Visual Gravitational Anchor) -->
-        <div class="golden-prescription-anchor">
+        <div v-if="isDemoResult" class="golden-prescription-anchor">
           <div class="prescription-masthead">
             <div class="prescription-tag-badge">
               <span class="live-pulse-dot" aria-hidden="true"></span>
@@ -604,7 +668,7 @@
         </div>
 
         <!-- Phased Chronological Treatment Roadmap Infographic -->
-        <InfographicTreatmentRoadmap />
+        <InfographicTreatmentRoadmap v-if="isDemoResult" />
 
         <!-- Prescribed Regenerative Interventions (Domain-Differentiated Grid) -->
         <div class="interventions-section">
@@ -704,7 +768,7 @@
         </div>
 
         <!-- Yield Protection & Farm Economics Assessment Infographic -->
-        <InfographicEconomicImpact />
+        <InfographicEconomicImpact v-if="isDemoResult" />
 
         <!-- Diagnostic Explainability & Multi-Source Reasoning Ledger (Full-Width Table) -->
         <div class="explainability-block">
@@ -714,7 +778,7 @@
             </svg>
             <div>
               <h4>Diagnostic explainability and multi-source reasoning ledger</h4>
-              <span>Auditable correlation between atmospheric telemetry, soil metrics, and ICAR guidelines</span>
+              <span>Evidence returned by retrieval and advisory generation</span>
             </div>
           </div>
           <div class="evidence-table-container">
@@ -739,21 +803,21 @@
 
         <!-- Unit Economics & Clinical Agronomic Notice -->
         <div class="economics-notice-strip">
-          <div class="economics-row">
+          <div v-if="isDemoResult" class="economics-row">
             <span class="badge-institutional badge-slate">Unit Economics</span>
             <span>Gemini Flash Inference: ₹0.12 / query · Smallholder Input Savings: ₹1,550 / acre · Benefit-Cost Ratio: 14:1</span>
           </div>
           <p class="clinical-disclaimer">
-            <strong>Clinical Agronomic Disclaimer:</strong> Assistive decision-support system grounded in ICAR regenerative guidelines. Always consult your local Block Agricultural Officer (BAO) or Krishi Vigyan Kendra (KVK) scientist before chemical application.
+            <strong>Decision-support notice:</strong> AI-generated guidance is not a confirmed diagnosis. Verify treatment recommendations with a local agricultural expert and follow product labels.
           </p>
         </div>
 
         <!-- Grounded ICAR Monographs -->
         <div v-if="advisoryResult.rag_sources && advisoryResult.rag_sources.length" class="monographs-box">
-          <span class="monograph-title">Grounded Research Monographs:</span>
+            <span class="monograph-title">Retrieved knowledge entries:</span>
           <div class="monograph-chips">
             <span v-for="src in advisoryResult.rag_sources" :key="src.id" class="badge-institutional badge-slate" :title="src.text">
-              ICAR: {{ src.topic }} ({{ src.region || 'National' }})
+              {{ src.topic }} ({{ src.region || 'General' }})
             </span>
           </div>
         </div>
@@ -784,31 +848,31 @@ const { isOnline, saveOfflineItem, getOfflineItem } = useOfflineStorage()
 const currentContext = reactive({
   standard_version: 'in.gov.dpg.farmcontext.v1',
   farmer: {
-    farmer_id: 'IN-WB-NAD-0042',
-    name: 'Subhash Mondal',
-    phone: '+919876543210',
-    preferred_language: 'bn',
-    literacy_profile: 'audio_preferred',
+    farmer_id: '',
+    name: '',
+    phone: '',
+    preferred_language: 'en',
+    literacy_profile: 'text_preferred',
     voice_observation: ''
   },
   location: {
-    state: 'West Bengal',
-    district: 'Nadia',
-    block_tehsil: 'Nakashipara',
-    village: 'Bethuadahari',
-    latitude: 23.47,
-    longitude: 88.55
+    state: '',
+    district: '',
+    block_tehsil: '',
+    village: '',
+    latitude: null,
+    longitude: null
   },
   crop: {
-    name: 'Rice (Paddy)',
-    variety: 'Swarna-Sub1',
-    season: 'Kharif',
-    crop_stage: 'Tillering to Panicle Initiation',
-    sowing_date: '2026-07-12',
-    days_since_sowing: 78
+    name: '',
+    variety: '',
+    season: '',
+    crop_stage: '',
+    sowing_date: null,
+    days_since_sowing: null
   },
   soil_health: {
-    source: 'Government of India Soil Health Card (SHC)',
+    source: 'Sample baseline (not linked to a farmer soil test)',
     card_id: 'SHC-WB-2026-8819',
     lab_test_cert: 'ICAR-NBSS-LUP/2026/WB-089',
     nitrogen_kg_ha: 185.0,
@@ -819,7 +883,7 @@ const currentContext = reactive({
     deficiencies: ['Nitrogen Low (<280 kg/ha)', 'Low Organic Carbon (<0.5%)', 'Acidic Alluvial Soil']
   },
   weather: {
-    source: 'Open-Meteo Agro-Meteorology API',
+    source: 'Sample baseline (not linked to this location)',
     temperature_c: 31.8,
     relative_humidity_pct: 86.0,
     rainfall_last_24h_mm: 18.5,
@@ -828,7 +892,7 @@ const currentContext = reactive({
     microclimate_risk: 'Elevated fungal sporulation risk (RH > 82%)'
   },
   satellite: {
-    source: 'Copernicus Sentinel-2 Level-2A',
+    source: 'Sample baseline (no satellite imagery fetched)',
     tile_reference: 'S2A_MSIL2A_20260924_T45QXE_R061',
     spectral_formula: 'NDVI = (B08_NIR - B04_Red) / (B08_NIR + B04_Red)',
     nir_band_reflectance: 0.78,
@@ -848,12 +912,22 @@ const isDiagnosing = ref(false)
 const isGeneratingAdvisory = ref(false)
 const previewImage = ref(null)
 const selectedFileName = ref('')
-const selectedSample = ref('rice')
+const selectedSample = ref(null)
 const fileInputRef = ref(null)
 const selectedFileBlob = ref(null)
 const diagnosisResult = ref(null)
 const advisoryResult = ref(null)
 const showEnTranslation = ref(false)
+const showBenchmarks = ref(false)
+const isDemoResult = ref(false)
+const diagnosisError = ref('')
+const advisoryError = ref('')
+const isContextReady = computed(() => Boolean(
+  currentContext.crop.name.trim() &&
+  currentContext.location.state.trim() &&
+  currentContext.location.district.trim() &&
+  currentContext.crop.crop_stage.trim()
+))
 
 // Voice STT State
 const isRecording = ref(false)
@@ -1102,52 +1176,33 @@ const SAMPLE_BENCHMARKS = {
 }
 
 onMounted(async () => {
-  const cachedContext = await getOfflineItem('latest_context')
-  if (cachedContext) {
-    Object.assign(currentContext, cachedContext)
-  }
-
-  const cachedAdvisory = await getOfflineItem('latest_advisory')
-  if (cachedAdvisory) {
-    advisoryResult.value = cachedAdvisory
-  }
-
-  const cachedDiagnosis = await getOfflineItem('latest_diagnosis')
-  if (cachedDiagnosis) {
-    diagnosisResult.value = cachedDiagnosis
-  }
-
-  // Pre-load default benchmark with live dossier so screen is immediately rich and never empty
-  if (!diagnosisResult.value) {
-    loadSampleLeaf('rice', true)
-  } else {
-    loadSampleLeaf('rice', false)
+  const savedContext = await getOfflineItem('farmer_context')
+  if (savedContext) {
+    Object.assign(currentContext.crop, savedContext.crop || {})
+    Object.assign(currentContext.location, savedContext.location || {})
+    Object.assign(currentContext.farmer, savedContext.farmer || {})
   }
 })
 
 function selectAndRunBenchmark(type) {
-  loadSampleLeaf(type, true)
+  loadSampleLeaf(type)
 }
 
-function loadSampleLeaf(type, autoApply = false) {
+function loadSampleLeaf(type) {
   selectedSample.value = type
   const sample = SAMPLE_BENCHMARKS[type]
   if (!sample) return
 
+  isDemoResult.value = true
+  currentContext.diagnosis = null
+  diagnosisError.value = ''
+  advisoryError.value = ''
+  if (fileInputRef.value) fileInputRef.value.value = ''
   previewImage.value = sample.url
   selectedFileName.value = sample.label
-  currentContext.crop.name = sample.crop
-
-  fetch(sample.url)
-    .then(res => res.blob())
-    .then(blob => {
-      selectedFileBlob.value = blob
-    })
-
-  if (autoApply) {
-    diagnosisResult.value = sample.diagnosis
-    advisoryResult.value = sample.advisory
-  }
+  selectedFileBlob.value = null
+  diagnosisResult.value = sample.diagnosis
+  advisoryResult.value = sample.advisory
 }
 
 function triggerFileInput() {
@@ -1157,6 +1212,13 @@ function triggerFileInput() {
 function onFileSelected(event) {
   const file = event.target.files?.[0]
   if (file) {
+    isDemoResult.value = false
+    selectedSample.value = null
+    diagnosisResult.value = null
+    advisoryResult.value = null
+    currentContext.diagnosis = null
+    diagnosisError.value = ''
+    advisoryError.value = ''
     selectedFileBlob.value = file
     selectedFileName.value = file.name
     selectedSample.value = 'custom'
@@ -1166,6 +1228,34 @@ function onFileSelected(event) {
     }
     reader.readAsDataURL(file)
   }
+}
+
+function onFarmContextChanged() {
+  if (isDemoResult.value) {
+    previewImage.value = null
+    selectedFileBlob.value = null
+    selectedFileName.value = ''
+    selectedSample.value = null
+    if (fileInputRef.value) fileInputRef.value.value = ''
+  }
+  diagnosisResult.value = null
+  advisoryResult.value = null
+  currentContext.diagnosis = null
+  isDemoResult.value = false
+  diagnosisError.value = ''
+  advisoryError.value = ''
+  saveOfflineItem('farmer_context', {
+    crop: {
+      name: currentContext.crop.name,
+      variety: currentContext.crop.variety,
+      crop_stage: currentContext.crop.crop_stage
+    },
+    location: {
+      state: currentContext.location.state,
+      district: currentContext.location.district
+    },
+    farmer: { preferred_language: currentContext.farmer.preferred_language }
+  })
 }
 
 function toggleVoiceRecording() {
@@ -1209,24 +1299,32 @@ function toggleVoiceRecording() {
 }
 
 async function runDiagnosis() {
-  if (!selectedFileBlob.value) return
+  if (!selectedFileBlob.value || !isContextReady.value || isDemoResult.value) return
 
   isDiagnosing.value = true
   diagnosisResult.value = null
+  advisoryResult.value = null
+  diagnosisError.value = ''
+  advisoryError.value = ''
+  currentContext.diagnosis = null
 
   try {
-    const res = await diagnoseCropDisease(selectedFileBlob.value, currentContext.crop.name)
+    const contextPayload = JSON.parse(JSON.stringify(currentContext))
+    const res = await diagnoseCropDisease(selectedFileBlob.value, contextPayload)
     diagnosisResult.value = res
     currentContext.diagnosis = res
 
-    await saveOfflineItem('latest_diagnosis', res)
-    await saveOfflineItem('latest_context', JSON.parse(JSON.stringify(currentContext)))
+    if (res.diagnosis_status === 'complete') {
+      await saveOfflineItem('latest_diagnosis', res)
+      await saveOfflineItem('latest_context', JSON.parse(JSON.stringify(currentContext)))
+    }
 
-    if (res.is_valid_crop_image) {
+    if (res.diagnosis_status === 'complete' && res.is_valid_crop_image) {
       await generateAdvisoryPlan()
     }
   } catch (err) {
     console.error('Diagnosis error:', err)
+    diagnosisError.value = err.message || 'Diagnosis is unavailable. Please try again.'
   } finally {
     isDiagnosing.value = false
   }
@@ -1234,13 +1332,17 @@ async function runDiagnosis() {
 
 async function generateAdvisoryPlan() {
   isGeneratingAdvisory.value = true
+  advisoryError.value = ''
   try {
     const payload = JSON.parse(JSON.stringify(currentContext))
     const res = await generateRegenerativeAdvisory(payload)
     advisoryResult.value = res
-    await saveOfflineItem('latest_advisory', res)
+    if (res.status === 'success') {
+      await saveOfflineItem('latest_advisory', res)
+    }
   } catch (err) {
     console.error('Advisory generation error:', err)
+    advisoryError.value = err.message || 'Please try again.'
   } finally {
     isGeneratingAdvisory.value = false
   }
@@ -1262,12 +1364,6 @@ async function refreshTelemetry() {
     console.error('Failed to sync telemetry:', err)
   } finally {
     loadingTelemetry.value = false
-  }
-}
-
-function onLanguageChange() {
-  if (advisoryResult.value) {
-    generateAdvisoryPlan()
   }
 }
 
@@ -1355,6 +1451,127 @@ const audioTimeDisplay = computed(() => {
   display: flex;
   flex-direction: column;
   gap: 28px;
+}
+
+.offline-banner { order: 0; }
+.profile-ribbon { order: 1; }
+.farmer-context-card { order: 2; }
+.diagnostic-lab-grid { order: 3; }
+.telemetry-operations-matrix { order: 4; }
+.post-diagnosis-infographics { order: 5; }
+.advisory-full-dossier { order: 6; }
+
+.farmer-context-card {
+  padding: 18px 20px;
+}
+
+.context-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.context-heading p {
+  margin: 3px 0 0;
+  color: var(--slate-600);
+  font-size: 12px;
+}
+
+.farmer-context-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.farmer-context-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+  color: var(--slate-700);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.farmer-context-grid input,
+.farmer-context-grid select {
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  color: var(--slate-900);
+  font-size: 14px;
+}
+
+.farmer-context-grid input:focus-visible,
+.farmer-context-grid select:focus-visible {
+  outline: 2px solid var(--forest-600);
+  outline-offset: 1px;
+}
+
+.benchmark-controls {
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.benchmark-note {
+  margin: 8px 0 0;
+  color: var(--soil-800);
+  font-size: 12px;
+}
+
+.specimen-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 18px;
+  color: #f8fafc;
+  text-align: center;
+}
+
+.specimen-empty-state span {
+  color: #cbd5e1;
+  font-size: 12px;
+}
+
+.benchmark-result-notice,
+.diagnosis-error-notice,
+.diagnosis-unavailable {
+  margin: 14px 18px 0;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--slate-50);
+  color: var(--slate-800);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.benchmark-result-notice {
+  border-color: var(--soil-200);
+  background: var(--soil-50);
+  color: var(--soil-800);
+  font-weight: 700;
+}
+
+.diagnosis-error-notice {
+  border-color: var(--soil-200);
+  background: var(--soil-50);
+}
+
+.diagnosis-unavailable h3 {
+  margin: 0 0 4px;
+  font-size: 14px;
+}
+
+.diagnosis-unavailable p {
+  margin: 0;
 }
 
 /* Offline Notice Banner */
@@ -1767,6 +1984,11 @@ const audioTimeDisplay = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.viewfinder-tag {
+  min-width: 0;
+  flex: 1;
 }
 
 .specimen-rendered-image {
@@ -3369,6 +3591,62 @@ const audioTimeDisplay = computed(() => {
   .border-left-divider {
     border-left: none;
     border-top: 1px solid var(--color-border);
+  }
+}
+
+@media (max-width: 640px) {
+  .kisan-sathi-container {
+    padding: 16px 12px;
+    gap: 16px;
+  }
+
+  .farmer-context-card {
+    padding: 14px;
+  }
+
+  .farmer-context-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .profile-ribbon {
+    padding: 14px;
+    flex-wrap: wrap;
+  }
+
+  .profile-actions,
+  .profile-actions > button {
+    width: 100%;
+  }
+
+  .specimen-stage-frame {
+    padding: 12px;
+  }
+
+  .specimen-viewfinder {
+    height: min(58vw, 240px);
+    min-height: 180px;
+  }
+
+  .benchmark-controls {
+    padding: 12px;
+  }
+
+  .specimen-selector-bar {
+    padding: 12px;
+  }
+
+  .segmented-specimen-group {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .specimen-tab-btn {
+    min-height: 40px;
+    white-space: normal;
+  }
+
+  .btn-change-photo {
+    flex-shrink: 0;
   }
 }
 </style>

@@ -37,11 +37,15 @@ function describeError(err, fallback) {
 /**
  * Upload a leaf image to Google Gemini Multimodal Vision for disease diagnostics.
  */
-export async function diagnoseCropDisease(fileOrBlob, cropHint = 'Rice') {
+export async function diagnoseCropDisease(fileOrBlob, cropContext = 'Rice') {
   try {
     const formData = new FormData()
-    formData.append('image', fileOrBlob)
+    const filename = fileOrBlob.name || 'crop-image'
+    const farmContext = typeof cropContext === 'object' && cropContext !== null ? cropContext : null
+    const cropHint = farmContext ? (farmContext.crop?.name || 'Crop') : (cropContext || 'Rice')
+    formData.append('image', fileOrBlob, filename)
     formData.append('crop_hint', cropHint)
+    if (farmContext) formData.append('farm_context', JSON.stringify(farmContext))
 
     const { data } = await api.post('/api/diagnose', formData, {
       headers: { 'Content-Type': 'multipart/form-data' }

@@ -1,7 +1,10 @@
 """FastAPI entrypoint for KrishiSetu (कृषि-सेतु) Digital Public Good."""
 
-from __future__ import annotations
 
+from __future__ import annotations
+from dotenv import load_dotenv
+
+load_dotenv()
 import json
 import logging
 import sys
