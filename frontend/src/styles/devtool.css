@@ -1,80 +1,103 @@
 /* KrishiSetu - Registry Converter (DevTool) Stylesheet */
 
 .interop-shell {
-  padding: var(--space-6) var(--space-5);
-  max-width: 1400px;
-  margin: 0 auto;
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
 }
 
-/* Header */
+/* Header Sky Strip */
 .interop-header {
-  padding: var(--space-5) var(--space-6);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--hairline);
+  padding: var(--spacing-24) var(--spacing-24) var(--spacing-64);
+  color: var(--color-cloud-white);
+}
+
+.interop-header .sky-strip-inner {
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-4);
+  gap: var(--spacing-16);
   flex-wrap: wrap;
 }
 
-.header-left {
+.interop-header .header-left {
   display: flex;
   align-items: center;
-  gap: var(--space-4);
+  gap: var(--spacing-16);
 }
 
 .dpg-badge-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-sm);
-  background: var(--sarson);
-  color: var(--canopy);
-  border: 1.5px solid var(--canopy);
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-inputs);
+  background: transparent;
+  color: var(--color-cloud-white);
+  border: 1px solid var(--color-cloud-white);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
 
-.badge-icon-elem {
-  color: var(--canopy);
+.dpg-badge-icon .badge-icon-elem {
+  color: var(--color-cloud-white);
 }
 
-.title-row {
+.interop-header .title-row {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--spacing-12);
   flex-wrap: wrap;
 }
 
-.title-row h1 {
-  font-size: var(--step-2);
-  font-weight: 800;
-  color: var(--ink);
+.interop-header .title-row h1 {
+  font-family: var(--font-display);
+  font-size: var(--text-heading-sm);
+  font-weight: 300;
+  color: var(--color-cloud-white);
   letter-spacing: -0.01em;
   margin: 0;
+  line-height: 1.1;
 }
 
-.subtitle {
-  margin-top: var(--space-1);
-  font-size: var(--step-0);
-  color: var(--ink-2);
-  line-height: 1.5;
-  max-width: 75ch;
+.interop-header .badge-institutional.badge-forest {
+  background: transparent;
+  border: 1px solid var(--color-haze);
+  color: var(--color-cloud-white);
 }
 
-.subtitle code {
-  background: var(--paper-sunken);
-  padding: 2px 6px;
-  border-radius: var(--radius-xs);
-  color: var(--ink);
+.interop-header .sky-status-line {
+  margin-top: var(--spacing-4);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  color: var(--color-cloud-white);
+  line-height: 1.4;
+  max-width: 70ch;
+}
+
+.interop-header .sky-status-line code {
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--color-haze);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 2px 7px;
+  border-radius: 4px;
   font-family: var(--font-mono);
   font-size: 0.8125rem;
+}
+
+.interop-header .btn-gov-outline {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.28);
+  color: var(--color-cloud-white);
+}
+
+.interop-header .btn-gov-outline:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: var(--color-cloud-white);
+  color: var(--color-cloud-white);
 }
 
 /* State Control Bar */

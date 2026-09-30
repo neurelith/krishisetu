@@ -1,541 +1,171 @@
 <template>
-  <div class="app-container">
-    <!-- KrishiSetu Global Header Navigation -->
-    <header class="krishi-nav" :class="{ 'nav-transparent': isStoryRoute, sky: !isStoryRoute }">
-      <div class="nav-left">
-        <router-link to="/" class="brand-link">
-          <!-- Institutional Brand Logo Frame -->
-          <div class="brand-logo-frame">
-            <PhPlant :size="24" weight="bold" class="brand-icon" />
-          </div>
-          <div class="brand-text">
-            <div class="brand-title-row">
-              <span class="brand-title">KrishiSetu</span>
-              <span class="brand-subtitle">कृषि-सेतु</span>
+  <div class="app-shell">
+    <header class="site-nav" :class="{ 'site-nav-hero': isLanding }">
+      <div class="nav-inner">
+        <router-link to="/" class="brand-link" aria-label="KrishiSetu home">
+          <span class="brand-mark"><PhPlant :size="20" weight="bold" /></span>
+          <span class="brand-copy">
+            <strong>KrishiSetu</strong>
+            <span>field intelligence</span>
+          </span>
+        </router-link>
+
+        <nav v-if="isLoggedIn" class="nav-cluster" aria-label="Workspace navigation">
+          <router-link v-if="isFarmer" to="/sathi" class="nav-pill">
+            <PhPlant :size="17" weight="bold" />
+            <span>Check a leaf</span>
+          </router-link>
+          <template v-else>
+            <router-link to="/command" class="nav-pill">
+              <PhBroadcast :size="17" weight="bold" />
+              <span>Outbreak watch</span>
+            </router-link>
+            <router-link to="/interop" class="nav-pill">
+              <PhArrowsLeftRight :size="17" weight="bold" />
+              <span>Registry converter</span>
+            </router-link>
+          </template>
+        </nav>
+
+        <div class="nav-right">
+          <router-link v-if="!isLoggedIn" to="/" class="nav-sign-in">Sign in</router-link>
+          <button v-else type="button" class="status-chip" :class="{ 'chip-off': !isOnline }" @click="toggleOfflineSimulation">
+            <span class="status-dot" :class="{ 'dot-off': !isOnline }"></span>
+            <span>{{ isOnline ? 'Online' : 'Offline' }}</span>
+          </button>
+          <div v-if="isLoggedIn" class="user-cluster">
+            <div class="user-avatar"><PhUserCircle :size="19" weight="regular" /></div>
+            <div class="user-info">
+              <strong>{{ displayName }}</strong>
+              <span>{{ isAdmin ? 'Extension officer' : 'Farmer' }}</span>
             </div>
-            <span class="brand-caption">Interoperable Digital Public Good · ICAR/GOI Standard</span>
+            <button type="button" class="sign-out-btn" aria-label="Sign out" title="Sign out" @click="handleLogout">
+              <PhSignOut :size="18" weight="bold" />
+            </button>
           </div>
-        </router-link>
-      </div>
-
-      <nav class="nav-links">
-        <router-link to="/sathi" class="nav-item">
-          <PhPlant :size="18" weight="bold" class="nav-icon" />
-          <span>Check a leaf</span>
-        </router-link>
-
-        <router-link to="/interop" class="nav-item">
-          <PhArrowsLeftRight :size="18" weight="bold" class="nav-icon" />
-          <span>Registry converter</span>
-        </router-link>
-
-        <router-link to="/command" class="nav-item">
-          <PhBroadcast :size="18" weight="bold" class="nav-icon" />
-          <span>Outbreak watch</span>
-        </router-link>
-      </nav>
-
-      <div class="nav-right">
-        <!-- Resilient Offline Network Simulation Switch -->
-        <button 
-          type="button"
-          @click="toggleOfflineSimulation" 
-          class="offline-toggle-btn" 
-          :class="{ 'is-offline': !isOnline }"
-          aria-label="Toggle network simulation to test IndexedDB offline resilience"
-        >
-          <span class="status-marker" :class="{ 'marker-offline': !isOnline }"></span>
-          <span class="status-label status-label-desktop">{{ isOnline ? 'Network: Online' : 'Network: Offline (IndexedDB Active)' }}</span>
-          <span class="status-label status-label-mobile">{{ isOnline ? 'Online' : 'Offline' }}</span>
-          <span class="status-mode-tag">{{ isOfflineSimulation ? 'SIMULATION' : 'REAL' }}</span>
-        </button>
+        </div>
       </div>
     </header>
 
-    <!-- Main View Outlet -->
-    <main class="main-viewport">
-      <router-view />
-    </main>
+    <main class="main-outlet"><router-view /></main>
 
-    <!-- Institutional Footer with Public Good Terms of Service & Privacy Policy -->
-    <footer class="site-footer">
-      <div class="footer-content">
-        <div class="footer-left">
-          <span class="badge-institutional badge-forest">DPG Standard v1.0</span>
-          <span>KrishiSetu is an open-source Digital Public Good under ICAR & Ministry of Agriculture and Farmers Welfare specifications.</span>
-        </div>
+    <footer class="app-footer">
+      <div class="footer-inner">
+        <div class="footer-brand"><span class="footer-dot"></span><strong>KrishiSetu</strong><span>Digital public good for field decisions</span></div>
         <div class="footer-links">
-          <button type="button" @click="activeModal = 'tos'" class="footer-link-btn">Terms of Service (DPG License)</button>
-          <span class="footer-sep" aria-hidden="true">·</span>
-          <button type="button" @click="activeModal = 'privacy'" class="footer-link-btn">Farmer Privacy Policy (DPDP Act 2023)</button>
-          <span class="footer-sep" aria-hidden="true">·</span>
-          <button type="button" @click="activeModal = 'standards'" class="footer-link-btn">DPG Schema Spec</button>
+          <button type="button" @click="modal = 'tos'">Terms</button>
+          <button type="button" @click="modal = 'privacy'">Privacy</button>
+          <button type="button" @click="modal = 'standards'">Schema</button>
         </div>
       </div>
     </footer>
 
-    <!-- Governance Modal Dialog -->
-    <div v-if="activeModal" class="modal-backdrop" @click="activeModal = null">
-      <div class="modal-card" @click.stop>
-        <div class="modal-header">
-          <div class="modal-title-row">
-            <span class="badge-institutional badge-slate">Compliance & Governance</span>
-            <h3>{{ modalTitle }}</h3>
-          </div>
-          <button type="button" @click="activeModal = null" class="btn-modal-close" aria-label="Close dialog">
-            <PhX :size="20" weight="bold" />
-          </button>
+    <div v-if="modal" class="modal-overlay" @click="modal = null">
+      <section class="modal-panel" role="dialog" aria-modal="true" @click.stop>
+        <div class="modal-head">
+          <div><span class="modal-kicker">KrishiSetu reference</span><h2>{{ modalTitle }}</h2></div>
+          <button type="button" class="modal-close" aria-label="Close" @click="modal = null"><PhX :size="20" weight="bold" /></button>
         </div>
-
-        <div class="modal-body">
-          <!-- Terms of Service Content -->
-          <div v-if="activeModal === 'tos'" class="legal-text-block">
-            <h4>1. Open Digital Public Good Framework</h4>
-            <p>
-              KrishiSetu is released as a Digital Public Good adhering to the Digital Public Goods Standard. All core data schemas (<code>in.gov.dpg.farmcontext.v1</code>) and cross-state adapters are licensed under the Apache 2.0 and Creative Commons Attribution 4.0 International license.
-            </p>
-            <h4>2. Clinical Agronomic Decision Support Disclaimer</h4>
-            <p>
-              The diagnostic outputs, satellite spectral indices, and generative advisory summaries provided by KrishiSetu represent assistive decision support grounded in ICAR and FAO research monographs. Recommendations are intended to aid smallholder farmers and extension officers. Always verify chemical or cultural interventions with local Block Agricultural Officers (BAO) or Krishi Vigyan Kendra (KVK) scientists before large-scale application.
-            </p>
-            <h4>3. Cross-State Interoperability Principles</h4>
-            <p>
-              Participating state registries (e.g., West Bengal Matir Katha, Bihar DBT Krishi, Odisha Krushak) retain sovereign ownership over their agricultural databases. KrishiSetu executes client-side and federated normalization without centralizing proprietary farmer land titles.
-            </p>
-          </div>
-
-          <!-- Privacy Policy Content -->
-          <div v-else-if="activeModal === 'privacy'" class="legal-text-block">
-            <h4>1. Compliance with Digital Personal Data Protection (DPDP) Act, 2023</h4>
-            <p>
-              KrishiSetu is engineered around the principle of strict data minimization. Farmer personal identifiers (such as Aadhaar or direct biometric records) are never stored on public cloud servers. All local records are indexed locally within the client browser using IndexedDB.
-            </p>
-            <h4>2. Audio and Image Processing Telemetry</h4>
-            <p>
-              Photographs of crop leaves submitted for multimodal pathology diagnosis are processed via zero-retention enterprise inference endpoints. Voice transcripts recorded in regional languages (Bengali, Hindi) are converted into structured diagnostic query parameters and are not utilized for advertising profiling or commercial monetization.
-            </p>
-            <h4>3. Right to Erasure & Offline Autonomy</h4>
-            <p>
-              Farmers and extension officers may purge all cached telemetry, diagnoses, and offline advisories at any point via the IndexedDB storage panel.
-            </p>
-          </div>
-
-          <!-- DPG Specification Content -->
-          <div v-else-if="activeModal === 'standards'" class="legal-text-block">
-            <h4>Digital Public Good Schema: in.gov.dpg.farmcontext.v1</h4>
-            <p>
-              The standard interoperability contract ensures that heterogeneous regional state registries ingest into a unified canonical JSON schema:
-            </p>
-            <pre class="schema-code-box"><code>{
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "FarmContext",
-  "standard": "in.gov.dpg.farmcontext.v1",
-  "contract": {
-    "farmer": { "farmer_id": "string", "name": "string", "language": "bn|hi|en" },
-    "location": { "state": "string", "district": "string", "coordinates": { "lat": "number", "lon": "number" } },
-    "soil_health": { "nitrogen_kg_ha": "number", "ph": "number", "organic_carbon_pct": "number" },
-    "satellite": { "tile_reference": "string", "spectral_formula": "string", "ndvi": "number" }
-  }
+        <div class="modal-content">
+          <template v-if="modal === 'tos'">
+            <h3>Open Digital Public Good Framework</h3>
+            <p>KrishiSetu provides assistive agronomic decision support and an open FarmContext data contract. Verify interventions with a local Block Agricultural Officer or Krishi Vigyan Kendra scientist.</p>
+            <h3>Cross-state interoperability</h3>
+            <p>Participating state registries retain ownership of their records. Normalization keeps the source dialect visible while producing one common contract.</p>
+          </template>
+          <template v-else-if="modal === 'privacy'">
+            <h3>Data minimization</h3>
+            <p>Farmer records and offline advisories stay on the device for this demo. Images are sent only when a diagnosis is requested and are not used for advertising.</p>
+            <h3>Your control</h3>
+            <p>Sign out to remove the active demo session. Clear local site data to remove saved field reports and cached advice.</p>
+          </template>
+          <template v-else>
+            <h3>in.gov.dpg.farmcontext.v1</h3>
+            <p>The shared contract connects farmer identity, location, crop, soil, weather and satellite observations across state registries.</p>
+            <pre class="schema-block"><code>{
+  "farmer": { "name": "string", "preferred_language": "bn | hi | en" },
+  "location": { "state": "string", "district": "string" },
+  "crop": { "name": "string", "variety": "string" },
+  "satellite": { "ndvi": "number | null" }
 }</code></pre>
-          </div>
+          </template>
         </div>
-
-        <div class="modal-footer">
-          <button type="button" @click="activeModal = null" class="btn-gov-primary">Acknowledge</button>
-        </div>
-      </div>
+        <div class="modal-foot"><button type="button" class="btn-gov-primary" @click="modal = null">Close reference</button></div>
+      </section>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
-import { useRoute } from 'vue-router'
-import { PhPlant, PhArrowsLeftRight, PhBroadcast, PhX } from '@phosphor-icons/vue'
+import { useRoute, useRouter } from 'vue-router'
+import { PhPlant, PhArrowsLeftRight, PhBroadcast, PhX, PhUserCircle, PhSignOut } from '@phosphor-icons/vue'
 import { useOfflineStorage } from './composables/useOfflineStorage'
+import { useAuth } from './composables/useAuth'
 
 const route = useRoute()
-const isStoryRoute = computed(() => route.name === 'story' || route.path === '/')
-const { isOnline, isOfflineSimulation, setOfflineStorage: _noop, setOfflineSimulation } = useOfflineStorage()
-
-const activeModal = ref(null)
-
-const modalTitle = computed(() => {
-  if (activeModal.value === 'tos') return 'Terms of Service (Digital Public Good Charter)'
-  if (activeModal.value === 'privacy') return 'Farmer Data Sovereignty & Privacy Policy'
-  if (activeModal.value === 'standards') return 'DPG Canonical Architecture Specification'
-  return ''
-})
+const router = useRouter()
+const { isOnline, isOfflineSimulation, setOfflineSimulation } = useOfflineStorage()
+const { isLoggedIn, isAdmin, isFarmer, displayName, logout } = useAuth()
+const modal = ref(null)
+const isLanding = computed(() => route.name === 'story' || route.path === '/')
+const modalTitle = computed(() => ({ tos: 'Terms of use', privacy: 'Privacy note', standards: 'FarmContext schema' }[modal.value] || 'Reference'))
 
 function toggleOfflineSimulation() {
   setOfflineSimulation(!isOfflineSimulation.value)
 }
+
+function handleLogout() {
+  logout()
+  router.push('/')
+}
 </script>
 
 <style scoped>
-.app-container {
-  min-height: 100vh;
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  background-color: var(--bg-canvas);
-  font-family: var(--font-sans);
-}
-
-/* Institutional Navigation Header */
-.krishi-nav {
-  min-height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 var(--spacing-24);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  transition: background-color 150ms, border-color 150ms;
-}
-
-.krishi-nav.sky {
-  background: var(--sky-clear-gradient);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-.krishi-nav.nav-transparent {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  background: transparent;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-.nav-left {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-16);
-}
-
-.brand-link {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-12);
-  text-decoration: none;
-}
-
-.brand-logo-frame {
-  width: 38px;
-  height: 38px;
-  border-radius: var(--radius-inputs);
-  background: transparent;
-  color: var(--color-cloud-white);
-  border: 1px solid var(--color-cloud-white);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.brand-icon {
-  color: var(--color-cloud-white);
-}
-
-.brand-text {
-  display: flex;
-  flex-direction: column;
-}
-
-.brand-title-row {
-  display: flex;
-  align-items: baseline;
-  gap: var(--spacing-8);
-}
-
-.brand-title {
-  color: var(--color-cloud-white);
-  font-family: var(--font-display);
-  font-size: 1.35rem;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  line-height: 1.1;
-}
-
-.brand-subtitle {
-  color: var(--color-cloud-white);
-  font-size: var(--text-caption);
-  opacity: 0.9;
-  font-weight: 500;
-}
-
-.brand-caption {
-  color: var(--color-haze);
-  font-size: var(--text-caption);
-  letter-spacing: 0.01em;
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-8);
-  background: rgba(0, 0, 0, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: var(--radius-buttons);
-  padding: 4px;
-}
-
-.nav-item {
-  color: var(--color-cloud-white);
-  text-decoration: none;
-  font-size: var(--text-body-sm);
-  font-weight: 500;
-  padding: 8px 16px;
-  border-radius: var(--radius-buttons);
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-8);
-  transition: background-color 120ms, border-color 120ms, color 120ms;
-  border: 1.5px solid transparent;
-}
-
-.nav-item:hover {
-  background: rgba(255, 255, 255, 0.12);
-}
-
-.nav-item:active {
-  transform: translateY(1px);
-}
-
-.nav-item:focus-visible {
-  outline: 3px solid var(--color-cloud-white);
-  outline-offset: 2px;
-}
-
-.nav-item.router-link-exact-active {
-  color: var(--color-cloud-white);
-  background: rgba(205, 233, 239, 0.18);
-  border-color: var(--color-haze);
-  font-weight: 600;
-}
-
-.nav-right {
-  display: flex;
-  align-items: center;
-}
-
-.offline-toggle-btn {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-8);
-  background: rgba(0, 0, 0, 0.12);
-  color: var(--color-cloud-white);
-  border: 1.5px solid rgba(255, 255, 255, 0.22);
-  border-radius: var(--radius-buttons);
-  padding: 8px 16px;
-  font-size: var(--text-caption);
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 120ms, border-color 120ms;
-}
-
-.offline-toggle-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
-}
-
-.offline-toggle-btn:active {
-  transform: translateY(1px);
-}
-
-.offline-toggle-btn:focus-visible {
-  outline: 3px solid var(--color-cloud-white);
-  outline-offset: 2px;
-}
-
-.status-marker {
-  width: 8px;
-  height: 8px;
-  border-radius: var(--radius-buttons);
-  background: var(--color-leaf);
-}
-
-.status-marker.marker-offline {
-  background: var(--color-chilli);
-}
-
-.status-mode-tag {
-  font-family: var(--font-mono);
-  font-size: var(--text-caption);
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: var(--color-cloud-white);
-  padding: 2px 6px;
-  border-radius: var(--radius-inputs);
-}
-
-.offline-toggle-btn.is-offline {
-  background: var(--color-chilli);
-  border-color: var(--color-chilli);
-  color: var(--color-cloud-white);
-}
-
-.main-viewport {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Modal Dialog */
-.modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(10, 47, 34, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-  padding: var(--space-5);
-}
-
-.modal-card {
-  background: var(--paper-raised);
-  border: 1px solid var(--hairline-strong);
-  border-radius: var(--radius-md);
-  width: 100%;
-  max-width: 680px;
-  max-height: 85vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.modal-header {
-  padding: var(--space-4) var(--space-5);
-  border-bottom: 1px solid var(--hairline);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--paper);
-}
-
-.modal-title-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-.btn-modal-close {
-  background: none;
-  border: none;
-  padding: var(--space-1);
-  cursor: pointer;
-  color: var(--ink-2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-sm);
-  transition: color 120ms, background-color 120ms;
-}
-
-.btn-modal-close:hover {
-  color: var(--ink);
-  background: var(--paper-sunken);
-}
-
-.modal-body {
-  padding: var(--space-5);
-  overflow-y: auto;
-  font-size: var(--step-0);
-  line-height: 1.6;
-}
-
-.legal-text-block h4 {
-  font-size: var(--step-1);
-  font-weight: 700;
-  color: var(--ink);
-  margin: var(--space-4) 0 var(--space-2) 0;
-}
-
-.legal-text-block h4:first-child {
-  margin-top: 0;
-}
-
-.legal-text-block p {
-  margin-bottom: var(--space-3);
-  color: var(--ink-2);
-}
-
-.schema-code-box {
-  background: var(--inkwell);
-  color: var(--green-wash);
-  padding: var(--space-3);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--inkwell-line);
-  font-size: var(--step-0);
-  overflow-x: auto;
-}
-
-.modal-footer {
-  padding: var(--space-3) var(--space-5);
-  border-top: 1px solid var(--hairline);
-  display: flex;
-  justify-content: flex-end;
-  background: var(--paper);
-}
-
-.status-label-mobile {
-  display: none;
-}
-
-.footer-sep {
-  color: var(--ink-3);
-  font-weight: 700;
-}
-
-@media (max-width: 900px) {
-  .krishi-nav {
-    min-height: auto;
-    padding: var(--space-3) var(--space-4);
-    flex-wrap: wrap;
-    gap: var(--space-3);
-  }
-  .nav-links {
-    order: 3;
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    padding: 3px;
-  }
-  .nav-item {
-    white-space: nowrap;
-    min-height: 44px;
-    padding: 6px 14px;
-  }
-}
-
-@media (max-width: 640px) {
-  .brand-caption {
-    display: none;
-  }
-  .status-label-desktop {
-    display: none;
-  }
-  .status-label-mobile {
-    display: inline;
-  }
-  .offline-toggle-btn {
-    padding: 6px 12px;
-    font-size: 0.8125rem;
-  }
-  .status-mode-tag {
-    display: none;
-  }
-  .footer-sep {
-    display: none;
-  }
-  .footer-links {
-    gap: var(--space-2);
-  }
-}
+.app-shell { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; background: var(--color-cloud-white); }
+.site-nav { position: sticky; top: 0; z-index: 20; background: var(--color-canopy); border-bottom: 1px solid var(--color-canopy-hover); }
+.site-nav-hero { position: absolute; top: 0; left: 0; right: 0; background: transparent; border-bottom-color: var(--color-haze); }
+.nav-inner { width: min(100% - 48px, 1240px); min-height: 74px; margin: 0 auto; display: flex; align-items: center; gap: 28px; }
+.brand-link { display: inline-flex; align-items: center; gap: 10px; color: var(--color-cloud-white); text-decoration: none; flex-shrink: 0; }
+.brand-mark { width: 38px; height: 38px; display: grid; place-items: center; border: 1px solid var(--color-haze); border-radius: 13px; color: var(--color-cloud-white); }
+.brand-copy { display: grid; gap: 1px; }
+.brand-copy strong { font-family: var(--font-display); font-size: 25px; font-weight: 500; line-height: 1; }
+.brand-copy span { color: var(--color-haze); font-size: var(--text-caption); letter-spacing: 0.05em; text-transform: uppercase; }
+.nav-cluster { display: flex; align-items: center; gap: 6px; margin-right: auto; }
+.nav-pill, .nav-sign-in { min-height: 44px; display: inline-flex; align-items: center; gap: 8px; padding: 0 14px; border: 1px solid transparent; border-radius: var(--radius-buttons); color: var(--color-cloud-white); text-decoration: none; font-size: var(--text-body-sm); font-weight: 500; }
+.nav-pill:hover, .nav-pill.router-link-exact-active { border-color: var(--color-haze); background: var(--color-deep-monsoon); }
+.nav-right { display: flex; align-items: center; gap: 14px; margin-left: auto; }
+.nav-sign-in { border-color: var(--color-haze); }
+.status-chip { min-height: 36px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid var(--color-haze); border-radius: var(--radius-buttons); color: var(--color-cloud-white); background: transparent; font: inherit; cursor: pointer; }
+.status-chip:hover { background: var(--color-deep-monsoon); }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-leaf); }
+.status-dot.dot-off { background: var(--color-chilli); }
+.user-cluster { display: flex; align-items: center; gap: 9px; color: var(--color-cloud-white); }
+.user-avatar { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid var(--color-haze); border-radius: 50%; }
+.user-info { display: grid; gap: 1px; min-width: 0; }
+.user-info strong { max-width: 170px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--text-caption); }
+.user-info span { color: var(--color-haze); font-size: var(--text-caption); }
+.sign-out-btn { width: 38px; height: 38px; display: grid; place-items: center; border: 1px solid transparent; border-radius: 50%; color: var(--color-haze); background: transparent; cursor: pointer; }
+.sign-out-btn:hover { border-color: var(--color-haze); color: var(--color-cloud-white); }
+.main-outlet { flex: 1; display: flex; flex-direction: column; }
+.app-footer { padding: 28px 24px; border-top: 1px solid var(--color-fog); color: var(--color-stone); background: var(--color-cloud-white); }
+.footer-inner { width: min(100%, var(--page-max-width)); margin: 0 auto; display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.footer-brand, .footer-links { display: flex; align-items: center; gap: 10px; font-size: var(--text-caption); }
+.footer-brand strong { color: var(--color-ink); }
+.footer-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-chilli); }
+.footer-links button { padding: 4px 0; border: 0; color: var(--color-deep-monsoon); background: transparent; font: inherit; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.modal-overlay { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 24px; background: var(--color-night-soil); }
+.modal-panel { width: min(100%, 620px); max-height: 86vh; display: flex; flex-direction: column; overflow: hidden; border-radius: var(--radius-modals); background: var(--color-cloud-white); box-shadow: var(--shadow-lift); }
+.modal-head, .modal-foot { padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 1px solid var(--color-fog); }
+.modal-foot { justify-content: flex-end; border-top: 1px solid var(--color-fog); border-bottom: 0; }
+.modal-kicker { color: var(--color-chilli); font-size: var(--text-caption); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
+.modal-head h2 { margin-top: 4px; font-size: var(--text-subheading); }
+.modal-close { width: 42px; height: 42px; display: grid; place-items: center; border: 1px solid var(--color-fog); border-radius: 50%; color: var(--color-graphite); background: var(--color-cloud-white); cursor: pointer; }
+.modal-content { padding: 24px; overflow-y: auto; }
+.modal-content h3 { margin: 0 0 8px; color: var(--color-ink); }
+.modal-content h3:not(:first-child) { margin-top: 24px; }
+.modal-content p { color: var(--color-graphite); }
+.schema-block { margin: 16px 0 0; padding: 16px; overflow: auto; border-radius: var(--radius-inputs); background: var(--inkwell); color: var(--inkwell-text); font-size: var(--text-caption); line-height: 1.6; }
+@media (max-width: 900px) { .nav-inner { width: min(100% - 32px, 1240px); gap: 14px; } .nav-cluster { order: 3; width: 100%; overflow-x: auto; } .site-nav:not(.site-nav-hero) .nav-inner { flex-wrap: wrap; padding: 10px 0; } }
+@media (max-width: 560px) { .brand-copy span, .user-info { display: none; } .nav-right { margin-left: auto; } .nav-inner { min-height: 68px; } .site-nav:not(.site-nav-hero) .nav-inner { padding-bottom: 8px; } .nav-pill { white-space: nowrap; } }
 </style>

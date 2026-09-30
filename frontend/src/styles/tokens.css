@@ -127,7 +127,7 @@ p { max-width: 68ch; color: var(--color-graphite); margin: 0; }
 .desk { position: relative; z-index: 1; margin: calc(var(--spacing-48) * -1) auto 0; max-width: var(--page-max-width); padding: 0 var(--spacing-16); display: grid; gap: var(--spacing-24); }
 .quiet { background: var(--color-cloud-white); padding: var(--section-gap) var(--spacing-24); }
 
-.card-solid { background: var(--color-cloud-white); border: 0; border-radius: var(--radius-cards); box-shadow: var(--shadow-card); padding: var(--card-padding); }
+.card-solid { background: var(--color-cloud-white); border: 0; border-radius: var(--radius-cards); box-shadow: var(--shadow-card); padding: var(--card-padding); transition: transform 250ms var(--ease-snappy, ease), box-shadow 250ms var(--ease-snappy, ease); }
 .card-float { box-shadow: var(--shadow-float); }
 .card-lift  { box-shadow: var(--shadow-lift); }
 .card-nested { background: var(--color-paddy-mist); border-radius: var(--radius-inputs); padding: var(--spacing-12); box-shadow: none; }
@@ -139,7 +139,7 @@ hr, .hairline { border: 0; border-top: 1px solid var(--color-fog); }
   display: inline-flex; align-items: center; justify-content: center; gap: var(--spacing-8);
   min-height: 52px; padding: 12px 28px; border-radius: var(--radius-buttons);
   font-family: var(--font-sans); font-size: var(--text-body); font-weight: 500; line-height: 1.2; cursor: pointer;
-  transition: background-color 120ms, color 120ms, transform 120ms;
+  transition: background-color 120ms, color 120ms, transform 150ms var(--ease-snappy, ease), box-shadow 250ms var(--ease-snappy, ease), filter 150ms;
 }
 .btn-gov-primary { background: var(--color-canopy); color: var(--color-cloud-white); border: 0; }
 .btn-gov-primary:hover:not(:disabled) { background: var(--color-canopy-hover); }
@@ -213,7 +213,7 @@ hr, .hairline { border: 0; border-top: 1px solid var(--color-fog); }
 .badge-sky, .badge-slate { background: var(--sky-50); color: var(--color-deep-monsoon); }
 
 /* ---- Forms ---- */
-input[type="text"], input[type="number"], input[type="search"], input[type="email"], input[type="tel"], select, textarea {
+input[type="text"], input[type="password"], input[type="number"], input[type="search"], input[type="email"], input[type="tel"], select, textarea {
   background: var(--color-cloud-white); color: var(--color-ink); border: 1.5px solid var(--color-line-strong);
   border-radius: var(--radius-inputs); padding: 12px 14px; min-height: 48px; font-size: var(--text-body);
 }

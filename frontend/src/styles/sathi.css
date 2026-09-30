@@ -115,6 +115,39 @@
 
 /* Legacy ribbon styles retained for in-card use */
 
+/* Restricted Access Banner */
+.restricted-banner {
+  background: var(--brick-wash);
+  border: 1.5px solid var(--brick-line);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.marker-alert {
+  background: var(--color-chilli) !important;
+}
+
+.banner-close-btn {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--color-chilli);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-xs);
+}
+
+.banner-close-btn:hover {
+  background: rgba(191, 47, 27, 0.1);
+}
+
 /* Offline Resiliency Banner */
 .offline-banner {
   background: var(--ochre-wash);

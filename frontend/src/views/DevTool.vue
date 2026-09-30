@@ -10,32 +10,20 @@
       </div>
     </div>
 
-    <!-- Header Sky Strip -->
-    <header class="sky sky-strip interop-header" data-risk="clear">
-      <div class="sky-strip-inner">
-        <div class="header-left">
-          <div class="dpg-badge-icon">
-            <PhArrowsLeftRight :size="24" weight="bold" class="badge-icon-elem" />
-          </div>
-          <div>
-            <div class="title-row">
-              <h1>Registry converter</h1>
-              <span class="badge-institutional badge-forest">Digital Public Good (DPG)</span>
-            </div>
-            <p class="sky-status-line">
-              Harmonizing disparate state agricultural registries into the unified <code>in.gov.dpg.farmcontext.v1</code> schema.
-            </p>
-          </div>
-        </div>
-
-        <div class="header-right">
-          <button type="button" @click="showSchemaModal = true" class="btn-gov-outline">
-            <PhFileCode :size="18" weight="bold" />
-            <span>View DPG JSON Schema</span>
-          </button>
-        </div>
-      </div>
-    </header>
+    <PortalHeader
+      title="Registry converter"
+      subtitle="Translate state registry data into the common in.gov.dpg.farmcontext.v1 contract."
+      :icon="PhArrowsLeftRight"
+      risk="clear"
+      badge="Digital public good"
+    >
+      <template #actions>
+        <button type="button" @click="showSchemaModal = true" class="btn-gov-outline">
+          <PhFileCode :size="18" weight="bold" />
+          <span>View schema</span>
+        </button>
+      </template>
+    </PortalHeader>
 
     <!-- Main Desk of White Cards -->
     <div class="desk">
@@ -280,6 +268,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import '../styles/devtool.css'
+import PortalHeader from '../components/PortalHeader.vue'
 import { PhArrowsLeftRight, PhFileCode, PhArrowsClockwise, PhX } from '@phosphor-icons/vue'
 import { normalizeStatePayload, fetchSampleStatePayload } from '../api'
 import { useToast } from '../composables/useToast'

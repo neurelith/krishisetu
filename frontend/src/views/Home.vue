@@ -10,8 +10,19 @@
       </div>
     </div>
 
-    <!-- Offline Resiliency Notice (shared state with App.vue) -->
+    <!-- Offline & Access Notice -->
     <div class="sathi-topline">
+      <div v-if="restrictedNotice" class="restricted-banner">
+        <div class="banner-marker marker-alert"></div>
+        <div class="banner-body">
+          <strong>Access Restricted:</strong>
+          <span>Outbreak Command and Registry Converter are reserved for Block Agricultural Officers. You are viewing your Kisan Sathi dashboard.</span>
+        </div>
+        <button type="button" @click="restrictedNotice = false" class="banner-close-btn" aria-label="Dismiss">
+          <PhX :size="14" weight="bold" />
+        </button>
+      </div>
+
       <div v-if="!isOnline" class="offline-banner">
         <div class="banner-marker"></div>
         <div class="banner-body">
@@ -22,49 +33,34 @@
       </div>
     </div>
 
-    <!-- Sky Strip: The Sky carries the status based on humidity risk -->
-    <header class="sky sky-strip sathi-header" :data-risk="humidityRisk">
-      <div class="sky-strip-inner">
-        <div class="sky-strip-left">
-          <div class="sathi-badge-icon">
-            <PhPlant :size="24" weight="bold" class="sathi-badge-icon-elem" />
-          </div>
-          <div>
-            <div class="farmer-title-row">
-              <h1>{{ currentContext.farmer.name }}</h1>
-              <span class="badge-institutional badge-forest">
-                {{ currentContext.location.district }}, {{ currentContext.location.state }}
-              </span>
-              <span class="badge-institutional badge-slate">
-                {{ currentContext.crop.name }} ({{ currentContext.crop.variety }})
-              </span>
-              <span class="badge-institutional badge-gold" title="Demo profile loaded on this device">Demo farm</span>
-            </div>
-            <p class="sky-status-line">
-              {{ humidityStatusLine }}
-            </p>
-          </div>
+    <PortalHeader
+      :title="currentContext.farmer.name"
+      :subtitle="humidityStatusLine"
+      :icon="PhPlant"
+      :risk="humidityRisk"
+      badge="Kisan Sathi"
+    >
+      <template #meta>
+        <span class="badge-institutional badge-sky">{{ currentContext.location.district }}, {{ currentContext.location.state }}</span>
+        <span class="badge-institutional badge-sky">{{ currentContext.crop.name }}</span>
+      </template>
+      <template #actions>
+        <div class="header-language-control">
+          <label for="farmer-preferred-lang">Advice language</label>
+          <select
+            id="farmer-preferred-lang"
+            aria-label="Advisory Language"
+            v-model="currentContext.farmer.preferred_language"
+            @change="onLanguageChange"
+            class="lang-dropdown"
+          >
+            <option value="bn">বাংলা</option>
+            <option value="hi">हिन्दी</option>
+            <option value="en">English</option>
+          </select>
         </div>
-
-        <div class="sky-strip-right">
-          <!-- Language Selector -->
-          <div class="lang-selector-group">
-            <label for="farmer-preferred-lang" class="selector-label">Language:</label>
-            <select
-              id="farmer-preferred-lang"
-              aria-label="Advisory Language"
-              v-model="currentContext.farmer.preferred_language"
-              @change="onLanguageChange"
-              class="lang-dropdown"
-            >
-              <option value="bn">Bengali (বাংলা)</option>
-              <option value="hi">Hindi (हिन्दी)</option>
-              <option value="en">English (Global)</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </header>
+      </template>
+    </PortalHeader>
 
     <!-- Main Desk of White Cards -->
     <div class="desk">
@@ -122,7 +118,9 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted, onUnmounted } from 'vue'
-import { PhX } from '@phosphor-icons/vue'
+import { useRoute } from 'vue-router'
+import { PhPlant, PhX } from '@phosphor-icons/vue'
+import PortalHeader from '../components/PortalHeader.vue'
 import '../styles/sathi.css'
 import ShareCard from '../components/ShareCard.vue'
 import LeafCheckSection from '../components/sathi/LeafCheckSection.vue'
@@ -137,9 +135,13 @@ import {
   fetchSatelliteNDVI
 } from '../api'
 import { useOfflineStorage } from '../composables/useOfflineStorage'
+import { useAuth } from '../composables/useAuth'
 import { useToast } from '../composables/useToast'
 import { SAMPLE_BENCHMARKS } from '../data/sampleBenchmarks'
 
+const route = useRoute()
+const { displayName } = useAuth()
+const restrictedNotice = ref(route.query.restricted === 'admin_only')
 const { isOnline, saveOfflineItem, getOfflineItem } = useOfflineStorage()
 const { toasts, dismiss, success, error } = useToast()
 
@@ -148,7 +150,7 @@ const currentContext = reactive({
   standard_version: 'in.gov.dpg.farmcontext.v1',
   farmer: {
     farmer_id: 'IN-WB-NAD-0042',
-    name: 'Subhash Mondal',
+    name: displayName.value || 'Field farmer',
     phone: '+919****3210',
     preferred_language: 'bn',
     literacy_profile: 'audio_preferred',

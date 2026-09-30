@@ -1,31 +1,19 @@
 <template>
   <div class="command-shell">
-    <!-- Header Sky Strip following alerts risk -->
-    <header class="sky sky-strip command-header" :data-risk="alertsRisk">
-      <div class="sky-strip-inner">
-        <div class="header-left">
-          <div class="command-badge-icon">
-            <PhBroadcast :size="24" weight="bold" class="badge-icon-elem" />
-          </div>
-          <div>
-            <div class="title-row">
-              <h1>Outbreak watch</h1>
-              <span class="badge-institutional badge-forest">Extension Officer & KVK Network</span>
-            </div>
-            <p class="sky-status-line">
-              {{ alertsStatusLine }}
-            </p>
-          </div>
-        </div>
-
-        <div class="header-right">
-          <button type="button" @click="showSimModal = true" class="btn-gov-primary">
-            <PhWarningCircle :size="18" weight="bold" />
-            <span>Simulate an outbreak</span>
-          </button>
-        </div>
-      </div>
-    </header>
+    <PortalHeader
+      title="Outbreak watch"
+      :subtitle="alertsStatusLine"
+      :icon="PhBroadcast"
+      :risk="alertsRisk"
+      badge="Extension officer workspace"
+    >
+      <template #actions>
+        <button type="button" @click="showSimModal = true" class="btn-gov-primary">
+          <PhWarningCircle :size="18" weight="bold" />
+          <span>Simulate an outbreak</span>
+        </button>
+      </template>
+    </PortalHeader>
 
     <!-- Main Desk of White Cards -->
     <div class="desk">
@@ -311,6 +299,7 @@
 import { ref, reactive, computed, onMounted, nextTick } from 'vue'
 import '../styles/admin.css'
 import ShareCard from '../components/ShareCard.vue'
+import PortalHeader from '../components/PortalHeader.vue'
 import {
   PhBroadcast,
   PhWarningCircle,
