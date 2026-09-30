@@ -176,7 +176,11 @@ class EngagementPredictor:
         """
         try:
             feature_vector = self._prepare_features(farmer_data)
-            prob = float(self.model.predict_proba([feature_vector])[0][1])
+            if hasattr(self.model, "booster_"):
+                raw_pred = self.model.booster_.predict([feature_vector])[0]
+                prob = float(raw_pred[1]) if hasattr(raw_pred, "__len__") and len(raw_pred) > 1 else float(raw_pred)
+            else:
+                prob = float(self.model.predict_proba([feature_vector])[0][1])
             segment = self._determine_segment(prob)
             return {
                 "engagement_probability": round(prob, 6),

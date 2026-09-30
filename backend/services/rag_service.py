@@ -125,45 +125,41 @@ class RagService:
         ranked.sort(key=lambda item: item[0], reverse=True)
         return ranked
 
+    def _embed_text(self, text: str) -> List[float]:
+        dims = 128
+        vec = [0.0] * dims
+        for token in _norm(text).split():
+            vec[hash(token) % dims] += 1.0
+        norm = sum(v * v for v in vec) ** 0.5 or 1.0
+        return [v / norm for v in vec]
+
+    def _init_vector_store(self) -> None:
+        self.doc_vectors: Dict[str, List[float]] = {}
+        for doc in self.docs:
+            doc_id = doc.get("id")
+            if doc_id:
+                self.doc_vectors[doc_id] = self._embed_text(doc.get("text", ""))
+        self.vector_store = self.doc_vectors if self.doc_vectors else None
+
     def _semantic_tiebreak(self, ranked: List[Tuple[float, Dict[str, Any]]], meta: Dict[str, str]) -> List[Tuple[float, Dict[str, Any]]]:
         # Kept intentionally conservative: weighted metadata score remains dominant.
         try:
             query = " ".join(str(v) for v in meta.values() if v)
-            matches = self.vector_store.similarity_search_with_score(query, k=len(ranked))
-            semantic = {m.metadata.get("id"): 1 / (1 + float(score)) for m, score in matches}
+            q_vec = self._embed_text(query)
+            semantic = {}
+            for _, doc in ranked:
+                doc_id = doc.get("id")
+                d_vec = self.doc_vectors.get(doc_id)
+                if d_vec:
+                    dot = sum(a * b for a, b in zip(q_vec, d_vec))
+                    semantic[doc_id] = max(0.0, dot)
             return sorted(
-                [(score + semantic.get(doc["id"], 0), doc) for score, doc in ranked],
+                [(score + semantic.get(doc["id"], 0.0), doc) for score, doc in ranked],
                 key=lambda item: item[0],
                 reverse=True,
             )
         except Exception:
             return ranked
-
-    def _init_vector_store(self) -> None:
-        try:
-            from langchain_community.vectorstores import FAISS
-            from langchain_core.documents import Document
-            from langchain_core.embeddings import Embeddings
-        except Exception:
-            return
-
-        class HashEmbeddings(Embeddings):
-            def embed_documents(self, texts: List[str]) -> List[List[float]]:
-                return [self.embed_query(text) for text in texts]
-
-            def embed_query(self, text: str) -> List[float]:
-                dims = 128
-                vec = [0.0] * dims
-                for token in _norm(text).split():
-                    vec[hash(token) % dims] += 1.0
-                norm = sum(v * v for v in vec) ** 0.5 or 1.0
-                return [v / norm for v in vec]
-
-        documents = [
-            Document(page_content=doc["text"], metadata={k: v for k, v in doc.items() if k != "text"})
-            for doc in self.docs
-        ]
-        self.vector_store = FAISS.from_documents(documents, HashEmbeddings()) if documents else None
 
 
 def _load_docs() -> List[Dict[str, Any]]:
