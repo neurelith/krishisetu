@@ -26,7 +26,7 @@ def _get_rag():
 @router.post("/advisory", response_model=AdvisoryResponse, summary="Generate multi-factor contextual regenerative agro-advisory")
 async def generate_advisory(context: FarmContext):
     """
-    Fuses unified farm context (Leaf Diagnosis + Weather + Soil Health + Satellite NDVI)
+    Fuses unified farm context (Leaf Diagnosis + available Weather + Satellite NDVI; no soil-test measurements by default)
     with retrieved ICAR/FAO agronomic guidance using Google Gemini to produce an actionable,
     regenerative advisory with transparent explainability and Indic audio playback.
     """

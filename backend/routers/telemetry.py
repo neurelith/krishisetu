@@ -1,10 +1,9 @@
-"""
-Telemetry router for Weather (Open-Meteo), Soil Health Card, and Satellite NDVI.
-"""
+"""Telemetry router for Open-Meteo weather, soil-test availability, and satellite NDVI."""
 
 from __future__ import annotations
 
 import logging
+import math
 from typing import Optional
 
 import httpx
@@ -24,7 +23,7 @@ async def get_weather(
     location_label: Optional[str] = "Nadia, West Bengal",
 ):
     """
-    Fetches real-time agro-meteorological data from Open-Meteo API with fallback to verified regional climate normals.
+    Fetches real-time agro-meteorological data from Open-Meteo.
     """
     try:
         url = (
@@ -38,12 +37,26 @@ async def get_weather(
                 data = resp.json()
                 current = data.get("current", {})
                 daily = data.get("daily", {})
-                forecast_rain = sum(daily.get("precipitation_sum", [10, 8, 12, 5, 0, 0, 15]))
-
-                temp = current.get("temperature_2m", 31.8)
-                rh = current.get("relative_humidity_2m", 86.0)
-                rain_24h = current.get("rain", 14.5)
-                wind = current.get("wind_speed_10m", 14.2)
+                observations = {
+                    "temperature_c": current.get("temperature_2m"),
+                    "relative_humidity_pct": current.get("relative_humidity_2m"),
+                    "recent_rain_mm": current.get("rain"),
+                    "wind_speed_kmh": current.get("wind_speed_10m"),
+                }
+                forecast = daily.get("precipitation_sum")
+                if any(
+                    not isinstance(value, (int, float)) or not math.isfinite(value)
+                    for value in observations.values()
+                ) or not isinstance(forecast, list) or not forecast or any(
+                    not isinstance(value, (int, float)) or not math.isfinite(value)
+                    for value in forecast
+                ):
+                    raise ValueError("Open-Meteo response did not contain complete numeric observations.")
+                forecast_rain = sum(forecast)
+                temp = observations["temperature_c"]
+                rh = observations["relative_humidity_pct"]
+                recent_rain = observations["recent_rain_mm"]
+                wind = observations["wind_speed_kmh"]
 
                 risk = (
                     "High fungal sporulation risk (RH > 82%)"
@@ -52,84 +65,36 @@ async def get_weather(
                 )
 
                 return WeatherContext(
+                    available=True,
                     source=f"Open-Meteo Agro Station ({location_label})",
                     temperature_c=round(temp, 1),
                     relative_humidity_pct=round(rh, 1),
-                    rainfall_last_24h_mm=round(rain_24h, 1),
+                    recent_rain_mm=round(recent_rain, 1),
                     rainfall_forecast_7d_mm=round(forecast_rain, 1),
                     wind_speed_kmh=round(wind, 1),
-                    weather_condition="Humid / Intermittent Rain" if rain_24h > 0 else "Partly Cloudy",
+                    weather_condition="Recent rain reported" if recent_rain > 0 else "No recent rain reported",
                     microclimate_risk=risk,
                 )
-    except Exception as exc:
-        logger.info("Open-Meteo API query timed out or offline (%s); using station baseline.", exc)
+            logger.warning("Open-Meteo returned HTTP %s for weather telemetry.", resp.status_code)
+    except Exception:
+        logger.exception("Open-Meteo weather telemetry request failed.")
 
     return WeatherContext(
-        source=f"Agro-Met Station Baseline ({location_label})",
-        temperature_c=31.8,
-        relative_humidity_pct=86.0,
-        rainfall_last_24h_mm=18.5,
-        rainfall_forecast_7d_mm=54.0,
-        wind_speed_kmh=14.2,
-        weather_condition="Humid / Active Showers",
-        microclimate_risk="RH > 85% accelerates Rhizoctonia sheath blight mycelial growth",
+        available=False,
+        source="Open-Meteo Agro-Meteorology API",
+        reason="Weather telemetry is unavailable; no current observations were returned.",
     )
 
 
-@router.get("/soil", response_model=SoilHealthCard, summary="Fetch Soil Health Card parameters")
+@router.get("/soil", response_model=SoilHealthCard, summary="Report soil-test availability")
 def get_soil_health(
     state: str = "West Bengal",
     district: str = "Nadia",
 ):
-    """Returns standardized Soil Health Card 12-parameter data for the requested district and state."""
-    s = state.lower()
-    d = district.lower()
-    if "bihar" in s or "katihar" in d or "purnia" in d or "kishanganj" in d:
-        return SoilHealthCard(
-            source="Bihar DBT Soil Health Database (Purnia/Kosi Basin)",
-            card_id="BR-SHC-2026-4402",
-            nitrogen_kg_ha=192.0,
-            phosphorus_kg_ha=16.5,
-            potassium_kg_ha=175.0,
-            organic_carbon_pct=0.38,
-            ph=7.4,
-            electrical_conductivity_ds_m=0.40,
-            deficiencies=["Severe Organic Carbon Depletion (<0.4%)", "Zinc Deficiency Reported", "Low Available Nitrogen"],
-        )
-    elif "odisha" in s or "cuttack" in d or "puri" in d:
-        return SoilHealthCard(
-            source="Krushak Odisha Soil Health Registry (Mahanadi Basin)",
-            card_id="OD-SHC-2026-1194",
-            nitrogen_kg_ha=205.0,
-            phosphorus_kg_ha=18.0,
-            potassium_kg_ha=150.0,
-            organic_carbon_pct=0.52,
-            ph=6.5,
-            electrical_conductivity_ds_m=0.28,
-            deficiencies=["Moderate Nitrogen Deficit", "Boron Micronutrient Deficiency"],
-        )
-    elif "punjab" in s or "ludhiana" in d or "amritsar" in d:
-        return SoilHealthCard(
-            source="Punjab Remote Sensing Centre & Soil Health Card",
-            card_id="PB-SHC-2026-7832",
-            nitrogen_kg_ha=210.0,
-            phosphorus_kg_ha=22.0,
-            potassium_kg_ha=180.0,
-            organic_carbon_pct=0.55,
-            ph=7.4,
-            electrical_conductivity_ds_m=0.32,
-            deficiencies=["High Alkalinity Hazard in Subsoil", "Available Nitrogen Deficit"],
-        )
+    """Return an explicit unavailable state until a verified farmer-linked soil source exists."""
     return SoilHealthCard(
-        source=f"Government of India Soil Health Card ({district} Basin)",
-        card_id="SHC-WB-2026-8819",
-        nitrogen_kg_ha=185.0,
-        phosphorus_kg_ha=14.2,
-        potassium_kg_ha=160.0,
-        organic_carbon_pct=0.42,
-        ph=5.8,
-        electrical_conductivity_ds_m=0.35,
-        deficiencies=["Nitrogen Low (<280 kg/ha)", "Low Organic Carbon (<0.5%)", "Acidic Alluvial Soil"],
+        available=False,
+        reason="No farmer-specific soil-test measurements are currently available.",
     )
 
 

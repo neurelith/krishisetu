@@ -41,30 +41,73 @@ class CropDetails(BaseModel):
 
 
 class SoilHealthCard(BaseModel):
-    source: str = Field("Government of India Soil Health Card (SHC)", description="Origin registry")
-    card_id: Optional[str] = Field("SHC-WB-2026-8819", description="Soil health card identifier")
-    lab_test_cert: str = Field("ICAR-NBSS-LUP/2026/WB-089", description="Accredited lab certificate ref")
-    nitrogen_kg_ha: float = Field(185.0, description="Available Nitrogen (N) in kg/ha")
-    phosphorus_kg_ha: float = Field(14.2, description="Available Phosphorus (P) in kg/ha")
-    potassium_kg_ha: float = Field(160.0, description="Available Potassium (K) in kg/ha")
-    organic_carbon_pct: float = Field(0.42, description="Organic Carbon percentage (OC %)")
-    ph: float = Field(5.8, description="Soil pH level (acidic < 6.5, alkaline > 7.5)")
-    electrical_conductivity_ds_m: Optional[float] = Field(0.35, description="Electrical Conductivity (dS/m)")
-    deficiencies: List[str] = Field(
-        default_factory=lambda: ["Nitrogen Deficient (<280 kg/ha)", "Low Organic Carbon (<0.5%)", "Mildly Acidic pH"],
-        description="Identified soil deficiencies"
+    available: bool = Field(False, description="Whether a farmer-specific soil test is available")
+    source: Optional[str] = Field(None, description="Verified soil test source, when available")
+    card_id: Optional[str] = Field(None, description="Verified soil health card identifier")
+    lab_test_cert: Optional[str] = Field(None, description="Verified laboratory certificate reference")
+    nitrogen_kg_ha: Optional[float] = Field(None, description="Available Nitrogen (N) in kg/ha")
+    phosphorus_kg_ha: Optional[float] = Field(None, description="Available Phosphorus (P) in kg/ha")
+    potassium_kg_ha: Optional[float] = Field(None, description="Available Potassium (K) in kg/ha")
+    organic_carbon_pct: Optional[float] = Field(None, description="Organic Carbon percentage (OC %)")
+    ph: Optional[float] = Field(None, description="Soil pH level")
+    electrical_conductivity_ds_m: Optional[float] = Field(None, description="Electrical Conductivity (dS/m)")
+    deficiencies: List[str] = Field(default_factory=list, description="Verified soil test findings")
+    reason: Optional[str] = Field(None, description="Explanation when no farmer-specific soil test is available")
+
+
+class AgronomicInsight(BaseModel):
+    type: Literal["crop_condition", "weather", "crop_cycle", "field_management", "nutrient"]
+    title: str
+    text: str
+
+
+class AgronomicInsightInputs(BaseModel):
+    weather_available: bool = False
+    satellite_available: bool = False
+    soil_test_available: bool = False
+
+
+class AgronomicInsightLocation(BaseModel):
+    state: Optional[str] = None
+    district: Optional[str] = None
+    latitude: Optional[float] = Field(None, ge=-90, le=90)
+    longitude: Optional[float] = Field(None, ge=-180, le=180)
+
+
+class AgronomicInsightCrop(BaseModel):
+    name: Optional[str] = None
+    variety: Optional[str] = None
+    crop_stage: Optional[str] = None
+    season: Optional[str] = None
+
+
+class AgronomicInsightsResponse(BaseModel):
+    available: bool = False
+    generated_at: Optional[str] = None
+    location: str
+    crop: str
+    season: Optional[str] = None
+    inputs: AgronomicInsightInputs
+    insights: List[AgronomicInsight] = Field(default_factory=list)
+    disclaimer: str = (
+        "Guidance is general, not an official or local advisory. "
+        "No farmer-specific soil-test measurements were available."
     )
+    reason: Optional[str] = None
 
 
 class WeatherContext(BaseModel):
-    source: str = Field("Open-Meteo Agro-Meteorology API", description="Weather data provider")
-    temperature_c: float = Field(31.8, description="Current ambient temperature in Celsius")
-    relative_humidity_pct: float = Field(86.0, description="Relative humidity percentage")
-    rainfall_last_24h_mm: float = Field(18.5, description="Rainfall in the last 24 hours (mm)")
-    rainfall_forecast_7d_mm: float = Field(54.0, description="Projected 7-day cumulative precipitation (mm)")
-    wind_speed_kmh: float = Field(14.2, description="Wind speed (km/h)")
-    weather_condition: str = Field("Humid / Frequent Showers", description="Meteorological overview")
-    microclimate_risk: str = Field("High fungal sporulation risk due to RH > 85% and cloudy conditions", description="Microclimate disease risk")
+    available: bool = Field(False, description="Whether usable current weather telemetry is available")
+    source: str = Field("Unavailable", description="Weather data provider")
+    reason: Optional[str] = Field(None, description="Explanation when usable weather data is unavailable")
+    temperature_c: Optional[float] = Field(None, description="Current ambient temperature in Celsius")
+    relative_humidity_pct: Optional[float] = Field(None, description="Relative humidity percentage")
+    recent_rain_mm: Optional[float] = Field(None, description="Recent rain reported by the provider (mm)")
+    rainfall_last_24h_mm: Optional[float] = Field(None, description="Rainfall in the last 24 hours (mm), when available")
+    rainfall_forecast_7d_mm: Optional[float] = Field(None, description="Projected 7-day cumulative precipitation (mm)")
+    wind_speed_kmh: Optional[float] = Field(None, description="Wind speed (km/h)")
+    weather_condition: Optional[str] = Field(None, description="Meteorological overview")
+    microclimate_risk: Optional[str] = Field(None, description="Microclimate disease risk")
 
 
 class SatelliteContext(BaseModel):
@@ -83,6 +126,17 @@ class SatelliteContext(BaseModel):
     is_fresh: Optional[bool] = Field(None, description="Whether the observation is within the freshness window")
     thumbnail_url: Optional[str] = Field(None, description="Earth Engine RGB thumbnail URL")
     reason: Optional[str] = Field(None, description="Explanation when no usable observation is available")
+
+
+class AgronomicInsightsRequest(BaseModel):
+    location: AgronomicInsightLocation = Field(default_factory=AgronomicInsightLocation)
+    crop: AgronomicInsightCrop
+    weather: WeatherContext = Field(default_factory=WeatherContext)
+    satellite: SatelliteContext = Field(default_factory=SatelliteContext)
+    soil_test_available: Literal[False] = Field(
+        False,
+        description="Farmer-specific soil-test measurements are not available for insights",
+    )
 
 
 class DiagnosisResult(BaseModel):

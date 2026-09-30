@@ -2,7 +2,7 @@
 Google Gemini Multimodal AI & Contextual Reasoning Service for KrishiSetu.
 Handles:
 1. Multimodal Leaf Pathology Diagnostics using Gemini 2.5/Flash Vision.
-2. Contextual Regenerative Advisory Synthesis (fusing Leaf Pathology + Soil Health Card + Weather + Satellite NDVI + ICAR RAG).
+2. Contextual advisory and Agronomic Insights from available crop, weather, satellite, and retrieved context.
 3. Transparent Explainability Generation ("Why this recommendation?").
 4. Vernacular Audio Speech Synthesis (gTTS).
 Includes robust deterministic clinical protocols as a zero-crash safety net.
@@ -13,7 +13,9 @@ from __future__ import annotations
 import base64
 import json
 import logging
+import math
 import os
+import re
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -22,6 +24,10 @@ from typing import Any, Dict, List, Optional
 from gtts import gTTS
 from schemas import (
     AdvisoryResponse,
+    AgronomicInsight,
+    AgronomicInsightInputs,
+    AgronomicInsightsRequest,
+    AgronomicInsightsResponse,
     DiagnosisResult,
     ExplainabilityEvidence,
     FarmContext,
@@ -178,6 +184,290 @@ class GeminiAgriService:
             model_used="unavailable",
         )
 
+    def generate_agronomic_insights(
+        self,
+        context: AgronomicInsightsRequest,
+    ) -> AgronomicInsightsResponse:
+        """Explain supplied farm/weather/satellite context without inferring soil test results."""
+        location_parts = [
+            part.strip()
+            for part in (context.location.district, context.location.state)
+            if part and part.strip()
+        ]
+        location = ", ".join(location_parts) or "Location not provided"
+        crop_name = (context.crop.name or "").strip()
+        season = (context.crop.season or "").strip() or None
+        satellite = context.satellite
+        satellite_available = bool(
+            satellite.available
+            and satellite.ndvi is not None
+            and math.isfinite(satellite.ndvi)
+            and satellite.observation_date
+        )
+        weather = context.weather
+        weather_available = bool(
+            weather.available
+            and weather.source.startswith("Open-Meteo Agro Station")
+            and any(
+                value is not None and math.isfinite(value)
+                for value in (
+                    weather.temperature_c,
+                    weather.relative_humidity_pct,
+                    weather.recent_rain_mm,
+                    weather.rainfall_forecast_7d_mm,
+                    weather.wind_speed_kmh,
+                )
+            )
+        )
+        input_status = AgronomicInsightInputs(
+            weather_available=weather_available,
+            satellite_available=satellite_available,
+            soil_test_available=context.soil_test_available,
+        )
+
+        def unavailable(reason: str) -> AgronomicInsightsResponse:
+            return AgronomicInsightsResponse(
+                available=False,
+                location=location,
+                crop=crop_name or "Not provided",
+                season=season,
+                inputs=input_status,
+                reason=reason,
+            )
+
+        stage = (context.crop.crop_stage or "").strip()
+        if not crop_name or not stage:
+            return unavailable("Enter the crop and its current growth stage to request agronomic insights.")
+        if not self.client:
+            return unavailable("Agronomic insights are unavailable because Gemini is not configured.")
+
+        weather_facts = {
+            "source": weather.source if weather_available else None,
+            "temperature_c": weather.temperature_c if weather_available else None,
+            "relative_humidity_pct": weather.relative_humidity_pct if weather_available else None,
+            "recent_rain_mm": weather.recent_rain_mm if weather_available else None,
+            "rainfall_forecast_7d_mm": weather.rainfall_forecast_7d_mm if weather_available else None,
+            "wind_speed_kmh": weather.wind_speed_kmh if weather_available else None,
+        }
+        satellite_facts = {
+            "source": satellite.source if satellite_available else None,
+            "observation_date": satellite.observation_date if satellite_available else None,
+            "ndvi": satellite.ndvi if satellite_available else None,
+            "vegetation_status": satellite.vegetation_status if satellite_available else None,
+        }
+        facts = {
+            "location": location,
+            "coordinates": (
+                {
+                    "latitude": context.location.latitude,
+                    "longitude": context.location.longitude,
+                }
+                if context.location.latitude is not None and context.location.longitude is not None
+                else None
+            ),
+            "crop": crop_name,
+            "variety": (context.crop.variety or "").strip() or None,
+            "growth_stage": stage,
+            "season": season,
+            "weather_available": weather_available,
+            "weather": weather_facts,
+            "satellite_available": satellite_available,
+            "satellite": satellite_facts,
+            "soil_test_available": context.soil_test_available,
+        }
+
+        prompt = (
+            "You are a cautious agricultural assistant. Use the supplied JSON facts only. "
+            "Return JSON with exactly two non-empty string fields: crop_cycle and field_management. "
+            "Give short, practical, general guidance for the stated crop and growth stage; season may be considered only if supplied. "
+            "Use weather or satellite values only if their availability flag is true, and do not repeat or alter measurements. "
+            "Do not infer location-specific facts, soil properties, nutrient deficiencies, pest presence, or crop condition from missing inputs. "
+            "Do not invent citations, authorities, sources, or crop-calendar rules. "
+            "Do not give fertilizer/pesticide rates, quantities, doses, or precise prescriptions. "
+            "Do not claim this guidance comes from a government or research institution. "
+            "State uncertainty implicitly by keeping guidance broad. Do not include numbers in either field.\n"
+            f"FACTS JSON:\n{json.dumps(facts, ensure_ascii=False)}"
+        )
+
+        try:
+            models = (
+                "gemini-3.8-flash",
+                "gemini-3.7-flash",
+                "gemini-3.6-flash",
+                "gemini-3.5-flash-lite",
+            )
+            transient_failures = []
+            response = None
+            for model in models:
+                try:
+                    response = self.client.models.generate_content(
+                        model=model,
+                        contents=prompt,
+                        config={"response_mime_type": "application/json", "temperature": 0.2},
+                    )
+                    break
+                except Exception as exc:
+                    status_code = getattr(exc, "code", None) or getattr(exc, "status_code", None)
+                    try:
+                        status_code = int(status_code)
+                    except (TypeError, ValueError):
+                        status_code = None
+                    if status_code not in (429, 503):
+                        raise
+                    transient_failures.append(f"{model} (HTTP {status_code})")
+                    logger.warning(
+                        "Gemini agronomic insights model %s returned transient HTTP %s; trying the next model.",
+                        model,
+                        status_code,
+                    )
+            if response is None and transient_failures:
+                return unavailable(
+                    "Gemini models were temporarily unavailable or rate-limited "
+                    f"({', '.join(transient_failures)}). No recommendations were generated."
+                )
+            if not response or not response.text:
+                return unavailable(
+                    "Gemini returned no agronomic insight content. No recommendations were generated."
+                )
+            try:
+                parsed = json.loads(response.text)
+            except json.JSONDecodeError:
+                logger.warning("Gemini agronomic insight response was not valid JSON.")
+                return unavailable(
+                    "Gemini returned an unstructured response. No recommendations were generated."
+                )
+            guidance_fields = ("crop_cycle", "field_management")
+            if not isinstance(parsed, dict) or set(parsed) != set(guidance_fields):
+                logger.warning("Gemini agronomic insight response did not match the required fields.")
+                return unavailable(
+                    "Gemini response did not match the required insight structure. No recommendations were generated."
+                )
+            if any(
+                not isinstance(parsed.get(field), str) or not parsed[field].strip()
+                for field in guidance_fields
+            ):
+                logger.warning("Gemini agronomic insight response contained empty guidance.")
+                return unavailable(
+                    "Gemini response did not include usable crop-stage guidance. No recommendations were generated."
+                )
+
+            guidance = [parsed[field].strip() for field in guidance_fields]
+            prohibited = re.compile(
+                r"\d|@|%|https?://|\b(?:ICAR|DES|SHC|Soil Health Card|Matir Katha|"
+                r"government|Ministry|Department|official|authority|research|study|"
+                r"source|citation|according to|as per|kg|grams?|millilit(?:er|re)s?|"
+                r"lit(?:er|re)s?|acre|hectare)\b",
+                re.IGNORECASE,
+            )
+            soil_claim = re.compile(
+                r"\b(?:soil|nutrient|nitrogen|phosphorus|potassium)\b.{0,50}"
+                r"\b(?:deficien\w*|low|high|acidic|alkaline|shortage|lacks?)\b|"
+                r"\b(?:deficien\w*|shortage|acidic|alkaline)\b.{0,50}"
+                r"\b(?:soil|nutrient|nitrogen|phosphorus|potassium)\b",
+                re.IGNORECASE,
+            )
+            if any(prohibited.search(text) or soil_claim.search(text) for text in guidance):
+                logger.warning(
+                    "Gemini agronomic insight response was rejected by citation, prescription, or soil-claim safety validation."
+                )
+                return unavailable(
+                    "Gemini draft was rejected by safety validation because it included a possible unsupported citation, numeric prescription, or soil-status claim. No recommendations were returned."
+                )
+
+            if satellite_available:
+                crop_condition = (
+                    f"Sentinel-2 observation on {satellite.observation_date}: NDVI "
+                    f"{satellite.ndvi:.3f}"
+                    + (
+                        f" ({satellite.vegetation_status})"
+                        if satellite.vegetation_status
+                        else ""
+                    )
+                    + ". NDVI describes vegetation reflectance, not soil nutrients or soil moisture."
+                )
+            else:
+                crop_condition = (
+                    "No usable Sentinel-2 observation is available; current crop condition "
+                    "cannot be assessed from satellite data."
+                )
+
+            if weather_available:
+                observed_weather = []
+                if weather.temperature_c is not None:
+                    observed_weather.append(f"{weather.temperature_c:g}°C")
+                if weather.relative_humidity_pct is not None:
+                    observed_weather.append(f"{weather.relative_humidity_pct:g}% relative humidity")
+                if weather.recent_rain_mm is not None:
+                    observed_weather.append(f"{weather.recent_rain_mm:g} mm recent rain")
+                if weather.rainfall_forecast_7d_mm is not None:
+                    observed_weather.append(f"{weather.rainfall_forecast_7d_mm:g} mm forecast over 7 days")
+                weather_text = (
+                    f"Open-Meteo reports {', '.join(observed_weather)}. "
+                    "Consider these conditions when planning field work and water management."
+                )
+            else:
+                weather_text = (
+                    "Current weather data is unavailable; no weather-specific field guidance is included."
+                )
+
+            return AgronomicInsightsResponse(
+                available=True,
+                generated_at=datetime.now().astimezone().isoformat(timespec="seconds"),
+                location=location,
+                crop=crop_name,
+                season=season,
+                inputs=input_status,
+                insights=[
+                    AgronomicInsight(
+                        type="crop_condition",
+                        title="Current field condition",
+                        text=crop_condition,
+                    ),
+                    AgronomicInsight(
+                        type="weather",
+                        title="Weather consideration",
+                        text=weather_text,
+                    ),
+                    AgronomicInsight(
+                        type="crop_cycle",
+                        title="Crop-cycle guidance",
+                        text=guidance[0],
+                    ),
+                    AgronomicInsight(
+                        type="field_management",
+                        title="Field and water management",
+                        text=guidance[1],
+                    ),
+                    AgronomicInsight(
+                        type="nutrient",
+                        title="Nutrient guidance",
+                        text=(
+                            "No farmer-specific soil test is available, so soil N, P, K, pH, "
+                            "EC, and organic-carbon status are unknown. Nutrient guidance is "
+                            "general; obtain a soil test before making fertilizer adjustments."
+                        ),
+                    ),
+                ],
+            )
+        except Exception as exc:
+            status_code = getattr(exc, "code", None) or getattr(exc, "status_code", None)
+            logger.warning(
+                "Gemini agronomic insights provider request failed (%s, status=%s).",
+                type(exc).__name__,
+                status_code,
+            )
+            if status_code == 503:
+                reason = "Gemini is temporarily unavailable or overloaded. No recommendations were generated."
+            elif status_code in (401, 403):
+                reason = "Gemini authorization failed. Check the existing server-side Gemini configuration."
+            elif status_code == 404:
+                reason = "The configured Gemini model is unavailable. No recommendations were generated."
+            else:
+                reason = "Gemini could not complete the agronomic insights request. No recommendations were generated."
+            return unavailable(
+                reason
+            )
+
     def generate_contextual_advisory(
         self,
         context: FarmContext,
@@ -186,7 +476,7 @@ class GeminiAgriService:
         """
         Synthesizes a multi-factor regenerative advisory by fusing:
         - Diagnosis
-        - Soil Health Card metrics
+        - Soil-test status (no farmer-specific measurements by default)
         - Weather telemetry
         - Satellite NDVI
         - ICAR/FAO RAG knowledge
@@ -206,6 +496,16 @@ class GeminiAgriService:
             )
         else:
             satellite_summary = f"unavailable: {context.satellite.reason or 'no usable observation'}"
+        if context.weather.available and context.weather.source.startswith("Open-Meteo Agro Station"):
+            weather_summary = (
+                f"source: {context.weather.source}; temperature={context.weather.temperature_c}; "
+                f"relative humidity={context.weather.relative_humidity_pct}; "
+                f"recent rain={context.weather.recent_rain_mm}; "
+                f"7-day rain forecast={context.weather.rainfall_forecast_7d_mm}; "
+                f"condition={context.weather.weather_condition}"
+            )
+        else:
+            weather_summary = "unavailable; no weather measurements may be inferred"
 
         if not self.client:
             return self.unavailable_contextual_advisory(context)
@@ -218,11 +518,12 @@ class GeminiAgriService:
                 f"FARMER: {context.farmer.name} | District: {context.location.district}, {context.location.state}\n"
                 f"CROP: {crop_name} ({context.crop.variety}) | Stage: {context.crop.crop_stage}\n"
                 f"DIAGNOSIS: {condition} ({severity})\n"
-                f"SOIL DATA (source: {context.soil_health.source}): N={context.soil_health.nitrogen_kg_ha} kg/ha, P={context.soil_health.phosphorus_kg_ha} kg/ha, "
-                f"K={context.soil_health.potassium_kg_ha} kg/ha, Organic Carbon={context.soil_health.organic_carbon_pct}%, pH={context.soil_health.ph}\n"
-                f"WEATHER (source: {context.weather.source}): Temp={context.weather.temperature_c}°C, Relative Humidity={context.weather.relative_humidity_pct}%, "
-                f"7-Day Rain Forecast={context.weather.rainfall_forecast_7d_mm}mm, Risk={context.weather.microclimate_risk}\n"
+                "SOIL DATA: No farmer-specific soil-test measurements are available. "
+                "Do not infer soil properties, nutrient status, or deficiencies.\n"
+                f"WEATHER DATA: {weather_summary}\n"
                 f"SATELLITE DATA: {satellite_summary}. Do not use unavailable satellite data as evidence. NDVI is vegetation reflectance, not soil moisture.\n"
+                "No farmer-specific soil test is available. Do not infer soil conditions or provide soil-specific nutrient/fertilizer recommendations; advise soil testing before adjustments. "
+                "Do not recommend a nutrient treatment or fertilizer dose without verified soil-test evidence.\n"
                 "Treat any soil or weather source marked as a sample baseline as unavailable.\n"
                 f"RETRIEVED KNOWLEDGE:\n{rag_summary}\n\n"
                 f"TARGET LANGUAGE: {preferred_lang}.\n"

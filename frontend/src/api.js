@@ -152,17 +152,14 @@ export async function fetchAgroWeather(lat = 23.47, lon = 88.55, label = 'Nadia,
 }
 
 /**
- * Fetches Soil Health Card 12-parameter data.
+ * Generates structured, source-aware Agronomic Insights from the current farm context.
  */
-export async function fetchSoilHealth(state = 'West Bengal', district = 'Nadia') {
+export async function generateAgronomicInsights(farmContext) {
   try {
-    const { data } = await api.get('/api/telemetry/soil', {
-      params: { state, district }
-    })
+    const { data } = await api.post('/api/agronomy/insights', farmContext)
     return data
   } catch (err) {
-    console.warn('Soil health fetch fallback:', err)
-    return null
+    throw new Error(describeError(err, 'Agronomic insights are unavailable.'))
   }
 }
 

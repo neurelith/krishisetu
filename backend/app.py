@@ -18,7 +18,7 @@ from fastapi.staticfiles import StaticFiles
 sys.path.insert(0, str(Path(__file__).parent))
 
 from database import init_db
-from routers import advisory, campaigns, diagnose, farmers, interop, predict, realtime, telemetry
+from routers import advisory, agronomy, campaigns, diagnose, farmers, interop, predict, realtime, telemetry
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)-8s | %(name)s | %(message)s")
 logger = logging.getLogger("krishisetu.api")
@@ -61,6 +61,7 @@ app.add_middleware(
 # KrishiSetu Core Digital Public Good Endpoints
 app.include_router(diagnose.router)
 app.include_router(advisory.router)
+app.include_router(agronomy.router)
 app.include_router(interop.router)
 app.include_router(telemetry.router)
 

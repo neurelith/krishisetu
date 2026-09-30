@@ -65,17 +65,47 @@
           <input v-model="currentContext.location.district" autocomplete="address-level2" placeholder="Your district" @input="onFarmContextChanged" />
         </label>
         <label>
-          <span>Farm latitude</span>
-          <input v-model.number="currentContext.location.latitude" type="number" min="-90" max="90" step="any" placeholder="Latitude" @input="onFarmCoordinatesChanged" />
-        </label>
-        <label>
-          <span>Farm longitude</span>
-          <input v-model.number="currentContext.location.longitude" type="number" min="-180" max="180" step="any" placeholder="Longitude" @input="onFarmCoordinatesChanged" />
-        </label>
-        <label>
           <span>Growth stage</span>
           <input v-model="currentContext.crop.crop_stage" autocomplete="off" placeholder="e.g. Flowering" @input="onFarmContextChanged" />
         </label>
+        <label>
+          <span>Season (optional)</span>
+          <select v-model="currentContext.crop.season" @change="onFarmContextChanged">
+            <option value="">Not selected</option>
+            <option value="Kharif">Kharif</option>
+            <option value="Rabi">Rabi</option>
+            <option value="Zaid">Zaid</option>
+          </select>
+        </label>
+        <div class="location-permission-control" role="status" aria-live="polite">
+          <span>{{ locationStatusMessage }}</span>
+          <button
+            v-if="locationStatus !== 'checking' && locationStatus !== 'detected' && !showManualCoordinates"
+            type="button"
+            class="btn-gov-outline"
+            @click="showManualCoordinates = true"
+          >
+            Enter coordinates manually
+          </button>
+          <button
+            v-else-if="locationStatus === 'detected' && !showManualCoordinates"
+            type="button"
+            class="btn-gov-outline"
+            @click="showManualCoordinates = true"
+          >
+            Change location manually
+          </button>
+          <template v-if="showManualCoordinates">
+            <label>
+              <span>Farm latitude</span>
+              <input v-model.number="currentContext.location.latitude" type="number" min="-90" max="90" step="0.00001" placeholder="Latitude" @input="onFarmCoordinatesChanged" />
+            </label>
+            <label>
+              <span>Farm longitude</span>
+              <input v-model.number="currentContext.location.longitude" type="number" min="-180" max="180" step="0.00001" placeholder="Longitude" @input="onFarmCoordinatesChanged" />
+            </label>
+          </template>
+        </div>
         <label>
           <span>Advisory language</span>
           <select v-model="currentContext.farmer.preferred_language" @change="onFarmContextChanged">
@@ -98,7 +128,7 @@
         </div>
         <div class="matrix-sync-tag">
           <span class="live-dot"></span>
-          <span>Weather and soil baselines · live satellite on sync</span>
+          <span>Weather and satellite observations · live on sync</span>
         </div>
       </div>
 
@@ -106,20 +136,20 @@
         <!-- Stream 1: Agro-Weather (Open-Meteo) -->
         <div class="matrix-column">
           <div class="column-header">
-            <span class="station-provenance">Agro-Meteorology · sample baseline</span>
+            <span class="station-provenance">Agro-Meteorology · Open-Meteo</span>
             <h3>Atmospheric Microclimate</h3>
-            <span class="source-tag">Sample values · refresh requires farm coordinates</span>
+            <span class="source-tag">{{ currentContext.weather.available ? currentContext.weather.source : 'Weather observations unavailable' }}</span>
           </div>
 
           <!-- Humidity Visual Warning Range Meter -->
           <div class="telemetry-gauge-card highlight-gauge-alert">
             <div class="gauge-header">
               <span class="gauge-label">Relative Humidity & Pathogen Risk</span>
-              <span class="gauge-value text-alert"><span v-text="currentContext.weather.relative_humidity_pct"></span>% (Elevated)</span>
+              <span class="gauge-value text-alert"><span v-text="currentContext.weather.relative_humidity_pct ?? 'Unavailable'"></span><span v-if="currentContext.weather.relative_humidity_pct != null">%</span></span>
             </div>
             <div class="gauge-track-container">
               <div class="gauge-bar-track">
-                <div class="gauge-fill-bar gauge-fill-alert" :style="{ width: currentContext.weather.relative_humidity_pct + '%' }"></div>
+                <div class="gauge-fill-bar gauge-fill-alert" :style="{ width: (currentContext.weather.relative_humidity_pct ?? 0) + '%' }"></div>
                 <div class="gauge-threshold-marker marker-rh-82" title="Fungal Sporulation Threshold (82%)"></div>
               </div>
               <div class="gauge-ticks-row">
@@ -134,15 +164,15 @@
           <div class="metrics-tabular">
             <div class="metric-row">
               <span class="metric-key">Ambient Temperature</span>
-              <span class="metric-val"><span v-text="currentContext.weather.temperature_c"></span>°C</span>
+              <span class="metric-val"><span v-text="currentContext.weather.temperature_c ?? 'Unavailable'"></span><span v-if="currentContext.weather.temperature_c != null">°C</span></span>
             </div>
             <div class="metric-row">
               <span class="metric-key">7-Day Rainfall Forecast</span>
-              <span class="metric-val"><span v-text="currentContext.weather.rainfall_forecast_7d_mm"></span> mm</span>
+              <span class="metric-val"><span v-text="currentContext.weather.rainfall_forecast_7d_mm ?? 'Unavailable'"></span><span v-if="currentContext.weather.rainfall_forecast_7d_mm != null"> mm</span></span>
             </div>
             <div class="metric-row">
-              <span class="metric-key">24-Hour Precipitation</span>
-              <span class="metric-val"><span v-text="currentContext.weather.rainfall_last_24h_mm"></span> mm</span>
+              <span class="metric-key">Recent Rain (Open-Meteo)</span>
+              <span class="metric-val"><span v-text="currentContext.weather.recent_rain_mm ?? 'Unavailable'"></span><span v-if="currentContext.weather.recent_rain_mm != null"> mm</span></span>
             </div>
           </div>
 
@@ -152,74 +182,42 @@
           </div>
         </div>
 
-        <!-- Stream 2: Soil Health Card (GOI SHC) -->
+        <!-- Stream 2: Agronomic Insights -->
         <div class="matrix-column border-left-divider">
           <div class="column-header">
-            <span class="station-provenance">Soil metrics · sample baseline</span>
-            <h3>Soil Fertility Matrix (SHC)</h3>
-            <span class="source-tag">Sample soil values · not a farmer health card</span>
+            <span class="station-provenance">Crop, weather and satellite context</span>
+            <h3>Agronomic Insights</h3>
+            <span class="source-tag">Gemini synthesis · no soil-test data</span>
           </div>
 
-          <!-- Soil Reaction pH Range Gauge -->
-          <div class="telemetry-gauge-card">
-            <div class="gauge-header">
-              <span class="gauge-label">Soil Reaction (pH Balance)</span>
-              <span class="gauge-value text-alert"><span v-text="currentContext.soil_health.ph"></span> (Acidic)</span>
-            </div>
-            <div class="gauge-track-container">
-              <div class="gauge-bar-track">
-                <div class="gauge-fill-bar gauge-fill-ph" :style="{ width: ((currentContext.soil_health.ph / 14) * 100) + '%' }"></div>
-                <div class="gauge-threshold-marker marker-ph-neutral" title="Neutral Target (pH 7.0)"></div>
-              </div>
-              <div class="gauge-ticks-row">
-                <span>0 Acidic</span>
-                <span class="threshold-label">7.0 Neutral</span>
-                <span>14 Alkaline</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- N-P-K Nutrient Status Bars -->
-          <div class="npk-tri-deck">
-            <div class="npk-item">
-              <div class="npk-head">
-                <span class="npk-name">Nitrogen (N)</span>
-                <span class="npk-val text-alert"><span v-text="currentContext.soil_health.nitrogen_kg_ha"></span> kg/ha (Low)</span>
-              </div>
-              <div class="npk-bar-track">
-                <div class="npk-bar-fill fill-low fill-n-35"></div>
-              </div>
-            </div>
-            <div class="npk-item">
-              <div class="npk-head">
-                <span class="npk-name">Phosphorus (P)</span>
-                <span class="npk-val text-alert"><span v-text="currentContext.soil_health.phosphorus_kg_ha"></span> kg/ha (Low)</span>
-              </div>
-              <div class="npk-bar-track">
-                <div class="npk-bar-fill fill-low fill-p-28"></div>
-              </div>
-            </div>
-            <div class="npk-item">
-              <div class="npk-head">
-                <span class="npk-name">Potassium (K)</span>
-                <span class="npk-val text-forest"><span v-text="currentContext.soil_health.potassium_kg_ha"></span> kg/ha (Moderate)</span>
-              </div>
-              <div class="npk-bar-track">
-                <div class="npk-bar-fill fill-mod fill-k-62"></div>
+          <p class="stream-risk-note">
+            <strong>No soil test available.</strong> Soil nutrient and pH status are unknown. Get a soil test before making fertilizer adjustments.
+          </p>
+          <button
+            type="button"
+            class="btn-gov-outline"
+            :disabled="isGeneratingInsights || !hasAgronomicContext"
+            @click="requestAgronomicInsights"
+          >
+            {{ isGeneratingInsights ? 'Preparing insights…' : 'Generate agronomic insights' }}
+          </button>
+          <p v-if="agronomicInsights?.reason" class="stream-risk-note" role="status">
+            {{ agronomicInsights.reason }}
+          </p>
+          <p v-else-if="!agronomicInsights" class="stream-risk-note">
+            Enter your crop and growth stage, then generate insights from available weather and satellite observations.
+          </p>
+          <div v-if="agronomicInsights?.available" class="metrics-tabular">
+            <div v-for="insight in agronomicInsights.insights" :key="insight.type" class="metric-row agronomic-insight-row">
+              <div>
+                <span class="metric-key">{{ insight.title }}</span>
+                <p class="metric-val">{{ insight.text }}</p>
               </div>
             </div>
           </div>
-
-          <div class="deficiency-chips-row">
-            <span v-for="(def, idx) in currentContext.soil_health.deficiencies" :key="idx" class="badge-institutional badge-soil">
-              {{ def }}
-            </span>
-          </div>
-
-          <div class="stream-risk-note">
-            <span class="risk-label">Pedological Assessment:</span>
-            <p class="font-editorial-italic">"Acidic soil matrix reduces bio-available phosphate; organic carbon depletion requires organic matter restitution."</p>
-          </div>
+          <p v-if="agronomicInsights?.available" class="stream-risk-note">
+            {{ agronomicInsights.disclaimer }}
+          </p>
         </div>
 
         <!-- Stream 3: Satellite NDVI (Copernicus Sentinel-2) -->
@@ -856,11 +854,16 @@ import {
   diagnoseCropDisease, 
   generateRegenerativeAdvisory, 
   fetchAgroWeather, 
-  fetchSoilHealth, 
+  generateAgronomicInsights,
   fetchSatelliteNDVI,
   resolveMediaUrl 
 } from '../api'
 import { useOfflineStorage } from '../composables/useOfflineStorage'
+import {
+  getLocationErrorState,
+  hasValidCoordinatePair,
+  requestDeviceCoordinates
+} from '../utils/geolocation'
 import InfographicTelemetryRadar from '../components/InfographicTelemetryRadar.vue'
 import InfographicPathogenCycle from '../components/InfographicPathogenCycle.vue'
 import InfographicTreatmentRoadmap from '../components/InfographicTreatmentRoadmap.vue'
@@ -896,24 +899,30 @@ const currentContext = reactive({
     days_since_sowing: null
   },
   soil_health: {
-    source: 'Sample baseline (not linked to a farmer soil test)',
-    card_id: 'SHC-WB-2026-8819',
-    lab_test_cert: 'ICAR-NBSS-LUP/2026/WB-089',
-    nitrogen_kg_ha: 185.0,
-    phosphorus_kg_ha: 14.2,
-    potassium_kg_ha: 160.0,
-    organic_carbon_pct: 0.42,
-    ph: 5.8,
-    deficiencies: ['Nitrogen Low (<280 kg/ha)', 'Low Organic Carbon (<0.5%)', 'Acidic Alluvial Soil']
+    available: false,
+    source: null,
+    card_id: null,
+    lab_test_cert: null,
+    nitrogen_kg_ha: null,
+    phosphorus_kg_ha: null,
+    potassium_kg_ha: null,
+    organic_carbon_pct: null,
+    ph: null,
+    electrical_conductivity_ds_m: null,
+    deficiencies: [],
+    reason: 'No farmer-specific soil-test measurements are available.'
   },
   weather: {
-    source: 'Sample baseline (not linked to this location)',
-    temperature_c: 31.8,
-    relative_humidity_pct: 86.0,
-    rainfall_last_24h_mm: 18.5,
-    rainfall_forecast_7d_mm: 54.0,
-    wind_speed_kmh: 14.2,
-    microclimate_risk: 'Elevated fungal sporulation risk (RH > 82%)'
+    available: false,
+    source: 'Unavailable',
+    reason: 'Sync with farm coordinates to load weather observations.',
+    temperature_c: null,
+    relative_humidity_pct: null,
+    recent_rain_mm: null,
+    rainfall_forecast_7d_mm: null,
+    wind_speed_kmh: null,
+    weather_condition: null,
+    microclimate_risk: null
   },
   satellite: {
     available: false,
@@ -946,6 +955,11 @@ const fileInputRef = ref(null)
 const selectedFileBlob = ref(null)
 const diagnosisResult = ref(null)
 const advisoryResult = ref(null)
+const agronomicInsights = ref(null)
+const isGeneratingInsights = ref(false)
+const locationStatus = ref('checking')
+const showManualCoordinates = ref(false)
+const locationOrigin = ref('manual')
 const showEnTranslation = ref(false)
 const showBenchmarks = ref(false)
 const isDemoResult = ref(false)
@@ -957,14 +971,21 @@ const isContextReady = computed(() => Boolean(
   currentContext.location.district.trim() &&
   currentContext.crop.crop_stage.trim()
 ))
-const hasFarmCoordinates = computed(() =>
-  currentContext.location.latitude !== null &&
-  currentContext.location.latitude !== '' &&
-  currentContext.location.longitude !== null &&
-  currentContext.location.longitude !== '' &&
-  Number.isFinite(Number(currentContext.location.latitude)) &&
-  Number.isFinite(Number(currentContext.location.longitude))
-)
+const hasAgronomicContext = computed(() => Boolean(
+  currentContext.crop.name.trim() &&
+  currentContext.crop.crop_stage.trim()
+))
+const hasFarmCoordinates = computed(() => hasValidCoordinatePair(
+  currentContext.location.latitude,
+  currentContext.location.longitude
+))
+const locationStatusMessage = computed(() => {
+  if (locationStatus.value === 'checking') return 'Detecting your device location…'
+  if (locationStatus.value === 'detected') return 'Farm location detected and saved for weather and satellite insights.'
+  if (locationStatus.value === 'manual') return 'Using saved or manually entered farm coordinates.'
+  if (locationStatus.value === 'denied') return 'Location permission was denied. You can enter coordinates manually.'
+  return 'Device location is unavailable. You can enter coordinates manually.'
+})
 
 // Voice STT State
 const isRecording = ref(false)
@@ -1213,14 +1234,63 @@ const SAMPLE_BENCHMARKS = {
   }
 }
 
+async function requestAgronomicInsights() {
+  isGeneratingInsights.value = true
+  agronomicInsights.value = null
+  try {
+    const { location, crop, weather, satellite } = JSON.parse(JSON.stringify(currentContext))
+    const response = await generateAgronomicInsights({
+      location,
+      crop,
+      weather,
+      satellite,
+      soil_test_available: false
+    })
+    agronomicInsights.value = response
+  } catch (err) {
+    console.error('Agronomic insights request failed:', err)
+    agronomicInsights.value = {
+      available: false,
+      insights: [],
+      reason: err.message || 'Agronomic insights are unavailable.'
+    }
+  } finally {
+    isGeneratingInsights.value = false
+  }
+}
+
 onMounted(async () => {
   const savedContext = await getOfflineItem('farmer_context')
   if (savedContext) {
     Object.assign(currentContext.crop, savedContext.crop || {})
     Object.assign(currentContext.location, savedContext.location || {})
     Object.assign(currentContext.farmer, savedContext.farmer || {})
+    locationOrigin.value = savedContext.location_source === 'device' ? 'device' : 'manual'
   }
+  if (hasFarmCoordinates.value) {
+    locationStatus.value = locationOrigin.value === 'device' ? 'detected' : 'manual'
+    return
+  }
+  detectFarmLocation()
 })
+
+function detectFarmLocation() {
+  if (hasFarmCoordinates.value) {
+    locationStatus.value = 'detected'
+    return
+  }
+  locationStatus.value = 'checking'
+  requestDeviceCoordinates(navigator.geolocation).then(async ({ latitude, longitude }) => {
+    currentContext.location.latitude = latitude
+    currentContext.location.longitude = longitude
+    locationOrigin.value = 'device'
+    showManualCoordinates.value = false
+    onFarmCoordinatesChanged('device')
+    await refreshTelemetry()
+  }).catch((error) => {
+    locationStatus.value = getLocationErrorState(error)
+  })
+}
 
 function selectAndRunBenchmark(type) {
   loadSampleLeaf(type)
@@ -1278,6 +1348,7 @@ function onFarmContextChanged() {
   }
   diagnosisResult.value = null
   advisoryResult.value = null
+  agronomicInsights.value = null
   currentContext.diagnosis = null
   isDemoResult.value = false
   diagnosisError.value = ''
@@ -1286,7 +1357,8 @@ function onFarmContextChanged() {
     crop: {
       name: currentContext.crop.name,
       variety: currentContext.crop.variety,
-      crop_stage: currentContext.crop.crop_stage
+      crop_stage: currentContext.crop.crop_stage,
+      season: currentContext.crop.season
     },
     location: {
       state: currentContext.location.state,
@@ -1294,11 +1366,30 @@ function onFarmContextChanged() {
       latitude: currentContext.location.latitude,
       longitude: currentContext.location.longitude
     },
+    location_source: locationOrigin.value,
     farmer: { preferred_language: currentContext.farmer.preferred_language }
   })
 }
 
-function onFarmCoordinatesChanged() {
+function onFarmCoordinatesChanged(origin = 'manual') {
+  if (hasFarmCoordinates.value) {
+    locationOrigin.value = origin
+    locationStatus.value = origin === 'device' ? 'detected' : 'manual'
+  } else if (showManualCoordinates.value) {
+    locationStatus.value = 'unavailable'
+  }
+  currentContext.weather = {
+    available: false,
+    source: 'Unavailable',
+    reason: 'Farm coordinates changed. Sync telemetry to fetch current weather.',
+    temperature_c: null,
+    relative_humidity_pct: null,
+    recent_rain_mm: null,
+    rainfall_forecast_7d_mm: null,
+    wind_speed_kmh: null,
+    weather_condition: null,
+    microclimate_risk: null
+  }
   currentContext.satellite = {
     available: false,
     source: 'Google Earth Engine / Sentinel-2',
@@ -1402,6 +1493,22 @@ async function generateAdvisoryPlan() {
 async function refreshTelemetry() {
   loadingTelemetry.value = true
   try {
+    const locationLabel = [
+      currentContext.location.district,
+      currentContext.location.state
+    ].filter(Boolean).join(', ') || 'Farm location'
+    currentContext.weather = {
+      available: false,
+      source: 'Unavailable',
+      reason: 'Weather telemetry is being refreshed.',
+      temperature_c: null,
+      relative_humidity_pct: null,
+      recent_rain_mm: null,
+      rainfall_forecast_7d_mm: null,
+      wind_speed_kmh: null,
+      weather_condition: null,
+      microclimate_risk: null
+    }
     currentContext.satellite = {
       available: false,
       source: 'Google Earth Engine / Sentinel-2',
@@ -1409,15 +1516,13 @@ async function refreshTelemetry() {
         ? 'Satellite telemetry is being refreshed.'
         : 'Farm coordinates are required for satellite telemetry.'
     }
-    const [w, s, sat] = await Promise.all([
+    const [w, sat] = await Promise.all([
       hasFarmCoordinates.value
-        ? fetchAgroWeather(currentContext.location.latitude, currentContext.location.longitude)
+        ? fetchAgroWeather(currentContext.location.latitude, currentContext.location.longitude, locationLabel)
         : Promise.resolve(null),
-      fetchSoilHealth(currentContext.location.state, currentContext.location.district),
       fetchSatelliteNDVI(currentContext.location.latitude, currentContext.location.longitude)
     ])
     if (w) Object.assign(currentContext.weather, w)
-    if (s) Object.assign(currentContext.soil_health, s)
     Object.assign(currentContext.satellite, sat)
     await saveOfflineItem('latest_context', JSON.parse(JSON.stringify(currentContext)))
   } catch (err) {
@@ -1553,6 +1658,27 @@ const audioTimeDisplay = computed(() => {
   color: var(--slate-700);
   font-size: 12px;
   font-weight: 600;
+}
+
+.location-permission-control {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--slate-50);
+  color: var(--slate-700);
+  font-size: 12px;
+}
+
+.location-permission-control .btn-gov-outline {
+  min-height: 36px;
+  padding: 7px 10px;
+  font-size: 11px;
 }
 
 .farmer-context-grid input,
@@ -1855,6 +1981,23 @@ const audioTimeDisplay = computed(() => {
   font-weight: 600;
   color: var(--slate-900);
   font-variant-numeric: tabular-nums;
+}
+
+.agronomic-insight-row {
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.agronomic-insight-row > div {
+  min-width: 0;
+}
+
+.agronomic-insight-row .metric-val {
+  margin: 4px 0 0;
+  font-family: var(--font-swiss);
+  font-weight: 400;
+  line-height: 1.5;
+  white-space: normal;
 }
 
 .text-alert {
@@ -3682,6 +3825,10 @@ const audioTimeDisplay = computed(() => {
   .farmer-context-grid {
     grid-template-columns: minmax(0, 1fr);
     gap: 10px;
+  }
+
+  .location-permission-control {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .profile-ribbon {
