@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/assets/hero-banner.svg" alt="KrishiSetu Hero Banner" width="100%" />
+# 🌾 KrishiSetu (कृषि-सेतु)
 
 <br/>
 
@@ -43,12 +43,6 @@
 ## 🏛 System Architecture
 
 KrishiSetu is structured into five distinct operational stages: Heterogeneous State Registry Ingestion $\rightarrow$ Canonical DPG Normalization $\rightarrow$ Grounded Dual-Core AI Reasoners $\rightarrow$ Triaged Ergonomic Consoles $\rightarrow$ Federated Regional Defense.
-
-<div align="center">
-  <img src="docs/assets/architecture-diagram.svg" alt="KrishiSetu End-to-End System Architecture" width="100%" />
-</div>
-
-<br/>
 
 ### Data Flow Overview
 
@@ -131,22 +125,10 @@ flowchart TD
 ---
 
 ## 📊 Interactive Agronomic Infographics
-
-### 1. Diagnostic Telemetry Radar
-Multi-axis field telemetry visualization comparing farmer soil metrics, atmospheric moisture, and satellite canopy indices against safe ICAR baselines:
-
-<div align="center">
-  <img src="docs/assets/infographic-radar.svg" alt="Agronomic Telemetry Radar" width="100%" />
-</div>
-
-<br/>
-
-### 2. Chronological ICAR Treatment Roadmap
-A structured 4-phase clinical intervention timeline tailored to minimize yield impact and regenerate soil biology:
-
-<div align="center">
-  <img src="docs/assets/infographic-roadmap.svg" alt="4-Stage ICAR Treatment Roadmap" width="100%" />
-</div>
+- **Diagnostic Telemetry Radar**: Multi-axis field telemetry visualization comparing farmer soil metrics, atmospheric moisture, and satellite canopy indices against safe ICAR baselines.
+- **Chronological ICAR Treatment Roadmap**: A structured 4-phase clinical intervention timeline tailored to minimize yield impact and regenerate soil biology.
+- **Economic Impact Projections**: Real-time yield loss mitigation and financial recovery projections based on clinical intervention efficacy.
+- **Pathogen Lifecycle Tracker**: Visualizes incubation, sporulation, and containment phases to guide prophylactic spray timing.
 
 ---
 

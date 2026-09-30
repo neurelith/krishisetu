@@ -60,3 +60,10 @@ design/
 docs/
 notebooks/
 notebook/
+
+# Agent context and prompt instructions
+AGENTS.md
+GEMINI.md
+
+# Design taste checking scripts
+frontend/scripts/
