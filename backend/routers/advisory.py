@@ -44,4 +44,4 @@ async def generate_advisory(context: FarmContext):
         return advisory
     except Exception as exc:
         logger.error("Error generating contextual advisory: %s", exc)
-        raise HTTPException(status_code=500, detail=f"Advisory generation failed: {str(exc)}")
+        return get_gemini_service().unavailable_contextual_advisory(context)

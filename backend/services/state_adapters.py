@@ -19,7 +19,6 @@ from schemas import (
     FarmerIdentity,
     GeoLocation,
     OutbreakAlert,
-    SatelliteContext,
     SoilHealthCard,
     StateNormalizationResponse,
     WeatherContext,
@@ -46,8 +45,8 @@ class WestBengalAdapter:
             district=str(raw.get("jela", raw.get("district", "Nadia"))),
             block_tehsil=str(raw.get("block", raw.get("tehsil", "Nakashipara"))),
             village=str(raw.get("mouza_gram", raw.get("village", "Bethuadahari"))),
-            latitude=float(raw.get("latitude", 23.47)),
-            longitude=float(raw.get("longitude", 88.55)),
+            latitude=float(raw["latitude"]) if raw.get("latitude") is not None else 23.47,
+            longitude=float(raw["longitude"]) if raw.get("longitude") is not None else 88.55,
         )
 
         crop_data = CropDetails(
@@ -82,15 +81,6 @@ class WestBengalAdapter:
             microclimate_risk="RH > 85% accelerates Rhizoctonia sheath blight mycelium",
         )
 
-        satellite_data = SatelliteContext(
-            source="Copernicus Sentinel-2 (Nadia Raster Tile)",
-            ndvi=float(raw.get("satellite_ndvi", 0.64)),
-            ndvi_trend="slight_drop_anomaly",
-            soil_moisture_index=float(raw.get("soil_moisture", 0.42)),
-            cloud_cover_pct=20.0,
-            vegetation_vigor="Moderate vigor; localized vegetative dip in south plot",
-        )
-
         context = FarmContext(
             standard_version="in.gov.dpg.farmcontext.v1",
             farmer=farmer_data,
@@ -98,7 +88,6 @@ class WestBengalAdapter:
             crop=crop_data,
             soil_health=soil_data,
             weather=weather_data,
-            satellite=satellite_data,
             connectivity_mode="online",
         )
 
@@ -141,8 +130,8 @@ class BiharAdapter:
             district=str(raw.get("jila", raw.get("district", "Purnia"))),
             block_tehsil=str(raw.get("prakhand", raw.get("tehsil", "Kasba"))),
             village=str(raw.get("panchayat_gram", raw.get("village", "Sabdalpur"))),
-            latitude=float(raw.get("latitude", 25.77)),
-            longitude=float(raw.get("longitude", 87.47)),
+            latitude=float(raw["latitude"]) if raw.get("latitude") is not None else 25.77,
+            longitude=float(raw["longitude"]) if raw.get("longitude") is not None else 87.47,
         )
 
         crop_data = CropDetails(
@@ -177,15 +166,6 @@ class BiharAdapter:
             microclimate_risk="High temperature combined with 84% RH triggers insect vector activity",
         )
 
-        satellite_data = SatelliteContext(
-            source="Copernicus Sentinel-2 (Kosi-Mahananda Basin Tile)",
-            ndvi=float(raw.get("ndvi_man", 0.61)),
-            ndvi_trend="stable",
-            soil_moisture_index=float(raw.get("mitti_nami", 0.39)),
-            cloud_cover_pct=25.0,
-            vegetation_vigor="Normal vegetative biomass with localized moisture stress in northern quadrant",
-        )
-
         context = FarmContext(
             standard_version="in.gov.dpg.farmcontext.v1",
             farmer=farmer_data,
@@ -193,7 +173,6 @@ class BiharAdapter:
             crop=crop_data,
             soil_health=soil_data,
             weather=weather_data,
-            satellite=satellite_data,
             connectivity_mode="online",
         )
 

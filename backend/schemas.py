@@ -6,7 +6,7 @@ Environmental Telemetry (Weather, Soil Health Card, Sentinel-2 NDVI), and Cross-
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Literal, Optional
 from pydantic import BaseModel, Field, field_validator
 
 
@@ -68,19 +68,35 @@ class WeatherContext(BaseModel):
 
 
 class SatelliteContext(BaseModel):
-    source: str = Field("Copernicus Sentinel-2 Agro-Index", description="Satellite imagery provider")
-    tile_reference: str = Field("S2A_MSIL2A_20260924_T45QXE_R061", description="Copernicus Sentinel-2 Level-2A Tile Granule ID")
-    spectral_formula: str = Field("NDVI = (B8_NIR - B4_Red) / (B8_NIR + B4_Red)", description="Mathematical spectral index formula")
-    nir_band_reflectance: float = Field(0.78, description="Band 8 (Near-Infrared, 842nm) surface reflectance")
-    red_band_reflectance: float = Field(0.17, description="Band 4 (Red, 665nm) surface reflectance")
-    ndvi: float = Field(0.64, description="Calculated Normalized Difference Vegetation Index (0.0 to 1.0)")
-    ndvi_trend: str = Field("slight_drop_anomaly", description="'stable', 'increasing', 'slight_drop_anomaly', 'severe_dip'")
-    soil_moisture_index: float = Field(0.42, description="Normalized soil moisture index")
-    cloud_cover_pct: float = Field(20.0, description="Cloud cover percentage")
-    vegetation_vigor: str = Field("Moderate canopy vigor with localized chlorosis detected in sector B", description="Spectral interpretation")
+    available: bool = Field(True, description="Whether a usable satellite observation is available")
+    source: str = Field("Google Earth Engine / Sentinel-2", description="Satellite imagery provider")
+    observation_date: Optional[str] = Field("2026-09-24", description="Acquisition date of the selected Sentinel-2 image")
+    latitude: Optional[float] = Field(23.47, description="Farm latitude used for the observation")
+    longitude: Optional[float] = Field(88.55, description="Farm longitude used for the observation")
+    ndvi: Optional[float] = Field(0.64, description="Cloud-masked Normalized Difference Vegetation Index (0.0 to 1.0)")
+    b4_reflectance: Optional[float] = Field(0.17, description="Mean Sentinel-2 B4 (Red) surface reflectance")
+    b8_reflectance: Optional[float] = Field(0.78, description="Mean Sentinel-2 B8 (NIR) surface reflectance")
+    scene_cloud_cover_pct: Optional[float] = Field(20.0, description="Scene-level Sentinel-2 cloud cover metadata")
+    clear_pixel_pct: Optional[float] = Field(92.5, description="Clear Sentinel-2 pixels within the sampled farm area")
+    clear_pixel_threshold: Optional[float] = Field(0.60, description="Cloud Score+ clear-pixel threshold")
+    vegetation_status: Optional[str] = Field("Dense vegetation cover (NDVI ≥ 0.60)", description="Transparent NDVI-threshold interpretation")
+    is_fresh: Optional[bool] = Field(True, description="Whether the observation is within the freshness window")
+    thumbnail_url: Optional[str] = Field(None, description="Earth Engine RGB thumbnail URL")
+    reason: Optional[str] = Field(None, description="Explanation when no usable observation is available")
+
+    # Backward-compatibility fields
+    tile_reference: Optional[str] = Field("S2A_MSIL2A_20260924_T45QXE_R061", description="Copernicus Sentinel-2 Level-2A Tile Granule ID")
+    spectral_formula: Optional[str] = Field("NDVI = (B8_NIR - B4_Red) / (B8_NIR + B4_Red)", description="Mathematical spectral index formula")
+    nir_band_reflectance: Optional[float] = Field(0.78, description="Band 8 (Near-Infrared, 842nm) surface reflectance")
+    red_band_reflectance: Optional[float] = Field(0.17, description="Band 4 (Red, 665nm) surface reflectance")
+    ndvi_trend: Optional[str] = Field("slight_drop_anomaly", description="'stable', 'increasing', 'slight_drop_anomaly', 'severe_dip'")
+    soil_moisture_index: Optional[float] = Field(0.42, description="Normalized soil moisture index")
+    cloud_cover_pct: Optional[float] = Field(20.0, description="Cloud cover percentage")
+    vegetation_vigor: Optional[str] = Field("Moderate canopy vigor with localized chlorosis detected in sector B", description="Spectral interpretation")
 
 
 class DiagnosisResult(BaseModel):
+    diagnosis_status: Literal["complete", "uncertain", "unavailable"] = Field("complete", description="Whether image analysis produced a usable result")
     is_valid_crop_image: bool = Field(True, description="False if image is non-agricultural, animal, face, or invalid")
     rejection_reason: Optional[str] = Field(None, description="Explanation if image is not a recognized plant/crop")
     condition_detected: str = Field("Rice Sheath Blight (Rhizoctonia solani)", description="Pathology or pest name")

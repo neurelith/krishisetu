@@ -350,7 +350,7 @@ async function runDiagnosis() {
   diagnosisResult.value = null
 
   try {
-    const res = await diagnoseCropDisease(selectedFileBlob.value, currentContext.crop.name)
+    const res = await diagnoseCropDisease(selectedFileBlob.value, currentContext)
     diagnosisResult.value = res
     currentContext.diagnosis = res
 
